@@ -92,6 +92,7 @@
 #include <Events_Loop.h>
 #include <ModelAPI_Events.h>
 #include <Config_PropManager.h>
+#include <TopExp_Explorer.hxx>
 
 #include <set>
 
@@ -381,6 +382,31 @@ bool XGUI_Displayer::redisplay(ObjectPtr theObject, bool theUpdateViewer)
         Quantity_Color
           aCol(aColor[0] / 255., aColor[1] / 255., aColor[2] / 255., Quantity_TOC_RGB);
         aAISIO->SetColor(aCol);
+      }
+      // Set color on subshape from result
+      std::map<GeomShapePtr, std::vector<int>> aColoredShapes;
+      ModelAPI_Tools::getColoredSubShapes(aResult, aColoredShapes);
+      Handle(AIS_ColoredShape) aResShape = Handle(AIS_ColoredShape)::DownCast(aAISIO);
+      Handle(ModuleBase_ResultPrs) aResPrsShape = Handle(ModuleBase_ResultPrs)::DownCast(aResShape);
+
+      if (!aColoredShapes.empty() && !aResPrsShape.IsNull())
+      {
+        for (std::map<GeomShapePtr, std::vector<int>>::const_iterator anIter(aColoredShapes.cbegin());
+          anIter != aColoredShapes.cend(); ++anIter)
+        {
+          if (aAISObj->getShape()->isSubShape(anIter->first))
+          {
+            Quantity_Color aColorQ(anIter->second.at(0) / 255.,
+              anIter->second.at(1) / 255.,
+              anIter->second.at(2) / 255.,
+              Quantity_TOC_RGB);
+            aResPrsShape->SetCustomColor(anIter->first->impl<TopoDS_Shape>(), aColorQ);
+          }
+        }
+      }
+      else
+      {
+        aResShape->ClearCustomAspects();
       }
       // Set deflection
       double aDeflection = ModelAPI_Tools::getDeflection(aResult);

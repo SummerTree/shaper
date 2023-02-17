@@ -435,6 +435,46 @@ QObjectPtrList XGUI_Selection::selectedPresentations() const
   return aSelectedList;
 }
 
+QMap<ResultPtr, QList<GeomShapePtr>> XGUI_Selection::selectedObjectsAndSubObjects() const
+{
+  QMap<ResultPtr, QList<GeomShapePtr>> aSelectedObjects;
+
+  // Add all objects, which selected in Viewer
+  QList<ModuleBase_ViewerPrsPtr> aValues = getSelected(ModuleBase_ISelection::Viewer);
+  foreach(ModuleBase_ViewerPrsPtr aPrs, aValues)
+  {
+    ResultPtr aResult = std::dynamic_pointer_cast<ModelAPI_Result>(aPrs->object());
+    GeomShapePtr aShape = aPrs->shape();
+
+    aSelectedObjects[aResult].push_back(aShape);
+  }
+
+  // Add object, which selected in browser, but not selected in Viewer
+  QObjectPtrList anObjects = selectedObjects();
+  foreach(ObjectPtr anObject, anObjects)
+  {
+    ResultBodyPtr aResultBody = std::dynamic_pointer_cast<ModelAPI_ResultBody>(anObject);
+    if (!aResultBody.get())
+      continue;
+    GeomShapePtr aBodyShape = aResultBody->shape();
+
+    if (aSelectedObjects.contains(aResultBody))
+      continue;
+    bool isContains = false;
+    foreach(GeomShapePtr aCurShape, aSelectedObjects[aResultBody])
+    {
+      if (aCurShape->impl<TopoDS_Shape>().IsEqual(aBodyShape->impl<TopoDS_Shape>()))
+      {
+        isContains = true;
+        break;
+      }
+    }
+    if (!isContains)
+      aSelectedObjects[aResultBody].push_back(aBodyShape);
+  }
+  return aSelectedObjects;
+}
+
 //**************************************************************
 QModelIndexList XGUI_Selection::selectedIndexes() const
 {

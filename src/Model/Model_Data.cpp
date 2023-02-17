@@ -124,6 +124,29 @@ std::wstring Model_Data::name()
   return L"";  // not defined
 }
 
+std::wstring Model_Data::name(std::shared_ptr<GeomAPI_Shape> theSubShape)
+{
+  std::wstring aShapeName = L"";
+  std::wstring aResultName = name();
+  if (aResultName == L"")
+    return aShapeName;
+
+  AttributeSelectionPtr aSelectionAttribute;
+  ResultBodyPtr aResBody = std::dynamic_pointer_cast<ModelAPI_ResultBody>(myObject);
+  if (aResBody.get())
+    aSelectionAttribute = aResBody->selection();
+  else
+  {
+    ResultPartPtr aPart = std::dynamic_pointer_cast<ModelAPI_ResultPart>(myObject);
+    aSelectionAttribute = aPart->selection();
+  }
+  aSelectionAttribute->setValue(myObject, theSubShape);
+  aShapeName = aSelectionAttribute->namingName();
+  aSelectionAttribute->reset();
+
+  return aShapeName;
+}
+
 void Model_Data::setName(const std::wstring& theName)
 {
   bool isModified = false;

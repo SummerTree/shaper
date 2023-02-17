@@ -24,6 +24,7 @@
 #include <ModelAPI_ResultPart.h>
 #include <TopoDS_Shape.hxx>
 #include <gp_Trsf.hxx>
+#include <map>
 
 /**\class Model_ResultPart
  * \ingroup DataModel
@@ -77,7 +78,21 @@ class Model_ResultPart : public ModelAPI_ResultPart
   MODEL_EXPORT virtual bool updateInPart(const int theIndex);
   /// Returns the shape by the name in the part
   MODEL_EXPORT virtual std::shared_ptr<GeomAPI_Shape> shapeInPart(
-    const std::wstring& theName, const std::string& theType, int& theIndex);
+    const std::wstring& theName, const std::string& theType, int& theIndex);  /// Set color on subshape
+  MODEL_EXPORT virtual void setSubShapeColor(const std::shared_ptr<GeomAPI_Shape>& theShape,
+    const std::vector<int>& theColor);
+
+  /// Get color on subshape
+  MODEL_EXPORT virtual void getSubShapeColor(const std::shared_ptr<GeomAPI_Shape>& theShape,
+    std::vector<int>& theColor);
+
+  /// Get colored shapes from result
+  MODEL_EXPORT virtual void getColoredSubShapes
+  (std::map<std::shared_ptr<GeomAPI_Shape>, std::vector<int>>& theColoredSubShapes);
+
+  /// Forget subshape colors
+  MODEL_EXPORT virtual void removeSubShapeColors();
+
   /// Updates the selection inside of the part as a geometrical selection
   MODEL_EXPORT virtual bool combineGeometrical(const int theIndex, std::wstring& theNewName);
   /// Updates the shape-result of the part (called on Part feature execution)
@@ -97,6 +112,9 @@ class Model_ResultPart : public ModelAPI_ResultPart
 
   /// Loading the part from file
   MODEL_EXPORT virtual void loadPart();
+
+  /// Return Attribute selection
+  MODEL_EXPORT virtual std::shared_ptr<ModelAPI_AttributeSelection> selection();
 
 protected:
   /// makes a result on a temporary feature (an action)

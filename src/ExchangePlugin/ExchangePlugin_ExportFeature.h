@@ -214,6 +214,9 @@ protected:
 
   /// Performs export to STL file
   EXCHANGEPLUGIN_EXPORT void exportSTL(const std::string& theFileName);
+
+  /// Performs export to STEP file
+  EXCHANGEPLUGIN_EXPORT void exportSTEP(const std::string & theFileName);
 };
 
 #endif /* EXPORT_EXPORTFEATURE_H_ */

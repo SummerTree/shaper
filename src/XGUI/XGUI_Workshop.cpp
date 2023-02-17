@@ -1847,6 +1847,7 @@ ModuleBase_IViewer* XGUI_Workshop::salomeViewer() const
 void XGUI_Workshop::onContextMenuCommand(const QString& theId, bool isChecked)
 {
   QObjectPtrList anObjects = mySelector->selection()->selectedObjects();
+  QMap<ResultPtr, QList<GeomShapePtr>> aSelectedObjects = mySelector->selection()->selectedObjectsAndSubObjects();
   if (theId == "DELETE_CMD")
     deleteObjects();
   else if (theId == "CLEAN_HISTORY_CMD")
@@ -1860,9 +1861,9 @@ void XGUI_Workshop::onContextMenuCommand(const QString& theId, bool isChecked)
   else if (theId == "RECOVER_CMD")
     recoverFeature();
   else if (theId == "COLOR_CMD")
-    changeColor(anObjects);
+    changeColor(aSelectedObjects);
   else if (theId == "AUTOCOLOR_CMD")
-    changeAutoColor(anObjects);
+    changeAutoColor(aSelectedObjects);
   else if (theId == "ISOLINES_CMD")
     changeIsoLines(anObjects);
   else if (theId == "SHOW_ISOLINES_CMD") {
@@ -2647,29 +2648,52 @@ void getDefaultColor(ObjectPtr theObject, const bool isEmptyColorValid,
 }
 
 //**************************************************************
-void XGUI_Workshop::changeColor(const QObjectPtrList& theObjects)
+void XGUI_Workshop::changeColor(const QMap<ResultPtr, QList<GeomShapePtr>>& theSelectedObjects)
 {
 
   AttributeIntArrayPtr aColorAttr;
   // 1. find the current color of the object. This is a color of AIS presentation
   // The objects are iterated until a first valid color is found
   std::vector<int> aColor;
-  foreach(ObjectPtr anObject, theObjects) {
-    ResultPtr aResult = std::dynamic_pointer_cast<ModelAPI_Result>(anObject);
-    if (aResult.get()) {
-      ModelAPI_Tools::getColor(aResult, aColor);
+  QList<ModuleBase_ViewerPrsPtr> aValues = mySelector->selection()->getSelected(ModuleBase_ISelection::Viewer);
+  const bool isColorOnSubShape = Config_PropManager::boolean("Visualization", "color_subshape_result");
+  foreach(ResultPtr aResult, theSelectedObjects.keys())
+  {
+    if (!aResult.get())
+      continue;
+
+    foreach(GeomShapePtr aShape, theSelectedObjects[aResult])
+    {
+      if (aResult->shape()->impl<TopoDS_Shape>().IsEqual(aShape->impl<TopoDS_Shape>()) || !isColorOnSubShape)
+      {
+        ModelAPI_Tools::getColor(aResult, aColor);
+      }
+      else if (!aShape->isNull())
+      {
+        ModelAPI_Tools::getColor(aResult, aShape, aColor);
+        if (aColor.empty())
+        {
+          ModelAPI_Tools::getColor(aResult, aColor);
+        }
+      }
+
       if (aColor.empty()) {
-        AISObjectPtr anAISObj = myDisplayer->getAISObject(anObject);
+        AISObjectPtr anAISObj = myDisplayer->getAISObject(aResult);
         if (anAISObj.get()) {
           aColor.resize(3);
           anAISObj->getColor(aColor[0], aColor[1], aColor[2]);
         }
       }
-      if (aColor.empty()) {
+      if (aColor.empty())
         getDefaultColor(aResult, false, aColor);
-      }
+      if (!aColor.empty() || !isColorOnSubShape)
+        break;
     }
+
+    if (!aColor.empty())
+      break;
   }
+
   if (aColor.size() != 3)
     return;
 
@@ -2684,6 +2708,7 @@ void XGUI_Workshop::changeColor(const QObjectPtrList& theObjects)
     return;
 
   bool isRandomColor = aDlg->isRandomColor();
+  bool isSetToShape = aDlg->isSetOnSubShape();
 
   // 3. abort the previous operation and start a new one
   SessionPtr aMgr = ModelAPI_Session::get();
@@ -2691,22 +2716,38 @@ void XGUI_Workshop::changeColor(const QObjectPtrList& theObjects)
 
   aMgr->startOperation(aDescription.toStdString());
 
-  // 4. set the value to all results
+  // 4. set the value to all results and subshapes from result (if was select subshape of result)
   std::vector<int> aColorResult = aDlg->getColor();
-  foreach(ObjectPtr anObj, theObjects) {
-    ResultPtr aResult = std::dynamic_pointer_cast<ModelAPI_Result>(anObj);
-    if (aResult.get() != NULL) {
-      ResultBodyPtr aBodyResult = std::dynamic_pointer_cast<ModelAPI_ResultBody>(aResult);
-      if (aBodyResult.get() != NULL) { // change colors for all sub-solids
-        std::list<ResultPtr> allRes;
-        ModelAPI_Tools::allSubs(aBodyResult, allRes);
-        for(std::list<ResultPtr>::iterator aRes = allRes.begin(); aRes != allRes.end(); aRes++) {
-          ModelAPI_Tools::setColor(*aRes, !isRandomColor ? aColorResult : aDlg->getRandomColor());
+  foreach(ResultPtr aResult, theSelectedObjects.keys())
+  {
+    if (!aResult.get())
+      continue;
+    ResultBodyPtr aBodyResult = std::dynamic_pointer_cast<ModelAPI_ResultBody>(aResult);
+    foreach(GeomShapePtr aShape, theSelectedObjects[aResult])
+    {
+      if (aResult->shape()->impl<TopoDS_Shape>().IsEqual(aShape->impl<TopoDS_Shape>()) || !isColorOnSubShape || !isSetToShape)
+      {
+        if (aResult.get() != NULL)
+        {
+          // change colors for all sub-solids
+          std::list<ResultPtr> allRes;
+          ModelAPI_Tools::allSubs(aBodyResult, allRes);
+          for (std::list<ResultPtr>::iterator aRes = allRes.begin(); aRes != allRes.end(); aRes++)
+          {
+            ModelAPI_Tools::setColor(*aRes, !isRandomColor ? aColorResult : aDlg->getRandomColor());
+          }
+          ModelAPI_Tools::setColor(aResult, !isRandomColor ? aColorResult : aDlg->getRandomColor());
         }
+        if (!isColorOnSubShape)
+          break;
       }
-      ModelAPI_Tools::setColor(aResult, !isRandomColor ? aColorResult : aDlg->getRandomColor());
+      else if (!aShape->isNull())
+      {
+        ModelAPI_Tools::setColor(aResult, aShape, !isRandomColor ? aColorResult : aDlg->getRandomColor());
+      }
     }
   }
+
   Events_Loop::loop()->flush(Events_Loop::eventByName(EVENT_OBJECT_TO_REDISPLAY));
   aMgr->finishOperation();
   updateCommandStatus();
@@ -2714,7 +2755,7 @@ void XGUI_Workshop::changeColor(const QObjectPtrList& theObjects)
 }
 
 //**************************************************************
-void XGUI_Workshop::changeAutoColor(const QObjectPtrList& theObjects)
+void XGUI_Workshop::changeAutoColor(const QMap<ResultPtr, QList<GeomShapePtr>>& theSelectedObjects)
 {
   if (!abortAllOperations())
   return;
@@ -2731,29 +2772,40 @@ void XGUI_Workshop::changeAutoColor(const QObjectPtrList& theObjects)
       Config_PropManager::setAutoColorStatus(false);
       ModelAPI_Tools::findRandomColor(aColor, true);
     } else {
-      // set the value to all results
-      foreach (ObjectPtr anObj, theObjects) {
-        DocumentPtr aDocument = anObj->document();
+      QList<ModuleBase_ViewerPrsPtr> aValues = mySelector->selection()->getSelected(ModuleBase_ISelection::Viewer);
+      const bool isColorOnSubShape = Config_PropManager::boolean("Visualization", "color_subshape_result");
+      foreach(ResultPtr aResult, theSelectedObjects.keys())
+      {
+        if (!aResult.get())
+          continue;
+
+        DocumentPtr aDocument = aResult->document();
         std::list<FeaturePtr> anAllFeatures = allFeatures(aDocument);
-        // find the object iterator
-        std::list<FeaturePtr>::iterator anObjectIt = anAllFeatures.begin();
-        for (; anObjectIt !=  anAllFeatures.end(); ++ anObjectIt) {
-          FeaturePtr aFeature = *anObjectIt;
-          if (aFeature.get()) {
-            std::list<ResultPtr> aResults;
-            ModelAPI_Tools::allResults(aFeature, aResults);
-            std::list<std::shared_ptr<ModelAPI_Result> >::const_iterator aIt;
-            for (aIt = aResults.cbegin(); aIt != aResults.cend(); aIt++) {
-              ResultPtr aGroupResult = *aIt;
-              if (aGroupResult.get() &&
+        foreach(GeomShapePtr aShape, theSelectedObjects[aResult])
+        {
+          std::list<FeaturePtr>::iterator anObjectIt = anAllFeatures.begin();
+          for (; anObjectIt != anAllFeatures.end(); ++anObjectIt) {
+            FeaturePtr aFeature = *anObjectIt;
+            if (aFeature.get()) {
+              std::list<ResultPtr> aResults;
+              ModelAPI_Tools::allResults(aFeature, aResults);
+              std::list<std::shared_ptr<ModelAPI_Result> >::const_iterator aIt;
+              for (aIt = aResults.cbegin(); aIt != aResults.cend(); aIt++) {
+                ResultPtr aGroupResult = *aIt;
+                if (aGroupResult.get() &&
                   aGroupResult->groupName() == ModelAPI_ResultGroup::group()) {
-                ModelAPI_Tools::findRandomColor(aColor);
-                ModelAPI_Tools::setColor(aGroupResult, aColor);
+                  ModelAPI_Tools::findRandomColor(aColor);
+                  ModelAPI_Tools::setColor(aGroupResult, aColor);
+                }
               }
             }
           }
         }
+
+        if (!aColor.empty())
+          break;
       }
+
       Events_Loop::loop()->flush(Events_Loop::eventByName(EVENT_OBJECT_TO_REDISPLAY));
       aMgr->finishOperation();
       updateCommandStatus();

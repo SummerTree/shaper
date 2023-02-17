@@ -33,6 +33,7 @@
 class Handle_Model_Document;
 class Model_Objects;
 class ModelAPI_AttributeSelectionList;
+class TopoDS_Shape;
 
 /**\class Model_Document
  * \ingroup DataModel
@@ -143,8 +144,8 @@ class Model_Document : public ModelAPI_Document
   //! \param theObject object of this document
   //! \param theAllowFolder take into account grouping feature by folders
   //! \returns index started from zero, or -1 if object is invisible or belongs to another document
-  MODEL_EXPORT virtual const int index(std::shared_ptr<ModelAPI_Object> theObject,
-                                       const bool theAllowFolder = false);
+  MODEL_EXPORT virtual int index(std::shared_ptr<ModelAPI_Object> theObject,
+                                 const bool theAllowFolder = false);
 
   //! Internal sub-document by ID
   MODEL_EXPORT virtual std::shared_ptr<Model_Document> subDoc(int theDocID);
@@ -385,6 +386,9 @@ class Model_Document : public ModelAPI_Document
   //! for calculation of selection externally from the document
   std::shared_ptr<ModelAPI_AttributeSelectionList> selectionInPartFeature();
 
+  //! Returns the selection attribute that is used
+  std::shared_ptr<ModelAPI_AttributeSelection> selectionInResult();
+
   /// Stores in the document boolean flags: states of the nodes in the object browser.
   /// Normally is called outside of the transaction, just before "save".
   virtual void storeNodesState(const std::list<bool>& theStates);
@@ -424,6 +428,7 @@ class Model_Document : public ModelAPI_Document
   friend class Model_ResultPart;
   friend class Model_ResultBody;
   friend class Model_ResultConstruction;
+  friend class Model_SelectionInResult;
   friend class Model_SelectionNaming;
   friend class Model_BodyBuilder;
   friend class DFBrowser;

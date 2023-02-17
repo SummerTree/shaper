@@ -26,6 +26,7 @@
 #include <ModelAPI_Object.h>
 #include <ModelAPI_Events.h>
 #include <ModelAPI_Tools.h>
+#include <ModelAPI_AttributeSelection.h>
 #include <ModelAPI_AttributeImage.h>
 #include <Model_Data.h>
 #include <Events_Loop.h>
@@ -38,6 +39,11 @@
 #include <TopExp_Explorer.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TDataStd_UAttribute.hxx>
+#include <TDataStd_IntegerArray.hxx>
+#include <TNaming_Tool.hxx>
+#include <TDF_Reference.hxx>
+
+#include <BRepTools.hxx>
 
 // if this attribute exists, the shape is connected topology
 Standard_GUID kIsConnectedTopology("e51392e0-3a4d-405d-8e36-bbfe19858ef5");
@@ -48,6 +54,7 @@ Model_ResultBody::Model_ResultBody() : ModelAPI_ResultBody()
 {
   myBuilder = new Model_BodyBuilder(this);
   myLastConcealed = false;
+  myLastEmptyNameIndex = 0;
   updateSubs(shape()); // in case of open, etc.
 }
 
@@ -249,34 +256,121 @@ void Model_ResultBody::updateConcealment()
   }
 }
 
-void Model_ResultBody::addShapeColor( const std::wstring& theName,std::vector<int>& color) {
-
+void Model_ResultBody::addShapeColor(const std::wstring& theName,
+                                     std::vector<int>&   theColor)
+{
   if (myColorsShape.find(theName) == myColorsShape.end())
-    myColorsShape[ theName ] =  color;
+    myColorsShape[ theName ] = theColor;
 }
 
-std::wstring Model_ResultBody::addShapeName(std::shared_ptr<GeomAPI_Shape> theshape,
-                                            const std::wstring& theName ){
+void Model_ResultBody::setSubShapeColorIfAny(const std::shared_ptr<ModelAPI_Result> theResult,
+                                             const std::shared_ptr<GeomAPI_Shape> theSubShape)
+{
+  TopoDS_Shape aFace = theSubShape->impl<TopoDS_Shape>();
+  //std::wstring aName = findShapeName(theSubShape);
+  std::wstring aName;
+  ///
+  std::map< std::wstring, std::shared_ptr<GeomAPI_Shape> >::iterator it =
+    myNamesOfShapes.begin();
+  for (; it != myNamesOfShapes.end(); ++it) {
+    TopoDS_Shape curSelectedShape = (*it).second->impl<TopoDS_Shape>();
+    if (curSelectedShape.TShape().IsNull())
+      continue;
+    if (aFace.TShape() == curSelectedShape.TShape()) {
+      aName = (*it).first; // Find necessary shape,
+      // but it NOT correct because result shape contains anothet location. WHY?
+      break;
+    }
+  }
+  ///
+  if (!aName.empty()) {
+    const std::vector<int>& aColor = findShapeColor(aName);
+    if (!aColor.empty()) {
+      ResultBodyPtr anOwner = std::dynamic_pointer_cast<ModelAPI_ResultBody>(data()->owner());
+      ModelAPI_Tools::setColor(anOwner, theSubShape, aColor);
+    }
+  }
+}
 
+void Model_ResultBody::setSubShapeColor(const std::shared_ptr<ModelAPI_Result> theResult,
+                                        const std::shared_ptr<GeomAPI_Shape> theSubShape,
+                                        const std::vector<int>& theColor)
+{
+  if (!this->shape()->isSubShape(theSubShape))
+    return;
+
+  Model_Objects* anObjects = std::dynamic_pointer_cast<Model_Document>(document())->objects();
+
+  anObjects->storeSubShapeWithColor(theResult, theSubShape, theColor);
+}
+
+void Model_ResultBody::getSubShapeColor(const std::shared_ptr<ModelAPI_Result> theResult,
+                                        const std::shared_ptr<GeomAPI_Shape> theSubShape,
+                                        std::vector<int>& theColor)
+{
+  if (!this->shape()->isSubShape(theSubShape))
+    return;
+
+  Model_Objects* anObjects = std::dynamic_pointer_cast<Model_Document>(document())->objects();
+
+  theColor = anObjects->getSubShapeColor(theResult, theSubShape);
+  if (theColor.size() != 3)
+    theColor.clear();
+}
+
+void Model_ResultBody::getColoredSubShapes(const std::shared_ptr<ModelAPI_Result> theResult,
+  std::map<GeomShapePtr, std::vector<int>>& theColoredShapes)
+{
+  Model_Objects* anObjects = std::dynamic_pointer_cast<Model_Document>(document())->objects();
+  anObjects->getColoredSubShapes(theResult, theColoredShapes);
+}
+
+void Model_ResultBody::removeSubShapeColors(const std::shared_ptr<ModelAPI_Result> theResult)
+{
+  Model_Objects* anObjects = std::dynamic_pointer_cast<Model_Document>(document())->objects();
+  anObjects->removeSubShapeColors(theResult);
+}
+
+std::shared_ptr<ModelAPI_AttributeSelection> Model_ResultBody::selection()
+{
+  AttributeSelectionPtr aSelAttr = std::dynamic_pointer_cast<Model_Document>
+    (document())->selectionInResult();
+  return aSelAttr;
+}
+
+std::wstring Model_ResultBody::addShapeName(std::shared_ptr<GeomAPI_Shape> theShape,
+                                            const std::wstring&            theName)
+{
   int indice = 1;
+  if (theName.empty()) {
+    // performance optimization
+    indice = myLastEmptyNameIndex + 1;
+  }
   std::wstringstream aName;
   aName << theName;
-  while(myNamesShape.find(aName.str()) != myNamesShape.end() ){
+#if 0
+  while (myNamesOfShapes.find(aName.str()) != myNamesOfShapes.end()) {
+#else
+  while (aName.str().empty() || myNamesOfShapes.find(aName.str()) != myNamesOfShapes.end()) {
+#endif
     aName.str(L"");
     aName << theName << L"__" << indice;
     indice++;
   }
-  myNamesShape[ aName.str() ] = theshape;
+  if (theName.empty()) {
+    myLastEmptyNameIndex = indice;
+  }
+  myNamesOfShapes[ aName.str() ] = theShape;
 
   return aName.str();
 }
 
-std::wstring Model_ResultBody::findShapeName(std::shared_ptr<GeomAPI_Shape> theShape){
-
+std::wstring Model_ResultBody::findShapeName(std::shared_ptr<GeomAPI_Shape> theShape)
+{
   TopoDS_Shape  aShape =  theShape->impl<TopoDS_Shape>();
   for (std::map< std::wstring, std::shared_ptr<GeomAPI_Shape> >::iterator it =
-                                                                myNamesShape.begin();
-        it != myNamesShape.end();
+                                                                myNamesOfShapes.begin();
+        it != myNamesOfShapes.end();
         ++it)
   {
     TopoDS_Shape curSelectedShape = (*it).second->impl<TopoDS_Shape>();
@@ -300,12 +394,12 @@ void Model_ResultBody::setShapeName(
                 std::map< std::wstring, std::shared_ptr<GeomAPI_Shape>>& theShapeName,
                 std::map< std::wstring, std::vector<int>>& theColorsShape)
 {
-  myNamesShape = theShapeName;
+  myNamesOfShapes = theShapeName;
   myColorsShape = theColorsShape;
 }
 
 void Model_ResultBody::clearShapeNameAndColor(){
-  myNamesShape.clear();
+  myNamesOfShapes.clear();
   myColorsShape.clear();
 }
 
@@ -338,26 +432,26 @@ void Model_ResultBody::updateSubs(const std::shared_ptr<GeomAPI_Shape>& theThisS
       aShape->setImpl(new TopoDS_Shape(aShapesIter.Value()));
       ResultBodyPtr aSub;
       if (mySubs.size() <= aSubIndex) { // it is needed to create a new sub-result
-        std::wstring thenameshape = L"";
+        std::wstring aNameOfShape = L"";
         // find shape name read
         for (std::map< std::wstring, std::shared_ptr<GeomAPI_Shape> >::iterator it =
-                                                                            myNamesShape.begin();
-           it != myNamesShape.end();
+                                                                            myNamesOfShapes.begin();
+           it != myNamesOfShapes.end();
            ++it)
         {
             TopoDS_Shape curSelectedShape = (*it).second->impl<TopoDS_Shape>();
             if (!(aShapesIter.Value().IsSame(curSelectedShape))) continue;
-            thenameshape = (*it).first;
+            aNameOfShape = (*it).first;
             break;
         }
-        aSub = anObjects->createBody(this->data(), aSubIndex,thenameshape);
-        //finf color read
+        aSub = anObjects->createBody(this->data(), aSubIndex, aNameOfShape);
+        //find color read
         std::map< std::wstring, std::vector<int>>::iterator itColor =
-                                                          myColorsShape.find(thenameshape);
+                                                          myColorsShape.find(aNameOfShape);
         if (itColor != myColorsShape.end()){
             ModelAPI_Tools::setColor(aSub,(*itColor).second);
         }
-        aSub->setShapeName(myNamesShape,myColorsShape);
+        aSub->setShapeName(myNamesOfShapes,myColorsShape);
         mySubs.push_back(aSub);
         mySubsMap[aSub] = int(mySubs.size() - 1);
         if (isConcealed()) { // for issue #2579 note7
@@ -399,7 +493,8 @@ void Model_ResultBody::updateSubs(const std::shared_ptr<GeomAPI_Shape>& theThisS
       aECreator->sendUpdated(data()->owner(), EVENT_DISP);
     }
     cleanCash();
-  } else if (!mySubs.empty()) { // erase all subs
+  }
+  else if (!mySubs.empty()) { // erase all subs
     while(!mySubs.empty()) {
       ResultBodyPtr anErased = *(mySubs.rbegin());
       if (anErased->ModelAPI_ResultBody::isConcealed()) {

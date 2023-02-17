@@ -139,6 +139,14 @@ MODELAPI_EXPORT std::shared_ptr<ModelAPI_CompositeFeature> compositeOwner(
  */
 MODELAPI_EXPORT std::shared_ptr<ModelAPI_ResultBody>
   bodyOwner(const std::shared_ptr<ModelAPI_Result>& theSub, const bool theRoot = false);
+
+/*
+* Returns the result - main parent of this result.
+* \param theSubBody the sub-element of composit result
+* \returns Root resultBody
+*/
+MODELAPI_EXPORT std::shared_ptr<ModelAPI_ResultBody> mainBody(const std::shared_ptr<ModelAPI_ResultBody> theSubBody);
+
 /*!
  * Returns index of this result in parent (if parent exists, returned by bodyOwner)
  * \returns zero-base index, or -1 if not found
@@ -275,11 +283,45 @@ MODELAPI_EXPORT void setDeflection(std::shared_ptr<ModelAPI_Result> theResult,
 MODELAPI_EXPORT void getColor(const std::shared_ptr<ModelAPI_Result>& theResult,
   std::vector<int>& theColor);
 
+/*! Returns current color of the current subShape
+* \param[in] theResult a result object
+* \param[in] theShape a shape that belongs result object
+* \param[out] theColor a color values if it is defined
+*/
+MODELAPI_EXPORT void getColor(const std::shared_ptr<ModelAPI_Result> theResult,
+  const std::shared_ptr<GeomAPI_Shape> theShape,
+  std::vector<int>& theColor);
+
+/*! Returns colored shapes of the result
+* \param[in] theResult a result object
+* \param[out] theColoredShapes a set which contans all colored shapes of the result
+* \param[in] theSubResult true - get colored shapes from subresults,
+*                         else - get colored shapes only from result
+*/
+MODELAPI_EXPORT void getColoredSubShapes(const std::shared_ptr<ModelAPI_Result> theResult,
+  std::map<std::shared_ptr<GeomAPI_Shape>, std::vector<int>>& theColoredShapes,
+  bool theGetSubResults = false);
+
+/*! Remove all subshape color from result
+* Need, when we set color on result
+* \param[in] theResult a result object
+*/
+MODELAPI_EXPORT void removeSubShapeColors(const std::shared_ptr<ModelAPI_Result> theResult);
+
 /*! Set color of the result
 * \param[in] theResult a result object
 * \param[in] theColor a color values
 */
 MODELAPI_EXPORT void setColor(std::shared_ptr<ModelAPI_Result> theResult,
+  const std::vector<int>& theColor);
+
+/*! Set color of the shape from result
+* \param[in] theResult a result object
+* \param[in] theShape a shape that belongs result object
+* \param[in] theColor a color values
+*/
+MODELAPI_EXPORT void setColor(std::shared_ptr<ModelAPI_Result> theResult,
+  std::shared_ptr<GeomAPI_Shape> theShape,
   const std::vector<int>& theColor);
 
 /*! Returns number of iso-lines of the current result

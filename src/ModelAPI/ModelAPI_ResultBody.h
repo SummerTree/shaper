@@ -194,11 +194,33 @@ public:
 
   /// Add shape Name for read shape in step file
   MODELAPI_EXPORT virtual std::wstring addShapeName
-                              (std::shared_ptr<GeomAPI_Shape>, const std::wstring& theName) = 0;
+                              (std::shared_ptr<GeomAPI_Shape> theShape,
+                               const std::wstring&            theName) = 0;
 
   /// Add color for shape Name read shape in step file
   MODELAPI_EXPORT virtual void addShapeColor
-                              (const std::wstring& theName, std::vector<int>& theColor) = 0;
+                              (const std::wstring& theName,
+                               std::vector<int>&   theColor) = 0;
+
+  /// Add color to sub shape
+  MODELAPI_EXPORT virtual void setSubShapeColor(const std::shared_ptr<ModelAPI_Result> theResult,
+    const std::shared_ptr<GeomAPI_Shape> theShape,
+    const std::vector<int>& theColor) = 0;
+
+  /// Get color from sub shape
+  MODELAPI_EXPORT virtual void getSubShapeColor(const std::shared_ptr<ModelAPI_Result> theResult,
+    const std::shared_ptr<GeomAPI_Shape> theShape,
+    std::vector<int>& theColor) = 0;
+
+  /// Get colored shapes from result
+  MODELAPI_EXPORT virtual void getColoredSubShapes(const std::shared_ptr<ModelAPI_Result> theResult,
+    std::map<std::shared_ptr<GeomAPI_Shape>, std::vector<int>>& theColoredShapes) = 0;
+
+  /// Forget subshape colors
+  MODELAPI_EXPORT virtual void removeSubShapeColors(const std::shared_ptr<ModelAPI_Result> theResult) = 0;
+
+  /// Return Attribute selection
+  MODELAPI_EXPORT virtual std::shared_ptr<ModelAPI_AttributeSelection> selection() = 0;
 
   /// Set the map of name and color read shape in step file
   MODELAPI_EXPORT virtual void setShapeName
@@ -215,6 +237,10 @@ public:
   /// Returns empty vector if not found.
   MODELAPI_EXPORT virtual const std::vector<int>& findShapeColor(
     const std::wstring& theShapeName) = 0;
+
+  /// Add color to sub shape
+  MODELAPI_EXPORT virtual void setSubShapeColorIfAny(const std::shared_ptr<ModelAPI_Result> theResult,
+                                                     const std::shared_ptr<GeomAPI_Shape> theShape) = 0;
 
 
 protected:

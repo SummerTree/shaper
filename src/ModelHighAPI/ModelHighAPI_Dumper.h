@@ -403,6 +403,12 @@ private:
   /// Stores names of results for the given feature
   void saveResultNames(const FeaturePtr& theFeature);
 
+  /// Check the result feature has colored shape
+  bool hasColoredShape(const ResultPtr& theResult, bool theGetSubResults = false) const;
+
+  /// Check the result is parent result int the feature
+  bool isParentResult(const ResultPtr& theResult) const;
+
   /// Check the result feature has default color
   bool isDefaultColor(const ResultPtr& theResult) const;
 

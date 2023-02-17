@@ -25,7 +25,10 @@
 
 #include <Model_Data.h>
 #include <Model_Document.h>
+
 #include <ModelAPI_Session.h>
+#include <ModelAPI_ResultBody.h>
+
 #include <TNaming_Builder.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TNaming_Iterator.hxx>
@@ -825,7 +828,7 @@ void loadGeneratedDangleShapes(
 void Model_BodyBuilder::loadNextLevels(GeomShapePtr theShape,
                                        const std::string& theName)
 {
-  if(theShape->isNull()) return;
+  if (theShape->isNull()) return;
   TopoDS_Shape aShape = theShape->impl<TopoDS_Shape>();
   std::string aName;
   if (aShape.ShapeType() == TopAbs_SOLID) {
@@ -836,6 +839,11 @@ void Model_BodyBuilder::loadNextLevels(GeomShapePtr theShape,
       aName = theName + "_" + aStr.ToCString();
       buildName(myFreePrimitiveTag, aName);
       ++myFreePrimitiveTag;
+
+      GeomShapePtr aGeomFace (new GeomAPI_Shape);
+      aGeomFace->setImpl<TopoDS_Shape>(new TopoDS_Shape(expl.Current()));
+      ResultBodyPtr aResBody = std::dynamic_pointer_cast<ModelAPI_ResultBody>(data()->owner());
+      aResBody->setSubShapeColorIfAny(aResBody, aGeomFace);
     }
   }
   else if (aShape.ShapeType() == TopAbs_SHELL || aShape.ShapeType() == TopAbs_FACE) {
@@ -850,6 +858,11 @@ void Model_BodyBuilder::loadNextLevels(GeomShapePtr theShape,
         aName = theName + "_" + aStr.ToCString();
         buildName(myFreePrimitiveTag, aName);
         ++myFreePrimitiveTag;
+
+        GeomShapePtr aGeomFace (new GeomAPI_Shape);
+        aGeomFace->setImpl<TopoDS_Shape>(new TopoDS_Shape(expl.Current()));
+        ResultBodyPtr aResBody = std::dynamic_pointer_cast<ModelAPI_ResultBody>(data()->owner());
+        aResBody->setSubShapeColorIfAny(aResBody, aGeomFace);
       }
     }
     TopTools_IndexedDataMapOfShapeListOfShape anEdgeAndNeighbourFaces;

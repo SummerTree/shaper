@@ -346,5 +346,9 @@
         <source>No visualization</source>
         <translation>Aucune visualisation</translation>
     </message>
+    <message>
+        <source>Set color on subshape of result</source>
+        <translation>Définir la couleur sur la sous - forme du résultat</translation>
+    </message>
 </context>
 </TS>

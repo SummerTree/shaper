@@ -268,3 +268,8 @@ GeomShapePtr STEPImportAttributs(const std::string& theFileName,
     return STEPImport(theFileName, "", theScalInterUnits, theError);
   }
 }
+
+void TEST(std::shared_ptr<ModelAPI_ResultBody> theResultBody)
+{
+  setColors(theResultBody);
+}

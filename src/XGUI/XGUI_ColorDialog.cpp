@@ -25,6 +25,7 @@
 
 #include <QLabel>
 #include <QButtonGroup>
+#include <QCheckBox>
 #include <QGridLayout>
 #include <QRadioButton>
 #include <QDialogButtonBox>
@@ -65,7 +66,7 @@ namespace
   };
 }
 
-XGUI_ColorDialog::XGUI_ColorDialog(QWidget* theParent)
+XGUI_ColorDialog::XGUI_ColorDialog(QWidget* theParent, bool theCheckBoxNeed)
   : QDialog(theParent, Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint)
 {
   setWindowTitle(tr("Color"));
@@ -84,21 +85,30 @@ XGUI_ColorDialog::XGUI_ColorDialog(QWidget* theParent)
   myButtonGroup->addButton(aColorChoiceBtn, 0);
   myButtonGroup->addButton(aRandomChoiceBtn, 1);
 
+  if (theCheckBoxNeed)
+    myTargetSetCheck = new QCheckBox(tr("Set on selected face"), this);
+
   aLay->addWidget(aColorChoiceBtn, 0, 0);
   aLay->addWidget(myColorButton, 0, 1);
   aLay->addWidget(aRandomChoiceBtn, 1, 0);
   aLay->addWidget(aRandomLabel, 1, 1);
+  aLay->addWidget(myTargetSetCheck, 2, 0, 1, 2);
 
   QDialogButtonBox* aButtons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                                     Qt::Horizontal, this);
   connect(aButtons, SIGNAL(accepted()), this, SLOT(accept()));
   connect(aButtons, SIGNAL(rejected()), this, SLOT(reject()));
-  aLay->addWidget(aButtons, 2, 0, 1, 2);
+  aLay->addWidget(aButtons, 3, 0, 1, 2);
 }
 
 bool XGUI_ColorDialog::isRandomColor() const
 {
   return myButtonGroup->checkedId() == 1;
+}
+
+bool XGUI_ColorDialog::isSetOnSubShape() const
+{
+  return myTargetSetCheck && myTargetSetCheck->isChecked();
 }
 
 void XGUI_ColorDialog::setColor(const std::vector<int>& theValue)

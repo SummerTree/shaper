@@ -96,7 +96,8 @@ public:
   MODEL_EXPORT virtual bool isSub(ObjectPtr theObject, int& theIndex) const;
 
   /// Returns the parameters of color definition in the resources configuration manager
-  MODEL_EXPORT virtual void colorConfigInfo(std::string& theSection, std::string& theName,
+  MODEL_EXPORT virtual void colorConfigInfo(std::string& theSection,
+                                            std::string& theName,
                                             std::string& theDefault);
 
   /// Disables the result body: keeps the resulting shape as selection, but erases the underlaying
@@ -123,6 +124,10 @@ public:
   /// Returns empty vector if not found.
   MODEL_EXPORT virtual const std::vector<int>& findShapeColor(const std::wstring& theShapeName);
 
+  /// Add color to sub shape
+  MODEL_EXPORT virtual void setSubShapeColorIfAny(const std::shared_ptr<ModelAPI_Result> theResult,
+                                                  const std::shared_ptr<GeomAPI_Shape> theShape);
+
 protected:
   /// Makes a body on the given feature
   Model_ResultBody();
@@ -146,16 +151,36 @@ protected:
   friend class Model_Objects;
 
   /// Add shape Name for read shape in step file
-  std::wstring addShapeName(std::shared_ptr<GeomAPI_Shape>,const std::wstring& theName) override;
+  std::wstring addShapeName(std::shared_ptr<GeomAPI_Shape> theShape,
+                            const std::wstring&            theName) override;
 
   /// Add color for shape Name read shape in step file
-  void addShapeColor( const std::wstring& theName,std::vector<int>& color) override;
+  void addShapeColor(const std::wstring& theName,
+                     std::vector<int>&   theColor) override;
+
+  /// Add color to sub shape
+  void setSubShapeColor(const std::shared_ptr<ModelAPI_Result> theResult,
+    const std::shared_ptr<GeomAPI_Shape> theShape,
+    const std::vector<int>& theColor);
+
+  /// Get color from sub shape
+  void getSubShapeColor(const std::shared_ptr<ModelAPI_Result> theResult,
+    const std::shared_ptr<GeomAPI_Shape> theShape,
+    std::vector<int>& theColor);
+
+  /// Get colored shapes from result
+  void getColoredSubShapes(const std::shared_ptr<ModelAPI_Result> theResult,
+    std::map<std::shared_ptr<GeomAPI_Shape>, std::vector<int>>& theColoredShapes);
+
+  /// Forget subshape colors
+  void removeSubShapeColors(const std::shared_ptr<ModelAPI_Result> theResult);
 
   /// Set the map of name and color read shape in step file
-  void setShapeName(std::map< std::wstring,
-                              std::shared_ptr<GeomAPI_Shape>>& theShapeName,
-                              std::map< std::wstring,
-                              std::vector<int>>& theColorsShape) override;
+  void setShapeName(std::map<std::wstring, std::shared_ptr<GeomAPI_Shape>>& theShapeName,
+                    std::map<std::wstring, std::vector<int>>& theColorsShape) override;
+
+  /// Return Attribute selection
+  MODELAPI_EXPORT virtual std::shared_ptr<ModelAPI_AttributeSelection> selection();
 
   /// Find the name of shape read in step file
   std::wstring findShapeName(std::shared_ptr<GeomAPI_Shape> theShape) override;
@@ -164,7 +189,8 @@ protected:
   void clearShapeNameAndColor() override;
 
   /// map with the name read in step file and shape
-  std::map< std::wstring, std::shared_ptr<GeomAPI_Shape> > myNamesShape;
+  std::map< std::wstring, std::shared_ptr<GeomAPI_Shape> > myNamesOfShapes;
+  int myLastEmptyNameIndex; // performance optimization
 
   /// map from the construction name to the imported color
   std::map< std::wstring, std::vector<int>> myColorsShape;

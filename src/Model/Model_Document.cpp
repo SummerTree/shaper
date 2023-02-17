@@ -50,6 +50,7 @@
 #include <TDF_Delta.hxx>
 #include <TDF_AttributeDelta.hxx>
 #include <TDF_AttributeDeltaList.hxx>
+#include <TDF_AttributeIterator.hxx>
 #include <TDF_ListIteratorOfAttributeDeltaList.hxx>
 #include <TDF_ListIteratorOfLabelList.hxx>
 #include <TDF_LabelMap.hxx>
@@ -1371,8 +1372,8 @@ std::shared_ptr<ModelAPI_Object> Model_Document::objectByName(
   return myObjs->objectByName(theGroupID, theName);
 }
 
-const int Model_Document::index(std::shared_ptr<ModelAPI_Object> theObject,
-                                const bool theAllowFolder)
+int Model_Document::index(std::shared_ptr<ModelAPI_Object> theObject,
+                          const bool theAllowFolder)
 {
   return myObjs->index(theObject, theAllowFolder);
 }
@@ -2120,6 +2121,47 @@ AttributeSelectionListPtr Model_Document::selectionInPartFeature()
     mySelectionFeature->data()->blockSendAttributeUpdated(true);
   }
   return mySelectionFeature->selectionList("selection");
+}
+
+/// Feature that is used for use selection attribute
+class Model_SelectionInResult : public ModelAPI_Feature
+{
+public:
+  /// Nothing to do in constructor
+  Model_SelectionInResult() : ModelAPI_Feature() {}
+
+  /// Returns the unique kind of a feature
+  virtual const std::string& getKind()
+  {
+    static std::string MY_KIND("InternalSelectionInResult");
+    return MY_KIND;
+  }
+  /// Request for initialization of data model of the object: adding all attributes
+  virtual void initAttributes()
+  {
+    data()->addAttribute("selection", ModelAPI_AttributeSelection::typeId());
+  }
+  /// Nothing to do in the execution function
+  virtual void execute() {}
+};
+
+AttributeSelectionPtr Model_Document::selectionInResult()
+{
+  FeaturePtr aFeatureNameGen = FeaturePtr(new Model_SelectionInResult);
+
+  TDF_Label aFeatureLab = generalLabel().FindChild(TAG_SELECTION_FEATURE);
+  std::shared_ptr<Model_Data> aData(new Model_Data);
+  aData->setLabel(aFeatureLab.FindChild(1));
+  aData->setObject(aFeatureNameGen);
+  aFeatureNameGen->setDoc(myObjs->owner());
+  aFeatureNameGen->setData(aData);
+  std::wstring aName = id() + L"_Part";
+  aFeatureNameGen->data()->setName(aName);
+  aFeatureNameGen->setDoc(myObjs->owner());
+  aFeatureNameGen->initAttributes();
+  aFeatureNameGen->init();
+
+  return aFeatureNameGen->selection("selection");
 }
 
 FeaturePtr Model_Document::lastFeature()

@@ -23,6 +23,8 @@
 #include <GeomAlgoAPI.h>
 
 #include <string>
+#include <map>
+#include <vector>
 #include <list>
 #include <memory>
 
@@ -36,6 +38,12 @@ GEOMALGOAPI_EXPORT
 bool STEPExport(const std::string& theFileName,
                 const std::list<std::shared_ptr<GeomAPI_Shape> >& theShapes,
                 const std::list<std::shared_ptr<ModelAPI_Result> >& theResults,
+                std::string& theError);
+
+GEOMALGOAPI_EXPORT
+bool STEPExport(const std::string& theFileName,
+                const std::shared_ptr<GeomAPI_Shape>& theShape,
+                std::map<std::shared_ptr<GeomAPI_Shape>, std::vector<int>>& theColoredShapes,
                 std::string& theError);
 
 #endif /* GEOMALGOAPI_STEPEXPORT_H_ */

@@ -274,6 +274,13 @@ PartSet_Module::PartSet_Module(ModuleBase_IWorkshop* theWshop)
   Config_PropManager::registerProp("Visualization", "axis_arrow_size",
     "Trihedron arrows constant size", Config_Prop::IntSpin, "10");
 
+  Config_PropManager::registerProp("Visualization", "color_subshape_result",
+    "Set color on subshape of result", Config_Prop::Boolean, "true");
+
+  Config_PropManager::registerProp("Shortcuts", "add_parameter_shortcut",
+    "Add parameter in parameters manager dialog",
+    Config_Prop::Shortcut, "Ctrl+A");
+
   Config_PropManager::registerProp("Windows", "use_hide_faces_panel",
     "Use HideFaces panel in operations", Config_Prop::Boolean, "false");
 }
@@ -1549,6 +1556,16 @@ void PartSet_Module::customizePresentation(const ObjectPtr& theObject,
             PartSet_Tools::getDefaultColor(aResult, false, aColor);
           }
           thePrs->setColor(aColor[0], aColor[1], aColor[2]);
+
+          std::map<GeomShapePtr, std::vector<int>> aColoredShapes;
+          ModelAPI_Tools::getColoredSubShapes(aResult, aColoredShapes);
+          if (!aColoredShapes.empty()) {
+            for (std::map<GeomShapePtr, std::vector<int>>::const_iterator anIter(aColoredShapes.cbegin());
+              anIter != aColoredShapes.cend(); ++anIter) {
+              thePrs->setColor(anIter->first, anIter->second.at(0),
+                anIter->second.at(1), anIter->second.at(2));
+            }
+          }
         }
       }
       else {
@@ -1571,7 +1588,6 @@ void PartSet_Module::customizePresentation(const ObjectPtr& theObject,
     }
   }
 }
-
 
 //******************************************************
 ObjectPtr PartSet_Module::findPresentedObject(const AISObjectPtr& theAIS) const

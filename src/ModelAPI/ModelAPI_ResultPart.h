@@ -24,6 +24,7 @@
 class GeomAPI_Trsf;
 
 #include <string>
+#include <map>
 
 /**\class ModelAPI_ResultPart
  * \ingroup DataModel
@@ -88,6 +89,20 @@ class ModelAPI_ResultPart : public ModelAPI_Result
   /// Returns the shape by the name in the part
   virtual std::shared_ptr<GeomAPI_Shape> shapeInPart(
     const std::wstring& theName, const std::string& theType, int& theIndex) = 0;
+  /// Set color on subshape
+  virtual void setSubShapeColor(const std::shared_ptr<GeomAPI_Shape>& theShape,
+    const std::vector<int>& theColor) = 0;
+
+  /// Get subshape color
+  virtual void getSubShapeColor(const std::shared_ptr<GeomAPI_Shape>& theShape,
+    std::vector<int>& theColor) = 0;
+
+  /// Get colored subshapes from result
+  virtual void getColoredSubShapes
+    (std::map<std::shared_ptr<GeomAPI_Shape>, std::vector<int>>&theColoredShapes) = 0;
+
+  /// Forget subshapes colors
+  virtual void removeSubShapeColors() = 0;
 
   /// Updates the selection inside of the part as a geometrical selection
   virtual bool combineGeometrical(const int theIndex, std::wstring& theNewName) = 0;
@@ -97,6 +112,9 @@ class ModelAPI_ResultPart : public ModelAPI_Result
 
   /// Updates the shape-result of the part (called on Part feature execution)
   virtual void updateShape() = 0;
+
+  /// Return Attribute selection
+  virtual std::shared_ptr<ModelAPI_AttributeSelection> selection() = 0;
 
   /// Loading the part from file
   virtual void loadPart() = 0;

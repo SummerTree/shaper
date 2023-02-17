@@ -25,6 +25,7 @@
 #include <QDialog>
 
 class QButtonGroup;
+class QCheckBox;
 class QtxColorButton;
 
 /**
@@ -39,13 +40,17 @@ class XGUI_ColorDialog : public QDialog
 public:
   /// Constructor
   /// \param theParent a parent widget for the dialog
-  XGUI_EXPORT XGUI_ColorDialog(QWidget* theParent);
+  XGUI_EXPORT XGUI_ColorDialog(QWidget* theParent, bool theCheckBoxNeed = true);
 
   XGUI_EXPORT virtual ~XGUI_ColorDialog() {};
 
   /// Returns whether the random state of color is chosen
   /// \return a boolean value
   bool isRandomColor() const;
+
+  /// Returns whether the need set color on subshape only
+  /// \return a boolean value
+  bool isSetOnSubShape() const;
 
   /// Initializes the dialog with the given value. Set choice on certain value and fill it by.
   /// \param theValue an RGB components value
@@ -67,6 +72,7 @@ public:
 private:
   QButtonGroup* myButtonGroup; /// a group, contained random and certain color radio button choice
   QtxColorButton* myColorButton; /// a control to select a color
+  QCheckBox* myTargetSetCheck; /// a target shape for assign
 };
 
 #endif

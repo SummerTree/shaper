@@ -225,6 +225,10 @@ void ExchangePlugin_ExportFeature::exportFile(const std::string& theFileName,
     exportSTL(theFileName);
     return;
   }
+  //else if (aFormatName == "STEP") {
+  //  exportSTEP(theFileName);
+  //  return;
+  //}
 
   // make shape for export from selected shapes
   AttributeSelectionListPtr aSelectionListAttr =
@@ -259,10 +263,10 @@ void ExchangePlugin_ExportFeature::exportFile(const std::string& theFileName,
   bool aResult = false;
   if (aFormatName == "BREP") {
     aResult = BREPExport(theFileName, aFormatName, aShape, anError);
-  } else if (aFormatName == "STEP") {
-    aResult = STEPExport(theFileName, aShapes, aContexts, anError);
   } else if (aFormatName.substr(0, 4) == "IGES") {
     aResult = IGESExport(theFileName, aFormatName, aShape, anError);
+  } else if (aFormatName == "STEP") {
+    aResult = STEPExport(theFileName, aShapes, aContexts, anError);
   } else if (aFormatName == "GLTF") {
     aResult = GLTFExport(theFileName, aShapes, aContexts, false, anError);
   } else if (aFormatName == "GLB") {
@@ -647,6 +651,49 @@ void ExchangePlugin_ExportFeature::exportXAO(const std::string& theFileName,
   }
 // LCOV_EXCL_STOP
 }
+
+void ExchangePlugin_ExportFeature::exportSTEP(const std::string & theFileName)
+{
+  AttributeSelectionListPtr aSelectionList =
+    selectionList(ExchangePlugin_ExportFeature::SELECTION_LIST_ID());
+
+  std::list<GeomShapePtr> aShapeList;
+  std::string anError;
+  std::map<GeomShapePtr, std::vector<int>> aColoredShapes;
+  for (int anIndex = 0; anIndex < aSelectionList->size(); ++anIndex)
+  {
+    AttributeSelectionPtr anAttrSelection = aSelectionList->value(anIndex);
+    std::shared_ptr<GeomAPI_Shape> aCurShape = anAttrSelection->value();
+    if (!aCurShape.get())
+       aCurShape = anAttrSelection->context()->shape();
+    if (!aCurShape.get())
+       continue;
+    //#ifndef HAVE_SALOME
+    ResultPtr aRes = anAttrSelection->context();
+    std::vector<int> aColor;
+    ModelAPI_Tools::getColor(aRes, aColor);
+    ModelAPI_Tools::getColoredSubShapes(aRes, aColoredShapes);
+    if (aColor.size() == 3)
+    {
+      aColoredShapes[aCurShape] = aColor;
+    }
+    //#endif
+    aShapeList.push_back(aCurShape);
+  }
+  std::shared_ptr<GeomAPI_Shape> aShape =
+    aShapeList.size() == 1 ? aShapeList.front() : GeomAlgoAPI_CompoundBuilder::compound(aShapeList);
+  #ifndef HAVE_SALOME
+    bool aRes = true;// STEPExport(theFileName, aShape, aColoredShapes, anError);
+  #else
+    bool aRes = STEPExport(theFileName, aShape, aColoredShapes, anError);
+  #endif
+
+  if (!anError.empty() || !aRes)
+  {
+    setError("An error occurred while exporting " + theFileName + ": " + anError);
+    return;
+    }
+  }
 
 bool ExchangePlugin_ExportFeature::isMacro() const
 {

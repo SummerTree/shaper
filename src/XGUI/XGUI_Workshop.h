@@ -216,15 +216,15 @@ Q_OBJECT
   /// \return boolean value
   bool canChangeProperty(const QString& theActionName) const;
 
-  /// Change color of the results if it is possible
-  /// The operation is available for construction, body and group results
-  /// theObjects a list of selected objects
-  void changeColor(const QObjectPtrList& theObjects);
+  /// Change color of the selected objects (result and subshape of result) if it is possible
+  /// The operation is available for subshape of result, construction, body and group results
+  /// theSelectedObjects a list of selected objects
+  void changeColor(const QMap<ResultPtr, QList<GeomShapePtr>>& theSelectedObjects);
 
   /// Change Autocolor of the results if it is possible
   /// The operation is available for group results
   /// theObjects a list of selected objects
-  void changeAutoColor(const QObjectPtrList& theObjects);
+  void changeAutoColor(const QMap<ResultPtr, QList<GeomShapePtr>>& theSelectedObjects);
 
   /// Change deflection of the results if it is possible
   /// The operation is available for construction, body and group results

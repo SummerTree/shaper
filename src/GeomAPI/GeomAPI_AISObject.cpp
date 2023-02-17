@@ -32,6 +32,7 @@
 #include <Quantity_NameOfColor.hxx>
 #include <BRepBndLib.hxx>
 
+#include <AIS_ColoredShape.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>
@@ -384,6 +385,19 @@ bool GeomAPI_AISObject::setColor(int theR, int theG, int theB)
     else
       anAIS->SetColor(aColor);
   }
+  return true;
+}
+
+bool GeomAPI_AISObject::setColor(const std::shared_ptr<GeomAPI_Shape>& theSubShape,
+  int theR, int theG, int theB)
+{
+  Handle(AIS_InteractiveObject) anAIS = impl<Handle(AIS_InteractiveObject)>();
+  if (anAIS.IsNull())
+    return false;
+  Quantity_Color aColor(theR / 255., theG / 255., theB / 255., Quantity_TOC_RGB);
+
+  Handle(AIS_ColoredShape) aShape = Handle(AIS_ColoredShape)::DownCast(anAIS);
+  aShape->SetCustomColor(theSubShape->impl<TopoDS_Shape>(), aColor);
   return true;
 }
 

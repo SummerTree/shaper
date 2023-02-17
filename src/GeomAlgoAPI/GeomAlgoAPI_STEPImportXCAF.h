@@ -33,4 +33,5 @@ std::shared_ptr<GeomAPI_Shape>  readAttributes(STEPCAFControl_Reader &theReader,
                                  std::map< std::wstring,std::list<std::wstring>> &theMaterialShape,
                                  std::string& theError);
 
+GEOMALGOAPI_EXPORT void setColors(std::shared_ptr<ModelAPI_ResultBody> theResultBody);
 #endif /* GEOMALGOAPI_STEPIMPORTXCAF_H_ */

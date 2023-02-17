@@ -65,6 +65,7 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <TopExp.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
+#include <TopExp_Explorer.hxx>
 
 #if OCC_VERSION_HEX > 0x070400
 #include <StdPrs_ToolTriangulatedShape.hxx>
@@ -299,7 +300,7 @@ void ModuleBase_ResultPrs::Compute(
   }
   // change deviation coefficient to provide more precise circle
   try {
-    AIS_Shape::Compute(thePresentationManager, thePresentation, theMode);
+    ViewerData_AISShape::Compute(thePresentationManager, thePresentation, theMode);
   }
   catch (...) {
     return;

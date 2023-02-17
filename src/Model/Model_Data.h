@@ -47,6 +47,7 @@
 #include <map>
 #include <list>
 #include <string>
+#include <vector>
 #include <set>
 
 class ModelAPI_Attribute;
@@ -104,6 +105,8 @@ class Model_Data : public ModelAPI_Data
   Model_Data();
   /// Returns the name of the feature visible by the user in the object browser
   MODEL_EXPORT virtual std::wstring name();
+  /// Returns the name of the shape
+  MODEL_EXPORT virtual std::wstring name(std::shared_ptr<GeomAPI_Shape> theSubShape);
   /// Defines the name of the feature visible by the user in the object browser
   MODEL_EXPORT virtual void setName(const std::wstring& theName);
   /// Return \c true if the object has been renamed by the user

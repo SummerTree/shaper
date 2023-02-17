@@ -46,4 +46,6 @@ GeomShapePtr  STEPImportAttributs(const std::string& theFileName,
                                   std::list<std::wstring>>& theMaterialShape,
                                   std::string& theError);
 
+GEOMALGOAPI_EXPORT
+void TEST(std::shared_ptr<ModelAPI_ResultBody> theResultBody);
 #endif /* GEOMALGOAPI_STEPIMPORT_H_ */

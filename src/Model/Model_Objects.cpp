@@ -37,7 +37,6 @@
 #include <ModelAPI_Tools.h>
 #include <ModelAPI_Filter.h>
 
-
 #include <Events_Loop.h>
 #include <Events_InfoMessage.h>
 
@@ -46,16 +45,23 @@
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_Comment.hxx>
 #include <TDF_ChildIDIterator.hxx>
+#include <TDataStd_IntegerArray.hxx>
 #include <TDataStd_ReferenceArray.hxx>
 #include <TDataStd_HLabelArray1.hxx>
 #include <TDF_Reference.hxx>
 #include <TDF_ChildIDIterator.hxx>
 #include <TDF_LabelMap.hxx>
+#include <TDF_CopyLabel.hxx>
 #include <TDF_ListIteratorOfLabelList.hxx>
+
+// relocate to other file
+#include <TNaming_Builder.hxx>
+#include <TNaming_NamedShape.hxx>
 
 #if OCC_VERSION_LARGE < 0x07080000
 
 #include <TDF_LabelMapHasher.hxx>
+
 // for TDF_Label map usage
 static Standard_Integer HashCode(const TDF_Label& theLab, const Standard_Integer theUpper);
 static Standard_Boolean IsEqual(const TDF_Label& theLab1, const TDF_Label& theLab2);
@@ -98,10 +104,14 @@ static const int TAG_OBJECTS = 2;  // tag of the objects sub-tree (features, res
 static const int TAG_FEATURE_ARGUMENTS = 1;  ///< where the arguments are located
 static const int TAG_FEATURE_RESULTS = 2;  ///< where the results are located
 
+// result sub-labels
+static const int TAG_RESULT_COLORED_SUBSHAPES = 2;  ///< where the shapes are located
+
 ///
 /// 0:1:2 - where features are located
 /// 0:1:2:N:1 - data of the feature N
 /// 0:1:2:N:2:K:1 - data of the K result of the feature N
+/// 0:1:2:N:2:K:2:M:1 - data of the M sub-shape of the K result of the feature N
 
 Model_Objects::Model_Objects(TDF_Label theMainLab) : myMain(theMainLab)
 {
@@ -738,6 +748,161 @@ void Model_Objects::allResults(const std::string& theGroupID, std::list<ResultPt
 TDF_Label Model_Objects::featuresLabel() const
 {
   return myMain.FindChild(TAG_OBJECTS);
+}
+
+TDF_Label Model_Objects::coloredSubShapesLabel(std::shared_ptr<ModelAPI_Result> theResult) const
+{
+  std::shared_ptr<Model_Data> aResultData =
+    std::dynamic_pointer_cast<Model_Data>(theResult->data());
+  return aResultData->label().Father().FindChild(TAG_RESULT_COLORED_SUBSHAPES);
+}
+
+TDF_Label Model_Objects::coloredSubShapeLabel(TDF_Label& theSubShapesLabel,
+                                              const int  theSubShapeIndex)
+{
+  return theSubShapesLabel.FindChild(theSubShapeIndex);
+}
+
+const int Model_Objects::coloredSubShapeIndex(std::shared_ptr<ModelAPI_Result> theResult,
+                                              std::shared_ptr<GeomAPI_Shape>   theSubShape)
+{
+  TDF_Label aShapesLabel = coloredSubShapesLabel(theResult);
+
+  for (TDF_ChildIterator anIt(aShapesLabel); anIt.More(); anIt.Next())
+  {
+    Handle(TNaming_NamedShape) aCurShape;
+    if (anIt.Value().FindAttribute(TNaming_NamedShape::GetID(), aCurShape))
+    {
+      if (aCurShape->Get().IsSame(theSubShape->impl<TopoDS_Shape>()))
+      {
+        return anIt.Value().Tag();
+      }
+    }
+  }
+  //not found
+  return -1;
+}
+
+void Model_Objects::storeSubShapeWithColor(std::shared_ptr<ModelAPI_Result> theResult,
+                                           std::shared_ptr<GeomAPI_Shape>   theSubShape,
+                                           const std::vector<int>&          theColor)
+{
+  // 1. Store sub-shape
+  int anIndex = coloredSubShapeIndex(theResult, theSubShape);
+  TDF_Label aShapesLabel = coloredSubShapesLabel(theResult);
+
+  if (anIndex == -1)
+  {
+    anIndex = aShapesLabel.NbChildren();
+    TDF_Label aSubShapeLabel = coloredSubShapeLabel(aShapesLabel, anIndex);
+
+    Handle(TNaming_NamedShape) aNS;
+    if (aSubShapeLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS))
+      return;
+
+    // GeomAPI_Shape -> TNaming_NamedShape
+    TNaming_Builder aBuilder(aSubShapeLabel);
+    aBuilder.Select(theSubShape->impl<TopoDS_Shape>(),
+                    theSubShape->impl<TopoDS_Shape>());
+  }
+
+  TDF_Label aSubShapeLabel = coloredSubShapeLabel(aShapesLabel, anIndex);
+
+  // 2. Store color
+  if (theColor.size() == 3)
+  {
+    TDF_Label anAttributeLabel = aSubShapeLabel.FindChild(TAG_FEATURE_ARGUMENTS);
+
+    Handle(TDataStd_IntegerArray) anAttr;
+    if (anAttributeLabel.FindAttribute(TDataStd_IntegerArray::GetID(), anAttr))
+    {
+      anAttributeLabel.ForgetAttribute(TDataStd_IntegerArray::GetID());
+    }
+
+    Handle(TDataStd_IntegerArray) aColor = new TDataStd_IntegerArray();
+    aColor->Init(0, 2);
+    aColor->SetValue(0, theColor[0]);
+    aColor->SetValue(1, theColor[1]);
+    aColor->SetValue(2, theColor[2]);
+
+    anAttributeLabel.AddAttribute(aColor);
+
+    static const Events_ID anEvent = Events_Loop::eventByName(EVENT_OBJECT_UPDATED);
+    ModelAPI_EventCreator::get()->sendUpdated(theResult, anEvent);
+  }
+}
+
+std::vector<int> Model_Objects::getSubShapeColor
+                                    (std::shared_ptr<ModelAPI_Result> theResult,
+                                     std::shared_ptr<GeomAPI_Shape>   theSubShape)
+{
+  std::vector<int> aColor;
+
+  int anIndex = coloredSubShapeIndex(theResult, theSubShape);
+  if (anIndex != -1)
+  {
+    TDF_Label aShapesLabel = coloredSubShapesLabel(theResult);
+    TDF_Label aSubShapeLabel = coloredSubShapeLabel(aShapesLabel, anIndex);
+    TDF_Label anAttributeLabel = aSubShapeLabel.FindChild(TAG_FEATURE_ARGUMENTS);
+
+    Handle(TDataStd_IntegerArray) anAttr;
+    anAttributeLabel.FindAttribute(TDataStd_IntegerArray::GetID(), anAttr);
+
+    if (!anAttr.IsNull()) {
+      for (int anIndex = anAttr->Lower(); anIndex <= anAttr->Upper(); ++anIndex) {
+        aColor.push_back(anAttr->Value(anIndex));
+      }
+    }
+  }
+
+  return aColor;
+}
+
+void Model_Objects::getColoredSubShapes
+     (const std::shared_ptr<ModelAPI_Result> theResult,
+      std::map<std::shared_ptr<GeomAPI_Shape>, std::vector<int>>& theColoredShapes)
+{
+  TDF_Label aShapesLabel = coloredSubShapesLabel(theResult);
+
+  for (TDF_ChildIterator aChilds(aShapesLabel); aChilds.More(); aChilds.Next())
+  {
+    TDF_Label aCurSubShape = aChilds.Value();
+    Handle(TNaming_NamedShape) aNamedShape;
+    aCurSubShape.FindAttribute(TNaming_NamedShape::GetID(), aNamedShape);
+    if (aNamedShape.IsNull())
+      continue;
+
+    std::shared_ptr<GeomAPI_Shape> aSub(new GeomAPI_Shape);
+    aSub->setImpl(new TopoDS_Shape(aNamedShape->Get()));
+
+    Handle(TDataStd_IntegerArray) aColorAttr;
+    std::vector<int> aColor;
+    aCurSubShape.FindChild(TAG_FEATURE_ARGUMENTS).FindAttribute(TDataStd_IntegerArray::GetID(), aColorAttr);
+    if (aColorAttr.IsNull())
+      continue;
+    for (int anIndex = aColorAttr->Lower(); anIndex <= aColorAttr->Upper(); ++anIndex)
+      aColor.push_back(aColorAttr->Value(anIndex));
+    if (aColor.size() != 3)
+      continue;
+
+    theColoredShapes[aSub] = aColor;
+  }
+}
+
+void Model_Objects::removeSubShapeColors(const std::shared_ptr<ModelAPI_Result> theResult)
+{
+  TDF_Label aShapesLabel = coloredSubShapesLabel(theResult);
+
+  for (TDF_ChildIterator aChilds(aShapesLabel); aChilds.More(); aChilds.Next())
+  {
+    TDF_Label aCurSubShape = aChilds.Value();
+    Handle(TNaming_NamedShape) aNamedShape;
+    aCurSubShape.FindAttribute(TNaming_NamedShape::GetID(), aNamedShape);
+    if (aNamedShape.IsNull())
+      continue;
+
+    aCurSubShape.FindChild(TAG_FEATURE_ARGUMENTS).ForgetAttribute(TDataStd_IntegerArray::GetID());
+  }
 }
 
 static std::wstring composeName(const std::string& theFeatureKind, const int theIndex)
@@ -2046,7 +2211,7 @@ FeaturePtr Model_Objects::lastFeature()
 
 bool Model_Objects::isLater(FeaturePtr theLater, FeaturePtr theCurrent) const
 {
-  if (theLater->getKind() == "InternalSelectionInPartFeature")
+  if (theLater->getKind() == "InternalSelectionInPartFeature" || theLater->getKind() == "InternalSelectionInResult")
     return true;
   std::shared_ptr<Model_Data> aLaterD = std::static_pointer_cast<Model_Data>(theLater->data());
   std::shared_ptr<Model_Data> aCurrentD = std::static_pointer_cast<Model_Data>(theCurrent->data());

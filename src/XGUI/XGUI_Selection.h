@@ -66,6 +66,9 @@ class XGUI_EXPORT XGUI_Selection : public ModuleBase_ISelection
   /// Returns list of currently selected results
   virtual QObjectPtrList selectedPresentations() const;
 
+  /// Returns map of selected results and their selected subobjects
+  virtual QMap<ResultPtr, QList<GeomShapePtr>> selectedObjectsAndSubObjects() const;
+
   /// Returns list of currently selected QModelIndexes
   virtual QModelIndexList selectedIndexes() const;
 

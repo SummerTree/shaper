@@ -67,6 +67,7 @@
 
 #include <ExchangePlugin_Tools.h>
 
+#include <iostream>
 #include <QPixmap>
 
 /*
@@ -250,8 +251,8 @@ void ExchangePlugin_ImportFeature::importFile(const std::string& theFileName)
   }
 
   setResult(aResult);
-  aResult->clearShapeNameAndColor();
 
+  aResult->clearShapeNameAndColor();
 }
 
 void ExchangePlugin_ImportFeature::setColorGroups(
@@ -670,6 +671,7 @@ void ExchangePlugin_ImportFeatureBase::loadNamingDS(
     std::shared_ptr<ModelAPI_ResultBody> theResultBody)
 {
   //load result
+  auto ashape = theResultBody->shape();
   theResultBody->store(theGeomShape);
 
   // to store color of higher-level shape
@@ -683,6 +685,11 @@ void ExchangePlugin_ImportFeatureBase::loadNamingDS(
 
   std::string aNameMS = "Shape";
   theResultBody->loadFirstLevel(theGeomShape, aNameMS);
+
+  // Block for set colors
+  {
+    //TEST(theResultBody);
+  }
 }
 
 void ExchangePlugin_Import_ImageFeature::importFile(const std::string& theFileName)

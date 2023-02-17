@@ -136,6 +136,15 @@ public:
   MODELHIGHAPI_EXPORT
   void setColor(int theRed = 0, int theGreen = 0, int theBlue = 0, bool random = false);
 
+  /// Change subShape' color
+  MODELHIGHAPI_EXPORT
+  void setSubShapeColor(const ModelHighAPI_Selection& theShape,
+                        int theRed, int theGreen, int theBlue);
+
+  /// Get subShape' color
+  MODELHIGHAPI_EXPORT
+  std::list<int> getSubShapeColor(const ModelHighAPI_Selection& theShape);
+
   /// Change result's deflection
   MODELHIGHAPI_EXPORT
   void setDeflection(double theValue);
@@ -151,6 +160,11 @@ public:
   /// Returns the sub-result by zero-base index.
   MODELHIGHAPI_EXPORT
   ModelHighAPI_Selection subResult(int theIndex) const;
+
+private:
+  /// Returns new part for shape
+  MODELHIGHAPI_EXPORT
+    std::wstring changePartName(const ModelHighAPI_Selection& theShape, const std::wstring& theName);
 
 protected:
   VariantType myVariantType;

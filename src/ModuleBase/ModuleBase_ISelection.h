@@ -76,6 +76,9 @@ public:
   /// Returns list of currently selected results
   virtual QObjectPtrList selectedPresentations() const = 0;
 
+  /// Returns map of selected results and their selected subobjects
+  virtual QMap<ResultPtr, QList<GeomShapePtr>> selectedObjectsAndSubObjects() const = 0;
+
   /// Returns list of currently selected QModelIndexes
   virtual QModelIndexList selectedIndexes() const = 0;
 

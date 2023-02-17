@@ -181,6 +181,22 @@ class Model_Objects
   bool removeFromFolder(const std::list<std::shared_ptr<ModelAPI_Feature> >& theFeatures,
                         const bool theBefore = true);
 
+  //! Store theSubShape in theResult, set color attribute to theSubShape
+  void storeSubShapeWithColor(std::shared_ptr<ModelAPI_Result> theResult,
+                              std::shared_ptr<GeomAPI_Shape>   theSubShape,
+                              const std::vector<int>&          theColor);
+
+  //! Get color of subshape
+  std::vector<int> getSubShapeColor(std::shared_ptr<ModelAPI_Result> theResult,
+                                    std::shared_ptr<GeomAPI_Shape>   theSubShape);
+
+  //! Get colored subshapes from result
+  void getColoredSubShapes(const std::shared_ptr<ModelAPI_Result> theResult,
+    std::map<std::shared_ptr<GeomAPI_Shape>, std::vector<int>>& theColoredSubShapes);
+
+  //! Forget subshape colors
+  void removeSubShapeColors(const std::shared_ptr<ModelAPI_Result> theResult);
+
   //! Sets the owner of this manager
   void setOwner(DocumentPtr theDoc);
 
@@ -194,6 +210,21 @@ class Model_Objects
 
   //! Returns (creates if needed) the features label
   TDF_Label featuresLabel() const;
+
+  //! Returns (creates if needed) the label of colored subshapes of the result
+  //TDF_Label shapesFromResult(std::shared_ptr<ModelAPI_Result> theResult) const;
+  TDF_Label coloredSubShapesLabel(std::shared_ptr<ModelAPI_Result> theResult) const;
+
+  //! Returns (creates if needed) the label of colored subshape by index
+  TDF_Label coloredSubShapeLabel(TDF_Label& theSubShapesLabel,
+                                 const int  theSubShapeIndex);
+
+  //! Returns the index of the colored subshape in the result.
+  //! \param theResult result
+  //! \param theSubShape result subshape
+  //! \returns index started from zero, or -1 if shape is not stored or is not a subshape of the result
+  const int coloredSubShapeIndex(std::shared_ptr<ModelAPI_Result> theResult,
+                                 std::shared_ptr<GeomAPI_Shape>   theSubShape);
 
   //! Initializes feature with a unique name in this group (unique name is generated as
   //! feature type + "_" + index

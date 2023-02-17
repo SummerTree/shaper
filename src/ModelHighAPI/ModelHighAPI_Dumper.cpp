@@ -782,6 +782,21 @@ bool ModelHighAPI_Dumper::process(const std::shared_ptr<ModelAPI_CompositeFeatur
     bool aRes = process(aSubDoc);
     if (isDumpModelDo)
       *this << "\nmodel.do()\n";
+    std::map<GeomShapePtr, std::vector<int>> aColoredShapes;
+    ModelAPI_Tools::getColoredSubShapes(aPartResult, aColoredShapes, true);
+    if (!aColoredShapes.empty())
+      *this << "\n";
+    for (std::map<GeomShapePtr, std::vector<int>>::const_iterator anIter(aColoredShapes.cbegin());
+      anIter != aColoredShapes.cend(); ++anIter)
+    {
+      GeomShapePtr aShape = anIter->first;
+
+      *this << aPartName << ".result()";
+      *this << ".setSubShapeColor(model.selection(\"" << aShape->shapeTypeStr() << "\", \""
+        << Locale::Convert::toString((aPartResult)->data()->name(aShape)) << "\"), "
+        << anIter->second.at(0) << ", " << anIter->second.at(1)
+        << ", " << anIter->second.at(2) << ")\n";
+    }
     *this << std::endl;
     return aRes;
   }
@@ -934,6 +949,24 @@ void ModelHighAPI_Dumper::dumpEntitySetName()
                        << ", " << aColor->value(2) << ")\n";
       }
     }
+    // set subresult color
+    if ((isParentResult(*aResIt)) && hasColoredShape(*aResIt, true))
+    {
+      std::map<GeomShapePtr, std::vector<int>> aColoredShapes;
+      ModelAPI_Tools::getColoredSubShapes(*aResIt, aColoredShapes, true);
+
+      for (std::map<GeomShapePtr, std::vector<int>>::const_iterator anIter(aColoredShapes.cbegin());
+        anIter != aColoredShapes.cend(); ++anIter)
+      {
+        GeomShapePtr aShape = anIter->first;
+
+        *this << *aResIt;
+        *myDumpStorage << ".setSubShapeColor(model.selection(\"" << aShape->shapeTypeStr() << "\", \""
+          << Locale::Convert::toString((*aResIt)->data()->name(aShape)) << "\"), "
+          << anIter->second.at(0) << ", " << anIter->second.at(1)
+          << ", " << anIter->second.at(2) << ")\n";
+      }
+    }
     // set result deflection
     if (!isDefaultDeflection(*aResIt)) {
       AttributeDoublePtr aDeflectionAttr =
@@ -1009,6 +1042,24 @@ static bool isSketchSub(const FeaturePtr& theFeature)
   static const std::string SKETCH("Sketch");
   CompositeFeaturePtr anOwner = ModelAPI_Tools::compositeOwner(theFeature);
   return anOwner && anOwner->getKind() == SKETCH;
+}
+
+bool ModelHighAPI_Dumper::hasColoredShape(const ResultPtr& theResult, bool theGetSubResults) const
+{
+  std::map<GeomShapePtr, std::vector<int>> aColoredShapes;
+  ModelAPI_Tools::getColoredSubShapes(theResult, aColoredShapes, theGetSubResults);
+  return !aColoredShapes.empty();
+}
+
+bool ModelHighAPI_Dumper::isParentResult(const ResultPtr& theResult) const
+{
+  ResultBodyPtr aResBody = std::dynamic_pointer_cast<ModelAPI_ResultBody>(theResult);
+  ResultBodyPtr aMainBody = ModelAPI_Tools::mainBody(aResBody);
+
+  if (aMainBody.get() && aResBody == aMainBody)
+    return true;
+
+  return false;
 }
 
 bool ModelHighAPI_Dumper::isDefaultColor(const ResultPtr& theResult) const
@@ -1322,7 +1373,8 @@ ModelHighAPI_Dumper& ModelHighAPI_Dumper::operator<<(const FeaturePtr& theEntity
     ModelAPI_Tools::allResults(theEntity, allRes);
     for(std::list<ResultPtr>::iterator aRes = allRes.begin(); aRes != allRes.end(); aRes++) {
       if(!myNames[*aRes].myIsDefault || !isDefaultColor(*aRes) ||
-         !isDefaultDeflection(*aRes) || !isDefaultTransparency(*aRes))
+         !isDefaultDeflection(*aRes) || !isDefaultTransparency(*aRes) ||
+        (isParentResult(*aRes) && hasColoredShape(*aRes, true)))
         aResultsWithNameOrColor.push_back(*aRes);
     }
     // store just dumped entity to stack

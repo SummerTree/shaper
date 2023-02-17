@@ -518,6 +518,19 @@ ResultBodyPtr bodyOwner(const ResultPtr& theSub, const bool theRoot)
   return ResultBodyPtr(); // not found
 }
 
+ResultBodyPtr mainBody(const ResultBodyPtr theSubBody)
+{
+  ResultBodyPtr aBody = theSubBody;
+  while (aBody.get())
+  { // get the top-most main
+    ResultBodyPtr aNextBody = bodyOwner(aBody);
+    if (aNextBody.get())
+      aBody = aNextBody;
+    else break;
+  }
+  return aBody;
+}
+
 int bodyIndex(const ResultPtr& theSub)
 {
   int anIndex = -1;
@@ -1081,8 +1094,37 @@ void setColor(ResultPtr theResult, const std::vector<int>& theColor)
     aColorAttr->setValue(0, theColor[0]);
     aColorAttr->setValue(1, theColor[1]);
     aColorAttr->setValue(2, theColor[2]);
+
+    removeSubShapeColors(theResult);
   }
 }
+
+void setColor(ResultPtr theResult,
+              GeomShapePtr theShape,
+              const std::vector<int>& theColor)
+{
+  if (!theResult.get() || theShape->isNull())
+    return;
+  if (!theResult->shape()->isSubShape(theShape))
+    return;
+
+  ResultBodyPtr aBody = std::dynamic_pointer_cast<ModelAPI_ResultBody>(theResult);
+  if (aBody.get())
+  {
+    aBody->setSubShapeColor(theResult, theShape, theColor);
+  }
+  else
+  {
+    ResultPartPtr aResPart = std::dynamic_pointer_cast<ModelAPI_ResultPart>(theResult);
+    if (!aResPart.get())
+      return;
+    aResPart->setSubShapeColor(theShape, theColor);
+  }
+
+  static const Events_ID anEvent = Events_Loop::eventByName(EVENT_OBJECT_TO_REDISPLAY);
+  ModelAPI_EventCreator::get()->sendUpdated(theResult, anEvent);
+}
+
 
 void getColor(const std::shared_ptr<ModelAPI_Result>& theResult, std::vector<int>& theColor)
 {
@@ -1096,6 +1138,86 @@ void getColor(const std::shared_ptr<ModelAPI_Result>& theResult, std::vector<int
       theColor.push_back(aColorAttr->value(1));
       theColor.push_back(aColorAttr->value(2));
     }
+  }
+}
+
+void getColor(const ResultPtr    theResult,
+              const GeomShapePtr theShape,
+              std::vector<int>&  theColor)
+{
+  theColor.clear();
+  if (!theResult.get() || theShape->isNull())
+    return;
+  if (!theResult->shape()->isSubShape(theShape))
+    return;
+
+  ResultBodyPtr aBody = std::dynamic_pointer_cast<ModelAPI_ResultBody>(theResult);
+  if (aBody.get())
+  {
+    aBody = mainBody(aBody);
+    aBody->getSubShapeColor(theResult, theShape, theColor);
+  }
+  else
+  {
+    ResultPartPtr aResPart = std::dynamic_pointer_cast<ModelAPI_ResultPart>(theResult);
+    if (!aResPart.get())
+      return;
+    aResPart->getSubShapeColor(theShape, theColor);
+  }
+}
+
+void getColoredSubShapes(const ResultPtr theResult,
+                         std::map<GeomShapePtr, std::vector<int>>& theColoredShapes,
+                         bool theGetSubResults)
+{
+  if (!theResult.get())
+    return;
+
+  ResultBodyPtr aBody = std::dynamic_pointer_cast<ModelAPI_ResultBody>(theResult);
+  if (aBody.get())
+  {
+    ResultBodyPtr aMainBody = mainBody(aBody);
+    if (!aMainBody.get())
+      return;
+    if (theGetSubResults)
+    {
+      std::list<ResultPtr> aSubResults;
+      allSubs(aBody, aSubResults);
+      for (std::list<ResultPtr>::iterator anIt = aSubResults.begin();
+        anIt != aSubResults.end(); ++anIt)
+      {
+        aMainBody->getColoredSubShapes(*anIt, theColoredShapes);
+      }
+    }
+
+    aMainBody->getColoredSubShapes(theResult, theColoredShapes);
+  }
+  else
+  {
+    ResultPartPtr aResPart = std::dynamic_pointer_cast<ModelAPI_ResultPart>(theResult);
+    if (!aResPart.get())
+      return;
+    aResPart->getColoredSubShapes(theColoredShapes);
+  }
+}
+
+void removeSubShapeColors(const std::shared_ptr<ModelAPI_Result> theResult)
+{
+  if (!theResult.get())
+    return;
+
+  ResultBodyPtr aBody = std::dynamic_pointer_cast<ModelAPI_ResultBody>(theResult);
+  if (aBody.get())
+  {
+    aBody = mainBody(aBody);
+    aBody->removeSubShapeColors(theResult);
+  }
+  else
+  {
+    ResultPartPtr aResPart = std::dynamic_pointer_cast<ModelAPI_ResultPart>(theResult);
+    if (!aResPart.get())
+      return;
+    aResPart->removeSubShapeColors();
   }
 }
 

@@ -21,6 +21,7 @@
 
 #include <ModelAPI_Data.h>
 #include <Model_Data.h>
+#include <Model_Objects.h>
 #include <ModelAPI_AttributeDocRef.h>
 #include <ModelAPI_Session.h>
 #include <ModelAPI_Feature.h>
@@ -44,6 +45,7 @@
 #include <TNaming_Tool.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TDataStd_Name.hxx>
+#include <TDataStd_IntegerArray.hxx>
 #include <TopoDS_Compound.hxx>
 #include <BRep_Builder.hxx>
 #include <TopExp_Explorer.hxx>
@@ -369,6 +371,13 @@ bool Model_ResultPart::updateInPart(const int theIndex)
   return false; // something is wrong
 }
 
+std::shared_ptr<ModelAPI_AttributeSelection> Model_ResultPart::selection()
+{
+  AttributeSelectionPtr aSelAttr = std::dynamic_pointer_cast<Model_Document>
+    (document())->selectionInResult();
+  return aSelAttr;
+}
+
 gp_Trsf Model_ResultPart::sumTrsf() {
   gp_Trsf aResult;
   if (myTrsf) {
@@ -428,6 +437,43 @@ std::shared_ptr<GeomAPI_Shape> Model_ResultPart::shapeInPart(
     aResult->setImpl(new TopoDS_Shape(anOrigMoved));
   }
   return aResult;
+}
+
+void Model_ResultPart::setSubShapeColor(const std::shared_ptr<GeomAPI_Shape>& theSubShape,
+                                        const std::vector<int>& theColor)
+{
+  if (!this->shape()->isSubShape(theSubShape))
+    return;
+
+  Model_Objects* anObjects = std::dynamic_pointer_cast<Model_Document>(document())->objects();
+
+  anObjects->storeSubShapeWithColor(original(), theSubShape, theColor);
+}
+
+void Model_ResultPart::getSubShapeColor(const std::shared_ptr<GeomAPI_Shape>& theSubShape,
+                                        std::vector<int>& theColor)
+{
+  if (!this->shape()->isSubShape(theSubShape))
+    return;
+
+  Model_Objects* anObjects = std::dynamic_pointer_cast<Model_Document>(document())->objects();
+
+  theColor = anObjects->getSubShapeColor(original(), theSubShape);
+  if (theColor.size() != 3)
+    theColor.clear();
+}
+
+void Model_ResultPart::getColoredSubShapes
+     (std::map<std::shared_ptr<GeomAPI_Shape>, std::vector<int>>& theColoredSubShapes)
+{
+  Model_Objects* anObjects = std::dynamic_pointer_cast<Model_Document>(document())->objects();
+  anObjects->getColoredSubShapes(original(), theColoredSubShapes);
+}
+
+void Model_ResultPart::removeSubShapeColors()
+{
+  Model_Objects* anObjects = std::dynamic_pointer_cast<Model_Document>(document())->objects();
+  anObjects->removeSubShapeColors(original());
 }
 
 std::shared_ptr<GeomAPI_Shape> Model_ResultPart::selectionValue(const int theIndex)

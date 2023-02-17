@@ -127,6 +127,16 @@ class GeomAPI_AISObject : public GeomAPI_Interface
   GEOMAPI_EXPORT
   bool setColor(int theR, int theG, int theB);
 
+  /** \brief Assigns the color for the subshape
+   *  \param[in] theSubShape subshape that belongs to shape
+   *  \param[in] theR value of the red component
+   *  \param[in] theG value of the green component
+   *  \param[in] theB value of the blue component
+  */
+  GEOMAPI_EXPORT
+    bool setColor(const std::shared_ptr<GeomAPI_Shape>& theSubShape,
+      int theR, int theG, int theB);
+
   /** \brief Returns the color for the shape
    *  \param[in] theR value of the red component
    *  \param[in] theG value of the green component

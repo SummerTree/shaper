@@ -104,13 +104,14 @@ std::shared_ptr<GeomAPI_Shape> readAttributes(STEPCAFControl_Reader &theReader,
   // XCAF Document to contain the STEP/IGES file itself
   Handle(TDocStd_Document) adoc;
 
-  dummy_app->NewDocument( TCollection_ExtendedString("MDTV-CAF"), adoc);
+  dummy_app->NewDocument( TCollection_ExtendedString("BinSTEP"), adoc);
   // transfer STEP/IGES into the document, and get the main label
   theReader.Transfer(adoc);
   TDF_Label mainLabel = adoc->Main();
   Handle_XCAFDoc_ShapeTool shapeTool = XCAFDoc_DocumentTool::ShapeTool(mainLabel);
   Handle_XCAFDoc_ColorTool colorTool = XCAFDoc_DocumentTool::ColorTool(mainLabel);
   Handle(XCAFDoc_MaterialTool) materialTool = XCAFDoc_DocumentTool::MaterialTool(mainLabel);
+
   // traverse the labels recursively to set attributes on shapes
   setShapeAttributes(shapeTool, colorTool, materialTool, mainLabel,
                      TopLoc_Location(),theResultBody,theMaterialShape,false);
@@ -142,6 +143,32 @@ std::shared_ptr<GeomAPI_Shape> readAttributes(STEPCAFControl_Reader &theReader,
   if (adoc->CanClose() == CDM_CCS_OK)
     adoc->Close();
   return ageom;
+}
+
+void setColors(std::shared_ptr<ModelAPI_ResultBody> theResultBody)
+{
+  TopoDS_Shape aShape = theResultBody->shape()->impl<TopoDS_Shape>();
+  TopExp_Explorer anExp(aShape, TopAbs_SOLID);
+  while (anExp.More())
+  {
+    auto aFace = anExp.Current();
+
+    std::shared_ptr<GeomAPI_Shape> aGeomShape(new GeomAPI_Shape);
+    aGeomShape->setImpl(new TopoDS_Shape(aFace));
+    auto aName = theResultBody->findShapeName(aGeomShape);
+
+    if (!aName.empty())
+    {
+      auto aColor = theResultBody->findShapeColor(aName);
+
+      if (!aColor.empty())
+        theResultBody->setSubShapeColor(theResultBody, aGeomShape, { 128, 222, 2 });
+      else
+        theResultBody->setSubShapeColor(theResultBody, aGeomShape, { 255, 0, 0 });
+
+    }
+    anExp.Next();
+  }
 }
 
 //=============================================================================
@@ -198,6 +225,7 @@ std::shared_ptr<GeomAPI_Shape> setGeom(const Handle(XCAFDoc_ShapeTool) &theShape
     return aGeomShape;
   }
 }
+
 //=============================================================================
 void setShapeAttributes(const Handle(XCAFDoc_ShapeTool) &theShapeTool,
                         const Handle(XCAFDoc_ColorTool) &theColorTool,
@@ -233,8 +261,9 @@ void setShapeAttributes(const Handle(XCAFDoc_ShapeTool) &theShapeTool,
                         aPartLoc,theResultBody,theMaterialShape,true);
   }
 
-  if (theShapeTool->IsSimpleShape(theLabel) && (theIsRef || theShapeTool->IsFree(theLabel))) {
-
+  if (theShapeTool->IsSimpleShape(theLabel) &&
+      (theIsRef || theShapeTool->IsFree(theLabel)))
+  {
     TopoDS_Shape aShape = theShapeTool->GetShape(theLabel);
 
     std::shared_ptr<GeomAPI_Shape> aShapeGeom(new GeomAPI_Shape);
@@ -289,36 +318,42 @@ void setShapeAttributes(const Handle(XCAFDoc_ShapeTool) &theShapeTool,
           theColorTool->GetColor(aXp2.Current(), XCAFDoc_ColorSurf, aCol) ||
           theColorTool->GetColor(aXp2.Current(), XCAFDoc_ColorCurv, aCol)) {
           double aR = aCol.Red(), aG = aCol.Green(), aB = aCol.Blue();
-          TopoDS_Face aFace = TopoDS::Face(aXp2.Current());
-          std::vector<int> aColRGB = {int(aR*255),int(aG*255),int(aB*255)};
-          std::wstringstream aNameFace;
+          //TopoDS_Face aFace = TopoDS::Face(aXp2.Current());
+          std::vector<int> aColRGB = { int(aR * 255),int(aG * 255),int(aB * 255) };
+          std::wstring aNameFace;
           TopoDS_Shape aShapeface = aXp2.Current();
-          if (!theLoc.IsIdentity()){
-                  aShapeface.Move(theLoc);
+          if (!theLoc.IsIdentity()) {
+            aShapeface.Move(theLoc);
           }
-          aShapeGeom->setImpl(new TopoDS_Shape(aShapeface));
-          theResultBody->addShapeColor(
-          theResultBody->addShapeName(aShapeGeom , aNameFace.str()), aColRGB);
+          std::shared_ptr<GeomAPI_Shape> aFaceGeom(new GeomAPI_Shape);
+          aFaceGeom->setImpl(new TopoDS_Shape(aShapeface));
+          theResultBody->addShapeColor(theResultBody->addShapeName(aFaceGeom, aNameFace), aColRGB);
         }
         aXp2.Next();
       }
     }
-  } else {
-    if (!theShapeTool->IsReference(theLabel) ){
+  }
+  else
+  {
+    if (!theShapeTool->IsReference(theLabel))
+    {
       TopoDS_Shape aShape = theShapeTool->GetShape(theLabel);
 
       std::shared_ptr<GeomAPI_Shape> aShapeGeom(new GeomAPI_Shape);
-      if (!theLoc.IsIdentity()){
-          aShape.Move(theLoc);
+      if (!theLoc.IsIdentity())
+      {
+        aShape.Move(theLoc);
       }
       aShapeGeom->setImpl(new TopoDS_Shape(aShape));
       aShapeName = theResultBody->addShapeName(aShapeGeom, aShapeName);
     }
-    for(TDF_ChildIterator anIt(theLabel); anIt.More(); anIt.Next()) {
+  }
 
-      setShapeAttributes( theShapeTool, theColorTool, theMaterialTool,
-                         anIt.Value(), aPartLoc,theResultBody,theMaterialShape, theIsRef);
-    }
+  // Iterate over possible subshapes or components
+  for (TDF_ChildIterator anIt (theLabel); anIt.More(); anIt.Next())
+  {
+    setShapeAttributes(theShapeTool, theColorTool, theMaterialTool, anIt.Value(),
+                       aPartLoc, theResultBody, theMaterialShape, theIsRef);
   }
 }
 

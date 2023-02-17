@@ -25,6 +25,7 @@
 #include <ModelAPI_AttributeSelectionList.h>
 #include <ModelAPI_Feature.h>
 #include <ModelAPI_ResultBody.h>
+#include <ModelAPI_ResultPart.h>
 #include <ModelAPI_Tools.h>
 
 #include <GeomAPI_Pnt.h>
@@ -233,6 +234,79 @@ void ModelHighAPI_Selection::setColor(int theRed, int theGreen, int theBlue, boo
   }
 }
 
+void ModelHighAPI_Selection::setSubShapeColor(const ModelHighAPI_Selection& theShape,
+                                              int theRed, int theGreen, int theBlue)
+{
+  if (myVariantType != VT_ResultSubShapePair || !myResultSubShapePair.first.get())
+    return;
+  std::vector<int> aColor({ theRed, theGreen, theBlue });
+  std::shared_ptr<GeomAPI_Shape> aShape = myResultSubShapePair.second;
+  ResultBodyPtr aResBody = std::dynamic_pointer_cast<ModelAPI_ResultBody>(
+    myResultSubShapePair.first);
+
+  ResultPtr aRes;
+  AttributeSelectionPtr aSelAttr;
+  if (aResBody.get())
+  {
+    aSelAttr = aResBody->selection();
+    theShape.fillAttribute(aSelAttr);
+  }
+  else
+  {
+    std::wstring aSubShapeName = theShape.myTypeSubShapeNamePair.second;
+    aSubShapeName = changePartName(theShape, aSubShapeName);
+    ResultPartPtr aPart = std::dynamic_pointer_cast<ModelAPI_ResultPart>(myResultSubShapePair.first);
+    aSelAttr = aPart->selection();
+    aSelAttr->selectSubShape(myTypeSubShapeNamePair.first, aSubShapeName);
+  }
+  aRes = aSelAttr->context();
+  aShape = aSelAttr->value();
+  if (aRes.get() && aShape.get() && !aShape->isNull())
+    ModelAPI_Tools::setColor(aRes, aShape, aColor);
+}
+
+std::list<int> ModelHighAPI_Selection::getSubShapeColor(const ModelHighAPI_Selection& theShape)
+{
+  std::list<int> aColor;
+
+  if (myVariantType != VT_ResultSubShapePair || !myResultSubShapePair.first.get())
+    return aColor;
+
+  std::shared_ptr<GeomAPI_Shape> aShape = myResultSubShapePair.second;
+  ResultBodyPtr aResBody = std::dynamic_pointer_cast<ModelAPI_ResultBody>(
+    myResultSubShapePair.first);
+
+  ResultPtr aRes;
+  AttributeSelectionPtr aSelAttr;
+  if (aResBody.get())
+  {
+    aSelAttr = aResBody->selection();
+    theShape.fillAttribute(aSelAttr);
+  }
+  else
+  {
+    std::wstring aSubShapeName = theShape.myTypeSubShapeNamePair.second;
+    aSubShapeName = changePartName(theShape, aSubShapeName);
+    ResultPartPtr aPart = std::dynamic_pointer_cast<ModelAPI_ResultPart>(myResultSubShapePair.first);
+    aSelAttr = aPart->selection();
+    aSelAttr->selectSubShape(myTypeSubShapeNamePair.first, aSubShapeName);
+  }
+  aRes = aSelAttr->context();
+  aShape = aSelAttr->value();
+
+  if (aRes.get() && aShape.get() && !aShape->isNull()) {
+    std::vector<int> aColorVec;
+    ModelAPI_Tools::getColor(aRes, aShape, aColorVec);
+    if (aColorVec.size() == 3) {
+      aColor.push_back(aColorVec[0]);
+      aColor.push_back(aColorVec[1]);
+      aColor.push_back(aColorVec[2]);
+    }
+  }
+
+  return aColor;
+}
+
 void ModelHighAPI_Selection::setDeflection(double theValue)
 {
   if (myVariantType != VT_ResultSubShapePair || !myResultSubShapePair.first.get())
@@ -282,4 +356,18 @@ ModelHighAPI_Selection ModelHighAPI_Selection::subResult(int theIndex) const
 
   ResultBodyPtr aResult = aBody->subResult(theIndex);
   return ModelHighAPI_Selection(aResult, aResult->shape());
+}
+
+std::wstring ModelHighAPI_Selection::changePartName(const ModelHighAPI_Selection& theShape, const std::wstring& theName)
+{
+  std::shared_ptr<GeomAPI_Shape> aShape;
+  int index;
+  ResultPartPtr aPart = std::dynamic_pointer_cast<ModelAPI_ResultPart>(myResultSubShapePair.first);
+
+  std::size_t aPartEnd = theName.find(L'/');
+  if (aPartEnd == std::wstring::npos)
+    return std::wstring();
+  aShape = aPart->shapeInPart(theName.substr(aPartEnd + 1), theShape.myTypeSubShapeNamePair.first, index);
+  std::wstring name = aPart->data()->name(aShape);
+  return name;
 }
