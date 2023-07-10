@@ -50,7 +50,7 @@ public:
   static bool IsReadyToDisplay(ModelAPI_Feature* theConstraint,
                                const std::shared_ptr<GeomAPI_Ax3>& thePlane);
 protected:
-  virtual const char* iconName() const { return myIsTranslation? "translate.png" : "rotate.png"; }
+  virtual const char* iconName(bool /*isActiveIcon*/ ) const { return myIsTranslation ? "translate.png" : "rotate.png"; }
 
   /// Redefine this function in order to add additiona lines of constraint base
   /// \param thePrs a presentation

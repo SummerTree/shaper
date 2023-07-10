@@ -109,7 +109,7 @@ protected:
     const Standard_Integer aMode);
 
   /// Returns an icon file name. Has to be redefined in successors
-  virtual const char* iconName() const = 0;
+  virtual const char* iconName(bool isActiveIcon = true) const = 0;
 
   /// Check and creates if it is necessary myAspect member.
   /// It has to be called before the object computation

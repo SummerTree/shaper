@@ -27,6 +27,8 @@
 #include <SketchPlugin.h>
 #include <SketchPlugin_ConstraintDistance.h>
 
+#include <limits>
+
 /** \class SketchPlugin_ConstraintDistanceAlongDir
  *  \ingroup Plugins
  *  \brief Feature for creation of a new constraint which defines a distance along direction.
@@ -71,6 +73,16 @@ public:
   /// Called on change of any argument-attribute of this object
   /// \param theID identifier of changed attribute
   SKETCHPLUGIN_EXPORT virtual void attributeChanged(const std::string& theID);
+
+  /// Set numeric value to atribute DISTANCE_VALUE_ID()
+  /// \param theValue new set value
+  void setNumericValue(const double theValue) override;
+
+  /// Get numeric value of atribute DISTANCE_VALUE_ID()
+  inline double getNumericValue() override
+  {
+    return real(DISTANCE_VALUE_ID())? real(DISTANCE_VALUE_ID())->value(): std::numeric_limits<double>::lowest();
+  }
 
   /// \brief Use plugin manager for features creation
   SketchPlugin_ConstraintDistanceAlongDir();

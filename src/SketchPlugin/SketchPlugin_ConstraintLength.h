@@ -93,6 +93,12 @@ class SketchPlugin_ConstraintLength : public SketchPlugin_ConstraintBase
   /// \return boolean value if distance is computed
   bool computeLenghtValue(double& theValue);
 
+  /// Get if a constraint is able to have a zero numeric value
+  inline bool isZeroValueAllowed() override
+  {
+    return false;
+  }
+
 private:
   /// retrns the points-base of length, returns false if it is not possible
   bool getPoints(

@@ -37,6 +37,11 @@ SketchPlugin_ConstraintVertical::SketchPlugin_ConstraintVertical()
 void SketchPlugin_ConstraintVertical::initAttributes()
 {
   data()->addAttribute(SketchPlugin_Constraint::ENTITY_A(), ModelAPI_AttributeRefAttr::typeId());
+
+  AttributeBooleanPtr anActiveAttr = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(
+    data()->addAttribute(SketchPlugin_Constraint::CONSTRAINT_ACTIVE(), ModelAPI_AttributeBoolean::typeId()));
+  if (!anActiveAttr->isInitialized())
+    anActiveAttr->setValue(true);
 }
 
 void SketchPlugin_ConstraintVertical::execute()

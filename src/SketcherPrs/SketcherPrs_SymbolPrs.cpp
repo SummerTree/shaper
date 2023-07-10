@@ -159,8 +159,9 @@ SketcherPrs_SymbolPrs::~SketcherPrs_SymbolPrs()
 //*********************************************************************************
 Handle(Image_AlienPixMap) SketcherPrs_SymbolPrs::icon()
 {
-  if (myIconsMap.count(iconName()) == 1) {
-    return myIconsMap[iconName()];
+  auto isIconType = myConstraint->boolean("ConstraintState")->value();
+  if (myIconsMap.count(iconName(isIconType)) == 1) {
+    return myIconsMap[iconName(isIconType)];
   }
   // Load icon for the presentation
   std::string aFile;
@@ -175,7 +176,7 @@ Handle(Image_AlienPixMap) SketcherPrs_SymbolPrs::icon()
   }
 
   aFile += FSEP;
-  aFile += iconName();
+  aFile += iconName(isIconType);
   Handle(Image_AlienPixMap) aPixMap = new Image_AlienPixMap();
   if (aPixMap->Load(aFile.c_str())) {
     const double aRatio = SketcherPrs_Tools::pixelRatio();
@@ -192,14 +193,14 @@ Handle(Image_AlienPixMap) SketcherPrs_SymbolPrs::icon()
       }
       aPixMap = aSizedMap;
     }
-    myIconsMap[iconName()] = aPixMap;
+    myIconsMap[iconName(isIconType)] = aPixMap;
     return aPixMap;
   }
   // The icon for constraint is not found
   static const char aMsg[] = "Error! constraint images are not found";
   std::cout<<aMsg<<std::endl;
   Events_InfoMessage("SketcherPrs_SymbolPrs", aMsg).send();
-  myIconsMap[iconName()] = Handle(Image_AlienPixMap)();
+  myIconsMap[iconName(isIconType)] = Handle(Image_AlienPixMap)();
   return Handle(Image_AlienPixMap)();
 }
 
@@ -207,15 +208,11 @@ Handle(Image_AlienPixMap) SketcherPrs_SymbolPrs::icon()
 void SketcherPrs_SymbolPrs::prepareAspect()
 {
   // Create an aspect with the icon
-  if (myAspect.IsNull()) {
-    Handle(Image_AlienPixMap) aIcon = icon();
-    if (aIcon.IsNull())
-      myAspect = new Graphic3d_AspectMarker3d();
-    else
-      myAspect = new Graphic3d_AspectMarker3d(aIcon);
-
-    myAspect->SetColor(myCustomColor);
-  }
+  Handle(Image_AlienPixMap) aIcon = icon();
+  if (aIcon.IsNull())
+    myAspect = new Graphic3d_AspectMarker3d();
+  else
+    myAspect = new Graphic3d_AspectMarker3d(aIcon);
 }
 
 //*********************************************************************************

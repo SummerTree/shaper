@@ -121,8 +121,12 @@ void SketchPlugin_ConstraintMiddle::initAttributes()
   }
 
   data()->addAttribute(POINT_REF_ID(), GeomDataAPI_Point2D::typeId());
-
   ModelAPI_Session::get()->validators()->registerNotObligatory(getKind(), POINT_REF_ID());
+
+  AttributeBooleanPtr anActiveAttr = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(
+    data()->addAttribute(SketchPlugin_Constraint::CONSTRAINT_ACTIVE(), ModelAPI_AttributeBoolean::typeId()));
+  if (!anActiveAttr->isInitialized())
+    anActiveAttr->setValue(true);
 }
 
 void SketchPlugin_ConstraintMiddle::execute()

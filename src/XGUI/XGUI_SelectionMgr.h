@@ -94,8 +94,11 @@ signals:
   void selectionChanged();
 
  public slots:
-   /// Reaction on selectio0n in Object browser
+   /// Reaction on selection in Object browser
   void onObjectBrowserSelection();
+
+  /// Reaction on selection in Constraints Browser
+  void onSketchConstraintsBrowserSelection();
 
    /// Reaction on selectio0n in Viewer
   void onViewerSelection();

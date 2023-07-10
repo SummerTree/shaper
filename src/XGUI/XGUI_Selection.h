@@ -103,6 +103,13 @@ protected:
   /// \param thePresentations an output list of presentation
   void getSelectedInBrowser(QList<std::shared_ptr<ModuleBase_ViewerPrs>>& thePresentations) const;
 
+  /// Fills the list of presentations by objects selected in the object browser.
+  /// ViewerPrs contains only object parameter not empty.
+  /// If the given list of presentations already has a viewer presentation with the same object
+  /// as selected in the browser, a new item is not appended to the list of presentations.
+  /// \param thePresentations an output list of presentation
+  void getSelectedInSketchConstraintsBrowser(QList<std::shared_ptr<ModuleBase_ViewerPrs>>& thePresentations) const;
+
   /// Generates a vertex or edge by the give IO if it is an AIS created on trihedron
   /// \param theIO a selected object
   /// \return created shape or empty shape

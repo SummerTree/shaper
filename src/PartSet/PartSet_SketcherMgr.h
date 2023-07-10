@@ -66,6 +66,7 @@ class ModuleBase_Operation;
 class XGUI_OperationMgr;
 class XGUI_Workshop;
 class XGUI_Displayer;
+class XGUI_SketchConstraintsBrowser;
 class PartSet_ExternalPointsMgr;
 
 class AIS_InteractiveObject;
@@ -387,6 +388,8 @@ public:
   /// Returns true if current mode of objects creation is by drag mouse
   bool isDragModeCreation() const;
 
+  // Get constraints browser
+  XGUI_SketchConstraintsBrowser* constraintsBrowser();
 
 public slots:
   /// Process sketch plane selected event
@@ -395,6 +398,10 @@ public slots:
   /// The slot is called when user checks "Show free points" button
   /// \param toShow a state of the check box
   void onShowPoints(bool toShow);
+
+  void onEditValues();
+  void onUpdateConstraintsList();
+  void onDeactivate(bool isNeedDeactivate, std::vector<FeaturePtr> theFeatures);
 
 private slots:
   /// Toggle show constraints
@@ -485,7 +492,7 @@ private:
   XGUI_OperationMgr* operationMgr() const;
 
   std::vector<int> colorOfObject(const ObjectPtr& theObject,
-    const FeaturePtr& aFeature, bool isConstruction) const;
+    const FeaturePtr& aFeature, bool isConstruction, bool isSuppressedConstraint) const;
 
 private:
   PartSet_Module* myModule;
@@ -518,6 +525,8 @@ private:
   bool myNoDragMoving;
 
   QPoint myMousePoint;
+
+  QDockWidget* myConstraintsBrowser;
 };
 
 

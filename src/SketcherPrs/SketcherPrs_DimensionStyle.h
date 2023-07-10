@@ -64,7 +64,7 @@ public:
   /// \param theDimension a modified dimension
   /// \param theDimensionValue container filled by the model double attribute
   Standard_EXPORT void updateDimensions(PrsDim_Dimension* theDimension,
-                                        const DimensionValue& theDimensionValue);
+                                        const DimensionValue& theDimensionValue, bool theIsSuppress/* = false*/);
 
 private:
   /// Visualizes the dimension text or dimension value depending on the has parameters state
@@ -72,10 +72,11 @@ private:
   /// \param theHasParameters if true, the text is shown, else digit
   /// \param theTextValue a dimension text value
   /// \param theDoubleValue a dimension digit value
+  /// \param theIsSuppress a state of constraint (active or not)
   void updateDimensions(PrsDim_Dimension* theDimension,
                         const bool theHasParameters,
                         const std::string& theTextValue,
-                        const double theDoubleValue);
+                        const double theDoubleValue, bool theIsSuppress/* = false*/);
 };
 
 #endif

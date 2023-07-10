@@ -60,6 +60,11 @@ void SketchPlugin_ConstraintLength::initAttributes()
   data()->addAttribute(SketchPlugin_ConstraintLength::LOCATION_TYPE_ID(),
                        ModelAPI_AttributeInteger::typeId());
   ModelAPI_Session::get()->validators()->registerNotObligatory(getKind(), LOCATION_TYPE_ID());
+
+  AttributeBooleanPtr anActiveAttr = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(
+    data()->addAttribute(SketchPlugin_Constraint::CONSTRAINT_ACTIVE(), ModelAPI_AttributeBoolean::typeId()));
+  if (!anActiveAttr->isInitialized())
+    anActiveAttr->setValue(true);
 }
 
 void SketchPlugin_ConstraintLength::colorConfigInfo(std::string& theSection, std::string& theName,

@@ -53,6 +53,15 @@ After the plane for sketch is selected, the following property panel will be ope
 - **Change sketch plane** button - allows to change working plane of the current sketch.
 - **Show remaining DoFs** button - highlights all sketch edges which are not fully constrained.
 
+A window containing the specified constraints will also appear:
+
+.. figure:: images/ConstraintsBrowser.png
+   :align: center
+
+   Sketch constraints browser
+
+**See** :ref:`sketchConstraintsBrowsers`
+
 Now it is possible to:
 
 - create :ref:`sketch objects <sketch_objects>`

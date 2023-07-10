@@ -35,13 +35,14 @@ SketchAPI_MacroMiddlePoint::SketchAPI_MacroMiddlePoint(
 }
 
 SketchAPI_MacroMiddlePoint::SketchAPI_MacroMiddlePoint(const std::shared_ptr<ModelAPI_Feature>& theFeature,
-  const ModelHighAPI_RefAttr& theLine, const std::shared_ptr<GeomAPI_Pnt2d>& thePoint)
+  const ModelHighAPI_RefAttr& theLine, const std::shared_ptr<GeomAPI_Pnt2d>& thePoint, const bool is_Active)
   : SketchAPI_Point(theFeature, thePoint)
 {
-  createConstraint(theLine);
+  createConstraint(theLine, is_Active);
 }
 
-void SketchAPI_MacroMiddlePoint::createConstraint(const ModelHighAPI_RefAttr& theLine)
+void SketchAPI_MacroMiddlePoint::createConstraint(const ModelHighAPI_RefAttr& theLine,
+                                                  const bool is_Active)
 {
   // Find sketch
   CompositeFeaturePtr aSketch;
@@ -62,6 +63,7 @@ void SketchAPI_MacroMiddlePoint::createConstraint(const ModelHighAPI_RefAttr& th
   aConstrFeature->refattr(SketchPlugin_Constraint::ENTITY_A())->setObject(theLine.object());
   aConstrFeature->refattr(SketchPlugin_Constraint::ENTITY_B())->setAttr(coordinates());
   std::dynamic_pointer_cast<GeomDataAPI_Point2D>(aConstrFeature->attribute(SketchPlugin_ConstraintMiddle::POINT_REF_ID()))->setValue(coordinates()->x(), coordinates()->y());
+  aConstrFeature->boolean(SketchPlugin_Constraint::CONSTRAINT_ACTIVE())->setValue(is_Active);
 
   aConstrFeature->execute();
 

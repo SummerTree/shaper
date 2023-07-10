@@ -68,6 +68,11 @@ void SketchPlugin_ConstraintDistance::initAttributes()
                                              GeomDataAPI_Dir::typeId());
   anAttr->setIsArgument(false);
   ModelAPI_Session::get()->validators()->registerNotObligatory(getKind(), DIRECTION_ID());
+
+  AttributeBooleanPtr anActiveAttr = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(
+    data()->addAttribute(SketchPlugin_Constraint::CONSTRAINT_ACTIVE(), ModelAPI_AttributeBoolean::typeId()));
+  if (!anActiveAttr->isInitialized())
+    anActiveAttr->setValue(true);
 }
 
 void SketchPlugin_ConstraintDistance::colorConfigInfo(std::string& theSection, std::string& theName,

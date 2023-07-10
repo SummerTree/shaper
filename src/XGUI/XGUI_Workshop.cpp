@@ -51,6 +51,8 @@
 #include <XGUI_InspectionPanel.h>
 #include <XGUI_CompressFiles.h>
 
+#include <XGUI_SketchConstraintsBrowser.h>
+
 #ifdef HAVE_SALOME
 #include <SUIT_Application.h>
 #include <SUIT_Session.h>
@@ -207,6 +209,7 @@ XGUI_Workshop::XGUI_Workshop(XGUI_SalomeConnector* theConnector)
     : QObject(),
       myModule(NULL),
       myObjectBrowser(0),
+      mySkConstBrwsr(0),
       myPropertyPanel(0),
       myFacesPanel(0),
       myDisplayer(0),
@@ -1625,6 +1628,29 @@ QDockWidget* XGUI_Workshop::createObjectBrowser(QWidget* theParent)
 }
 
 //******************************************************
+QDockWidget* XGUI_Workshop::createConstraintsBrowser(QWidget* theParent)
+{
+  QDockWidget* aSkDock = new QDockWidget(theParent);
+  aSkDock->setAllowedAreas(Qt::LeftDockWidgetArea |
+                           Qt::RightDockWidgetArea);
+  aSkDock->setWindowTitle(tr("Sketch Constraints Browser"));
+  aSkDock->setStyleSheet(
+    "::title { position: relative; padding-left: 5px; text-align: left center }");
+
+  mySkConstBrwsr = new XGUI_SketchConstraintsBrowser(aSkDock, this);
+  mySkConstBrwsr->initialize(myModule->rootNode());
+  //myModule->customizeObjectBrowser(mySkConstBrwsr);
+  aSkDock->setWidget(mySkConstBrwsr);
+  aSkDock->setObjectName("Constraints browser");
+
+  connect(mySkConstBrwsr, SIGNAL(sizeChanged()), SLOT(onDockSizeChanged()));
+
+  mySelector->connectViewers();
+  myContextMenuMgr->connectConstraintsBrowser();
+  return aSkDock;
+}
+
+//******************************************************
 /*
  * Creates dock widgets, places them in corresponding area
  * and tabifies if necessary.
@@ -1770,6 +1796,20 @@ void XGUI_Workshop::hideObjectBrowser()
 }
 
 //******************************************************
+void XGUI_Workshop::showConstraintsBrowser()
+{
+  if (!isSalomeMode())
+    mySkConstBrwsr->parentWidget()->show();
+}
+
+//******************************************************
+void XGUI_Workshop::hideConstraintsBrowser()
+{
+  if (!isSalomeMode())
+    mySkConstBrwsr->parentWidget()->hide();
+}
+
+//******************************************************
 void XGUI_Workshop::salomeViewerSelectionChanged()
 {
   emit salomeViewerSelection();
@@ -1789,6 +1829,10 @@ void XGUI_Workshop::onContextMenuCommand(const QString& theId, bool isChecked)
     deleteObjects();
   else if (theId == "CLEAN_HISTORY_CMD")
     cleanHistory();
+  else if (theId == "EDIT_CONSTR_CMD")
+    editConstraints();
+  else if (theId == "DEACTIVATE_CONSTRAINT_CMD")
+    deactivateCosntraint();
   else if (theId == "MOVE_CMD" || theId == "MOVE_SPLIT_CMD")
     moveObjects(theId == "MOVE_SPLIT_CMD");
   else if (theId == "RECOVER_CMD")
@@ -2119,6 +2163,23 @@ void XGUI_Workshop::deleteObjects()
     operationMgr()->abortOperation(operationMgr()->currentOperation());
 
   myDisplayer->updateViewer();
+}
+
+void XGUI_Workshop::deactivateCosntraint()
+{
+  QObjectPtrList anObjects = constraintsBrowser()->selectedObjects();
+
+  constraintsBrowser()->setObjectsSelected(anObjects);
+  constraintsBrowser()->onDeactivateItems();
+}
+
+void XGUI_Workshop::editConstraints()
+{
+  QObjectPtrList anObjects = constraintsBrowser()->selectedObjects();
+
+  // restore selection in case if dialog box was shown
+  constraintsBrowser()->setObjectsSelected(anObjects);
+  constraintsBrowser()->onEditItem();
 }
 
 //**************************************************************

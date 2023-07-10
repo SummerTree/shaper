@@ -68,6 +68,11 @@ void SketchPlugin_MultiRotation::initAttributes()
     registerNotObligatory(getKind(), SketchPlugin_Constraint::ENTITY_A());
   ModelAPI_Session::get()->validators()->
     registerNotObligatory(getKind(), SketchPlugin_Constraint::ENTITY_B());
+
+  AttributeBooleanPtr anActiveAttr = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(
+    data()->addAttribute(SketchPlugin_Constraint::CONSTRAINT_ACTIVE(), ModelAPI_AttributeBoolean::typeId()));
+  if (!anActiveAttr->isInitialized())
+    anActiveAttr->setValue(true);
 }
 
 void SketchPlugin_MultiRotation::execute()

@@ -148,5 +148,7 @@ void SketchAPI_ConstraintAngle::dump(ModelHighAPI_Dumper& theDumper) const
     theDumper << ", " << aValueAttr;
 
   std::string aType = angleTypeToString(aBase);
-  theDumper << ", type = \"" << aType << "\")" << std::endl;
+  theDumper << ", type = \"" << aType << "\"";
+  bool isActive = aBase->boolean(SketchPlugin_Constraint::CONSTRAINT_ACTIVE())->value();
+  theDumper << ", is_active = " << isActive << ")" << std::endl;
 }

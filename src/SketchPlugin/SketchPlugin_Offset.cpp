@@ -135,6 +135,11 @@ void SketchPlugin_Offset::initAttributes()
   // Initialize approximation to false by default for backward compatibility
   if (!approxAttr->isInitialized())
     approxAttr->setValue(false);
+
+  AttributeBooleanPtr anActiveAttr = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(
+    data()->addAttribute(SketchPlugin_Constraint::CONSTRAINT_ACTIVE(), ModelAPI_AttributeBoolean::typeId()));
+  if (!anActiveAttr->isInitialized())
+    anActiveAttr->setValue(true);
 }
 
 void SketchPlugin_Offset::execute()

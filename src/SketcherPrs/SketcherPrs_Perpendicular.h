@@ -50,7 +50,7 @@ public:
   static bool IsReadyToDisplay(ModelAPI_Feature* theConstraint,
                                const std::shared_ptr<GeomAPI_Ax3>& thePlane);
 protected:
-  virtual const char* iconName() const { return "perpendicular.png"; }
+  virtual const char* iconName(bool isActiveIcon = true) const { return isActiveIcon ? "perpendicular.png" : "perpendicular_deactivate.png"; }
 
   /// Redefine this function in order to add additiona lines of constraint base
   /// \param thePrs a presentation

@@ -104,6 +104,7 @@
 #include <XGUI_OperationMgr.h>
 #include <XGUI_PropertyPanel.h>
 #include <XGUI_SelectionMgr.h>
+#include <XGUI_SketchConstraintsBrowser.h>
 #include <XGUI_Tools.h>
 #include <XGUI_Workshop.h>
 
@@ -997,6 +998,24 @@ bool PartSet_Module::deleteObjects()
     // the abort leads to selection lost on constraint objects. It can be corrected after #386 issue
     ModuleBase_ISelection* aSel = workshop()->selection();
     QObjectPtrList aSelectedObj = aSel->selectedPresentations();
+
+    QObjectPtrList aConstrSelectedObj = getWorkshop()->constraintsBrowser()->selectedConstraints();
+    // if list not empty, delete only constraints from list
+    if (!aConstrSelectedObj.isEmpty())
+    {
+      QString aDescription = aWorkshop->contextMenuMgr()->action("DELETE_CMD")->text();
+      ModuleBase_Operation* anOpAction = new ModuleBase_Operation(aDescription, this);
+
+      bool isCommitted;
+      if (!anOpMgr->canStartOperation(anOpAction->id(), isCommitted))
+        return true;
+
+      anOpMgr->startOperation(anOpAction);
+      aWorkshop->deleteFeatures(aConstrSelectedObj);
+      anOpMgr->commitOperation();
+      return true;
+    }
+
     // if there are no selected objects in the viewer, that means that the selection in another
     // place cased this method. It is necessary to return the false value to understande in above
     // method that delete is not processed

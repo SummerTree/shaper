@@ -215,6 +215,10 @@ void SketchSolver_ConstraintDistance::adjustConstraint()
 void SketchSolver_ConstraintDistance::update()
 {
   ConstraintWrapperPtr aConstraint = myStorage->constraint(myBaseConstraint);
+
+  if (!aConstraint)
+    return;
+
   myPrevValue = aConstraint->value();
 
   bool isDistanceAlognDir =

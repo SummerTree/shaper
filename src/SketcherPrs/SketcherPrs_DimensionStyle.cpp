@@ -64,18 +64,18 @@ SketcherPrs_DimensionStyle::~SketcherPrs_DimensionStyle()
 }
 
 void SketcherPrs_DimensionStyle::updateDimensions(PrsDim_Dimension* theDimension,
-          const SketcherPrs_DimensionStyle::DimensionValue& theDimensionValue)
+          const SketcherPrs_DimensionStyle::DimensionValue& theDimensionValue, bool theIsSuppress)
 {
   if (!theDimension)
     return;
   updateDimensions(theDimension, theDimensionValue.myHasParameters,
-                   theDimensionValue.myTextValue, theDimensionValue.myDoubleValue);
+                   theDimensionValue.myTextValue, theDimensionValue.myDoubleValue, theIsSuppress);
 }
 
 void SketcherPrs_DimensionStyle::updateDimensions(PrsDim_Dimension* theDimension,
                                                   const bool theHasParameters,
                                                   const std::string& theTextValue,
-                                                  const double theDoubleValue)
+                                                  const double theDoubleValue, bool theIsSuppress)
 {
   if (!theDimension)
     return;
@@ -90,13 +90,31 @@ void SketcherPrs_DimensionStyle::updateDimensions(PrsDim_Dimension* theDimension
 #endif
 
   TCollection_ExtendedString aCustomValue;
-  if (theHasParameters) {
-    //bool isParameterTextStyle = myStyle == SketcherPrs_ParameterStyleMessage::ParameterText;
-    bool isParameterTextStyle =
-      SketcherPrs_Tools::parameterStyle() == SketcherPrs_Tools::ParameterText;
+  if (theIsSuppress)
+  {
+    // for suppressed constraints not need show value
+    aCustomValue = TCollection_ExtendedString(MyEmptySymbol);
+  }
+  else
+  {
+    if (theHasParameters) {
+      //bool isParameterTextStyle = myStyle == SketcherPrs_ParameterStyleMessage::ParameterText;
+      bool isParameterTextStyle =
+        SketcherPrs_Tools::parameterStyle() == SketcherPrs_Tools::ParameterText;
 
-    if (isParameterTextStyle)
-      aCustomValue = theTextValue.c_str();
+      if (isParameterTextStyle)
+        aCustomValue = theTextValue.c_str();
+      else {
+        // format value string using "sprintf"
+        TCollection_AsciiString aFormatStr =
+          theDimension->Attributes()->DimensionAspect()->ValueStringFormat();
+        char aFmtBuffer[256];
+        sprintf(aFmtBuffer, aFormatStr.ToCString(), theDoubleValue);
+        aCustomValue = TCollection_ExtendedString(aFmtBuffer);
+
+        aCustomValue.Insert(1, MySigmaSymbol);
+      }
+    }
     else {
       // format value string using "sprintf"
       TCollection_AsciiString aFormatStr =
@@ -104,17 +122,7 @@ void SketcherPrs_DimensionStyle::updateDimensions(PrsDim_Dimension* theDimension
       char aFmtBuffer[256];
       sprintf (aFmtBuffer, aFormatStr.ToCString(), theDoubleValue);
       aCustomValue = TCollection_ExtendedString (aFmtBuffer);
-
-      aCustomValue.Insert (1, MySigmaSymbol);
     }
-  }
-  else {
-    // format value string using "sprintf"
-    TCollection_AsciiString aFormatStr =
-      theDimension->Attributes()->DimensionAspect()->ValueStringFormat();
-    char aFmtBuffer[256];
-    sprintf (aFmtBuffer, aFormatStr.ToCString(), theDoubleValue);
-    aCustomValue = TCollection_ExtendedString (aFmtBuffer);
   }
 #ifdef COMPILATION_CORRECTION
   theDimension->SetCustomValue(theDoubleValue);

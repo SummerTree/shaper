@@ -103,6 +103,11 @@ public:
   /// \brief Removes constraint from the storage
   /// \return \c true if the constraint and all its parameters are removed successfully
   virtual bool removeConstraint(ConstraintPtr theConstraint) = 0;
+
+  virtual bool changeActiveStatus(ConstraintPtr theConstraint, bool theNewState) = 0;
+
+  virtual bool UpdateDeactivateList() = 0;
+
   /// \brief Removes feature from the storage
   void removeFeature(FeaturePtr theFeature);
   /// \brief Removes attribute from the storage
@@ -177,6 +182,7 @@ protected:
   std::map<AttributePtr, EntityWrapperPtr>      myAttributeMap;
 
   UpdaterPtr myUpdaters;
+  std::map<ConstraintPtr, ConstraintWrapperPtr> myDeactivatedConstraintMap;
 };
 
 typedef std::shared_ptr<SketchSolver_Storage> StoragePtr;

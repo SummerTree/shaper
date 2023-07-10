@@ -65,6 +65,7 @@ class XGUI_SelectionMgr;
 class XGUI_ViewerProxy;
 class XGUI_WorkshopListener;
 class XGUI_InspectionPanel;
+class XGUI_SketchConstraintsBrowser;
 
 class ModuleBase_IModule;
 class ModuleBase_IViewer;
@@ -87,6 +88,12 @@ Q_OBJECT
   /// Used only if the workshop is launched in Salome environment
   XGUI_Workshop(XGUI_SalomeConnector* theConnector = 0);
   virtual ~XGUI_Workshop();
+
+  /// Create Sketch constraints browser widget
+  /// \param theParent a parent of widget
+  QDockWidget* createConstraintsBrowser(QWidget* theParent);
+
+  void removeConstrBrowser() { mySkConstBrwsr = NULL; }
 
   /// Starting of the application
   void startApplication();
@@ -153,6 +160,9 @@ Q_OBJECT
   /// Returns Object browser
   XGUI_ObjectsBrowser* objectBrowser() const { return myObjectBrowser; }
 
+  /// Returns Sketch constraints browser
+  XGUI_SketchConstraintsBrowser* constraintsBrowser() const { return mySkConstBrwsr; }
+
   /// This method is called by Salome module when selection is changed
   void salomeViewerSelectionChanged();
 
@@ -175,6 +185,11 @@ Q_OBJECT
 
   /// Delete features
   void deleteObjects();
+
+  /// Eit constraints
+  void editConstraints();
+
+  void deactivateCosntraint();
 
   /// Searches for selected features unused in other (not selected) features. If one or several
   /// selected features are found, a warning message proposes to delete them. It contains
@@ -412,6 +427,12 @@ signals:
   /// Hide object Browser
   void hideObjectBrowser();
 
+  /// Show Sketch constraints Browser
+  void showConstraintsBrowser();
+
+  /// Hide Sketch constraints Browser
+  void hideConstraintsBrowser();
+
   /// Close document
   void closeDocument();
 
@@ -569,6 +590,7 @@ private:
   AppElements_MainWindow* myMainWindow; ///< desktop window
 #endif
 
+  XGUI_SketchConstraintsBrowser* mySkConstBrwsr; // ~~!!!!~~
   ModuleBase_IModule* myModule; ///< current module
   XGUI_ErrorMgr* myErrorMgr; ///< updator of error message
   XGUI_ObjectsBrowser* myObjectBrowser; ///< data tree widget

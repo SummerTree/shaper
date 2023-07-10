@@ -66,7 +66,8 @@ void PlaneGCSSolver_Storage::addConstraint(
 {
   SketchSolver_Storage::addConstraint(theConstraint, theSolverConstraint);
 
-  theSolverConstraint->setId(++myConstraintLastID);
+  if (theSolverConstraint->id() == 0)
+    theSolverConstraint->setId(++myConstraintLastID);
   constraintsToSolver(theSolverConstraint, mySketchSolver);
 }
 
@@ -520,6 +521,59 @@ bool PlaneGCSSolver_Storage::removeConstraint(ConstraintPtr theConstraint)
     // notify subscibers
     notify(theConstraint);
   }
+  return true;
+}
+
+bool PlaneGCSSolver_Storage::changeActiveStatus(ConstraintPtr theConstraint, bool theNewState)
+{
+  if (theNewState)
+  {
+    // activate
+    auto aPair = myDeactivatedConstraintMap.find(theConstraint);
+    if (aPair == myDeactivatedConstraintMap.end())
+      return false;
+
+    addConstraint(theConstraint, aPair->second);
+  }
+  else
+  {
+    // suppress
+    auto aPair = myConstraintMap.find(theConstraint);
+    if (aPair == myConstraintMap.end())
+      return false;
+    myDeactivatedConstraintMap.insert((*aPair));
+
+    ConstraintWrapperPtr aCW = aPair->second;
+    ConstraintID anID = aCW->id();
+    mySketchSolver->removeConstraint(anID);
+    myConstraintMap.erase(theConstraint);
+  }
+  myNeedToResolve = true;
+  notify(theConstraint);
+
+  return true;
+}
+
+bool PlaneGCSSolver_Storage::UpdateDeactivateList()
+{
+  std::list<ConstraintPtr> toRemove;
+  for (auto& aDeactMap : myDeactivatedConstraintMap)
+  {
+    if (!aDeactMap.first->boolean(SketchPlugin_Constraint::CONSTRAINT_ACTIVE()))
+    {
+      toRemove.push_back(aDeactMap.first);
+    }
+    else if(aDeactMap.first->boolean(SketchPlugin_Constraint::CONSTRAINT_ACTIVE())->value())
+    {
+      changeActiveStatus(aDeactMap.first, true);
+      toRemove.push_back(aDeactMap.first);
+    }
+  }
+  for (auto& aRemove : toRemove)
+  {
+    myDeactivatedConstraintMap.erase(aRemove);
+  }
+ 
   return true;
 }
 

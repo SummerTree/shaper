@@ -63,6 +63,12 @@ void SketchPlugin_ConstraintDistanceAlongDir::initAttributes()
 
   data()->addAttribute(NEGATIVE_TYPE_ID(), ModelAPI_AttributeBoolean::typeId());
   boolean(NEGATIVE_TYPE_ID())->setValue(false);
+
+  AttributeBooleanPtr anActiveAttr = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(
+    data()->addAttribute(SketchPlugin_Constraint::CONSTRAINT_ACTIVE(), ModelAPI_AttributeBoolean::typeId()));
+  if (!anActiveAttr->isInitialized())
+    anActiveAttr->setValue(true);
+
 }
 
 //*************************************************************************************
@@ -90,6 +96,7 @@ AISObjectPtr SketchPlugin_ConstraintDistanceAlongDir::getAISObject(AISObjectPtr 
   return anAIS;
 }
 
+//*************************************************************************************
 void SketchPlugin_ConstraintDistanceAlongDir::attributeChanged(const std::string& theID)
 {
   if (theID == SketchPlugin_Constraint::ENTITY_A() ||
@@ -145,4 +152,11 @@ void SketchPlugin_ConstraintDistanceAlongDir::attributeChanged(const std::string
     updateFlyoutPoint();
     myFlyoutUpdate = false;
   }
+}
+
+//*************************************************************************************
+void SketchPlugin_ConstraintDistanceAlongDir::setNumericValue(const double theValue)
+{
+  SketchPlugin_Constraint::setNumericValue(theValue);
+  real(DISTANCE_VALUE_ID())->setValue(theValue);
 }

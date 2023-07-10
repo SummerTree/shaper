@@ -42,7 +42,8 @@ public:
   SKETCHAPI_EXPORT
     SketchAPI_MacroMiddlePoint(const std::shared_ptr<ModelAPI_Feature>& theFeature,
       const ModelHighAPI_RefAttr& theLine,
-      const std::shared_ptr<GeomAPI_Pnt2d>& thePoint);
+      const std::shared_ptr<GeomAPI_Pnt2d>& thePoint,
+       const bool is_Active);
 
   static std::string ID()
   {
@@ -52,7 +53,8 @@ public:
   virtual std::string getID() { return ID(); }
 
 protected:
-  void createConstraint(const ModelHighAPI_RefAttr& theLine);
+  void createConstraint(const ModelHighAPI_RefAttr& theLine,
+                        const bool is_Active);
 };
 
 #endif

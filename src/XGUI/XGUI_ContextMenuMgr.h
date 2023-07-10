@@ -67,8 +67,14 @@ Q_OBJECT
   /// Connect to viewer from workshop. Has to called at creation of viewer.
   void connectViewer();
 
+  /// Connect to viewer from workshop. Has to called at creation of viewer.
+  void connectConstraintsBrowser();
+
   /// Add menu items for Object browser pop-up
   void addObjBrowserMenu(QMenu*) const;
+
+  /// Add menu items for Object browser pop-up
+  void addConstrBrowserMenu(QMenu*) const;
 
   /// Add menu items for Viewer pop-up
   void addViewerMenu(QMenu*) const;
@@ -125,6 +131,9 @@ signals:
 
   /// Creates menu for object browser
   void buildObjBrowserMenu();
+
+  /// Creates menu for object browser
+  void buildConstrBrowserMenu();
 
   /// Creates menu for viewer
   void buildViewerMenu();

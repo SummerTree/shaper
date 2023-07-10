@@ -44,7 +44,7 @@ class MODULEBASE_EXPORT ModuleBase_ISelection
 {
 public:
   /// Types of the selection place, where the selection is obtained
-  enum SelectionPlace { Browser, Viewer, AllControls };
+  enum SelectionPlace { Browser, Viewer, ConstraintsBrowser, AllControls };
 
   virtual ~ModuleBase_ISelection() {}
 

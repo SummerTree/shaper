@@ -49,7 +49,7 @@ public:
       const std::shared_ptr<GeomAPI_Ax3>& thePlane);
 protected:
 
-  virtual const char* iconName() const { return "offset.png"; }
+  virtual const char* iconName(bool /*isActiveIcon*/) const { return "offset.png"; }
 
   virtual void drawLines(const Handle(Prs3d_Presentation)& thePrs, Quantity_Color theColor) const;
 

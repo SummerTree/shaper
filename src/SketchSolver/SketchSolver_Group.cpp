@@ -231,6 +231,21 @@ bool SketchSolver_Group::movePoint(AttributePtr theAttribute,
 // ============================================================================
 bool SketchSolver_Group::resolveConstraints()
 {
+  auto aNb = mySketch->numberOfSubs();
+  std::list<ConstraintPtr> aList;
+  for (int i = 0; i < aNb; ++i)
+    if (mySketch->subFeature(i)->boolean(SketchPlugin_Constraint::CONSTRAINT_ACTIVE()) && !mySketch->subFeature(i)->boolean(SketchPlugin_Constraint::CONSTRAINT_ACTIVE())->value())
+      aList.push_back(std::dynamic_pointer_cast<SketchPlugin_Constraint>(mySketch->subFeature(i)));
+
+  while (aList.size() > 0)
+  {
+    auto aConstr = aList.front();
+    aList.pop_front();
+    myStorage->changeActiveStatus(aConstr, false);
+  }
+
+  myStorage->UpdateDeactivateList();
+
   static const int MAX_STACK_SIZE = 5;
   // check the "Multi" constraints do not drop sketch into infinite loop
   if (myMultiConstraintUpdateStack > MAX_STACK_SIZE) {

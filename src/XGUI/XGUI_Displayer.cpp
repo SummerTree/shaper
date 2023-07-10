@@ -562,6 +562,23 @@ void XGUI_Displayer::setSelected(const  QList<ModuleBase_ViewerPrsPtr>& theValue
           #endif
         }
       }
+      else
+      {
+        auto aConstrFeature = ModelAPI_Feature::feature(anObject);
+        if (!aConstrFeature)
+          continue;
+
+        AISObjectPtr aAisPtr = myWorkshop->displayer()->getAISObject(aConstrFeature);
+        if (!aAisPtr)
+        {
+          aAisPtr = myResult2AISObjectMap.value(aConstrFeature->lastResult());
+          if (!aAisPtr)
+            continue;
+        }
+        Handle(AIS_InteractiveObject) aAisObj = aAisPtr->impl<Handle(AIS_InteractiveObject)>();
+
+        aContext->AddOrRemoveSelected(aAisObj, false);
+      }
     }
   }
   if (!aShapesToBeSelected.IsEmpty())

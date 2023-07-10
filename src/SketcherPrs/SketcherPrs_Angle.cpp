@@ -48,6 +48,7 @@
 /// \param theDimAspect an aspect to be changed
 /// \param theDimValue an arrow value
 /// \param theTextSize an arrow value
+/// \param theIsActivated state of constraint
 extern void updateArrows(Handle(Prs3d_DimensionAspect) theDimAspect,
   double theDimValue, double theTextSize, SketcherPrs_Tools::LocationType theLocationType);
 
@@ -247,7 +248,7 @@ void SketcherPrs_Angle::Compute(const Handle(PrsMgr_PresentationManager3d)& theP
   SetFlyout(aDist);
 
   // Update text visualization: parameter value or parameter text
-  myStyleListener->updateDimensions(this, myValue);
+  myStyleListener->updateDimensions(this, myValue, !aData->boolean(SketchPlugin_Constraint::CONSTRAINT_ACTIVE())->value());
 
   double aTextSize = 0.0;
   GetValueString(aTextSize);

@@ -225,7 +225,7 @@ void SketcherPrs_LengthDimension::Compute(
   updateArrows(DimensionAspect(), GetValue(), aTextSize, aLocationType);
 
   // Update text visualization: parameter value or parameter text
-  myStyleListener->updateDimensions(this, myValue);
+  myStyleListener->updateDimensions(this, myValue, !myConstraint->data()->boolean(SketchPlugin_Constraint::CONSTRAINT_ACTIVE())->value());
 
   PrsDim_LengthDimension::Compute(thePresentationManager, thePresentation, theMode);
 

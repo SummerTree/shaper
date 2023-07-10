@@ -70,6 +70,11 @@ public:
   /// \return \c true if the constraint and all its parameters are removed successfully
   virtual bool removeConstraint(ConstraintPtr theConstraint);
 
+  // Change status of constraints.
+  virtual bool changeActiveStatus(ConstraintPtr theConstraint, bool theNewState);
+
+  virtual bool UpdateDeactivateList();
+
   /// \brief Verify, the sketch contains degenerated geometry
   ///        after resolving the set of constraints
   /// \return STATUS_OK if the geometry is valid, STATUS_DEGENERATED otherwise.

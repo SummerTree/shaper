@@ -51,7 +51,12 @@ public:
                                const std::shared_ptr<GeomAPI_Ax3>& thePlane);
 
 protected:
-  virtual const char* iconName() const { return myIsHorisontal? "horisontal.png" : "vertical.png"; }
+  virtual const char* iconName(bool isActiveIcon = true) const {
+    if (isActiveIcon)
+      return myIsHorisontal? "horisontal.png" : "vertical.png";
+    else
+      return myIsHorisontal ? "horisontal_deactivate.png" : "vertical_deactivate.png";
+  }
 
   /// Redefine this function in order to add additiona lines of constraint base
   /// \param thePrs a presentation

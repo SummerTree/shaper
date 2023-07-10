@@ -50,6 +50,11 @@ void SketchPlugin_ConstraintMirror::initAttributes()
     registerNotObligatory(getKind(), SketchPlugin_Constraint::ENTITY_B());
   ModelAPI_Session::get()->validators()->
     registerNotObligatory(getKind(), SketchPlugin_Constraint::ENTITY_C());
+
+  AttributeBooleanPtr anActiveAttr = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(
+    data()->addAttribute(SketchPlugin_Constraint::CONSTRAINT_ACTIVE(), ModelAPI_AttributeBoolean::typeId()));
+  if (!anActiveAttr->isInitialized())
+    anActiveAttr->setValue(true);
 }
 
 void SketchPlugin_ConstraintMirror::execute()

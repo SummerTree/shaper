@@ -105,12 +105,18 @@ void SketchPlugin_ConstraintAngle::initAttributes()
   AttributeIntegerPtr aVerAttr = std::dynamic_pointer_cast<ModelAPI_AttributeInteger>(
       data()->addAttribute(VERSION_ID(), ModelAPI_AttributeInteger::typeId()));
   aVerAttr->setIsArgument(false);
+
   ModelAPI_Session::get()->validators()->registerNotObligatory(getKind(), VERSION_ID());
   if (!aVerAttr->isInitialized()) {
     // this is a newly created feature (not read from file),
     // so, initialize the latest version
     aVerAttr->setValue(THE_VERSION_1);
   }
+  
+  AttributeBooleanPtr anActiveAttr = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(
+    data()->addAttribute(SketchPlugin_Constraint::CONSTRAINT_ACTIVE(), ModelAPI_AttributeBoolean::typeId()));
+  if (!anActiveAttr->isInitialized())
+    anActiveAttr->setValue(true);
 }
 
 void SketchPlugin_ConstraintAngle::colorConfigInfo(std::string& theSection, std::string& theName,
@@ -158,6 +164,12 @@ AISObjectPtr SketchPlugin_ConstraintAngle::getAISObject(AISObjectPtr thePrevious
   if (anAIS.get() && !thePrevious.get())
     SketchPlugin_Tools::setDimensionColor(anAIS);
   return anAIS;
+}
+
+void SketchPlugin_ConstraintAngle::setNumericValue(const double theValue)
+{
+  SketchPlugin_Constraint::setNumericValue(theValue);
+  real(ANGLE_VALUE_ID())->setValue(theValue);
 }
 
 // LCOV_EXCL_START

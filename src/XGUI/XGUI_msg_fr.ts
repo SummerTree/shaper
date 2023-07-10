@@ -553,6 +553,13 @@
     </message>
 </context>
 <context>
+    <name>XGUI_SketchConstraintsBrowser</name>
+    <message>
+        <source>Extended Information</source>
+        <translation>Informations étendues</translation>
+    </message>
+</context>
+<context>
     <name>XGUI_TransparencyWidget</name>
     <message>
         <source>Opaque</source>

@@ -471,33 +471,38 @@ public:
       const ModelHighAPI_RefAttr & theLine1,
       const ModelHighAPI_RefAttr & theLine2,
       const ModelHighAPI_Double & theValue,
-      const std::string& type = std::string());
+      const std::string& type = std::string(),
+      bool is_active = true);
 
   /// Set complementary angle
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setAngleComplementary(
       const ModelHighAPI_RefAttr & theLine1,
       const ModelHighAPI_RefAttr & theLine2,
-      const ModelHighAPI_Double & theValue);
+      const ModelHighAPI_Double & theValue,
+      bool is_active = true);
 
   /// Set backward angle (= 360 - angle)
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setAngleBackward(
       const ModelHighAPI_RefAttr & theLine1,
       const ModelHighAPI_RefAttr & theLine2,
-      const ModelHighAPI_Double & theValue);
+      const ModelHighAPI_Double & theValue,
+      bool is_active = true);
 
   /// Set coincident
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setCoincident(
       const ModelHighAPI_RefAttr & thePoint1,
-      const ModelHighAPI_RefAttr & thePoint2);
+      const ModelHighAPI_RefAttr & thePoint2,
+      bool is_active = true);
 
   /// Set collinear
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setCollinear(
       const ModelHighAPI_RefAttr & theLine1,
-      const ModelHighAPI_RefAttr & theLine2);
+      const ModelHighAPI_RefAttr & theLine2,
+      bool is_active = true);
 
   /// Set distance
   SKETCHAPI_EXPORT
@@ -505,41 +510,47 @@ public:
       const ModelHighAPI_RefAttr & thePoint,
       const ModelHighAPI_RefAttr & thePointOrLine,
       const ModelHighAPI_Double & theValue,
-      bool isSigned = false);
+      bool isSigned = false,
+      bool is_active = true);
 
   /// Set signed distance
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setSignedDistance(
       const ModelHighAPI_RefAttr & thePoint,
       const ModelHighAPI_RefAttr & thePointOrLine,
-      const ModelHighAPI_Double & theValue);
+      const ModelHighAPI_Double & theValue,
+      bool is_active = true);
 
   /// Set unsigned distance
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setUnsignedDistance(
       const ModelHighAPI_RefAttr & thePoint,
       const ModelHighAPI_RefAttr & thePointOrLine,
-      const ModelHighAPI_Double & theValue);
+      const ModelHighAPI_Double & theValue,
+      bool is_active = true);
 
   /// Set horizontal distance
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setHorizontalDistance(
       const ModelHighAPI_RefAttr & thePoint1,
       const ModelHighAPI_RefAttr & thePoint2,
-      const ModelHighAPI_Double & theValue);
+      const ModelHighAPI_Double & theValue,
+      bool is_active = true);
 
   /// Set vertical distance
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setVerticalDistance(
       const ModelHighAPI_RefAttr & thePoint1,
       const ModelHighAPI_RefAttr & thePoint2,
-      const ModelHighAPI_Double & theValue);
+      const ModelHighAPI_Double & theValue,
+      bool is_active = true);
 
   /// Set equal
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setEqual(
       const ModelHighAPI_RefAttr & theObject1,
-      const ModelHighAPI_RefAttr & theObject2);
+      const ModelHighAPI_RefAttr & theObject2,
+      bool is_active = true);
 
   /// Set fillet
   SKETCHAPI_EXPORT
@@ -555,58 +566,68 @@ public:
   /// Set fixed
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setFixed(
-      const ModelHighAPI_RefAttr & theObject);
+      const ModelHighAPI_RefAttr & theObject,
+      bool is_active = true);
 
   /// Set horizontal
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setHorizontal(
-      const ModelHighAPI_RefAttr & theLine);
+      const ModelHighAPI_RefAttr & theLine,
+      bool is_active = true);
 
   /// Set length
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setLength(
       const ModelHighAPI_RefAttr & theLine,
-      const ModelHighAPI_Double & theValue);
+      const ModelHighAPI_Double & theValue,
+      bool is_active = true);
 
   /// Set middle
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setMiddlePoint(
       const ModelHighAPI_RefAttr & thePoint,
-      const ModelHighAPI_RefAttr & theLine);
+      const ModelHighAPI_RefAttr & theLine,
+      bool is_active = true);
 
   /// Set middle
   SKETCHAPI_EXPORT
-    std::shared_ptr<SketchAPI_MacroMiddlePoint> setMiddlePoint(
-      const ModelHighAPI_RefAttr& theLine);
+  std::shared_ptr<SketchAPI_MacroMiddlePoint> setMiddlePoint(
+      const ModelHighAPI_RefAttr& theLine,
+      bool is_active = true);
 
   /// Set parallel
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setParallel(
       const ModelHighAPI_RefAttr & theLine1,
-      const ModelHighAPI_RefAttr & theLine2);
+      const ModelHighAPI_RefAttr & theLine2,
+      bool is_active = true);
 
   /// Set perpendicular
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setPerpendicular(
       const ModelHighAPI_RefAttr & theLine1,
-      const ModelHighAPI_RefAttr & theLine2);
+      const ModelHighAPI_RefAttr & theLine2,
+      bool is_active = true);
 
   /// Set radius
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setRadius(
       const ModelHighAPI_RefAttr & theCircleOrArc,
-      const ModelHighAPI_Double & theValue);
+      const ModelHighAPI_Double & theValue,
+      bool is_active = true);
 
   /// Set tangent
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setTangent(
       const ModelHighAPI_RefAttr & theLine,
-      const ModelHighAPI_RefAttr & theCircle);
+      const ModelHighAPI_RefAttr & theCircle,
+      bool is_active = true);
 
   /// Set vertical
   SKETCHAPI_EXPORT
   std::shared_ptr<ModelHighAPI_Interface> setVertical(
-      const ModelHighAPI_RefAttr & theLine);
+      const ModelHighAPI_RefAttr & theLine,
+      bool is_active = true);
 
   /// Set constraint value
   SKETCHAPI_EXPORT

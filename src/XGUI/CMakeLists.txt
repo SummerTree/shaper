@@ -58,13 +58,14 @@ SET(PROJECT_HEADERS
     XGUI_Selection.h
     XGUI_SelectionActivate.h
     XGUI_SelectionMgr.h
+    XGUI_SketchConstraintsBrowser.h
     XGUI_Tools.h
     XGUI_TransparencyWidget.h
     XGUI_ViewerProxy.h
     XGUI_Workshop.h
     XGUI_WorkshopListener.h
-	XGUI_InspectionPanel.h
-	XGUI_CompressFiles.h
+    XGUI_InspectionPanel.h
+    XGUI_CompressFiles.h
 )
 
 SET(PROJECT_MOC_HEADERS
@@ -88,11 +89,12 @@ SET(PROJECT_MOC_HEADERS
     XGUI_PropertyPanel.h
     XGUI_PropertyPanelSelector.h
     XGUI_SelectionMgr.h
+    XGUI_SketchConstraintsBrowser.h
     XGUI_TransparencyWidget.h
     XGUI_ViewerProxy.h
     XGUI_Workshop.h
     XGUI_WorkshopListener.h
-	XGUI_InspectionPanel.h
+    XGUI_InspectionPanel.h
 )
 
 # sources / moc wrappings
@@ -125,13 +127,14 @@ SET(PROJECT_SOURCES
     XGUI_Selection.cpp
     XGUI_SelectionActivate.cpp
     XGUI_SelectionMgr.cpp
+    XGUI_SketchConstraintsBrowser.cpp
     XGUI_Tools.cpp
     XGUI_TransparencyWidget.cpp
     XGUI_ViewerProxy.cpp
     XGUI_Workshop.cpp
     XGUI_WorkshopListener.cpp
-	XGUI_InspectionPanel.cpp
-	XGUI_CompressFiles.cpp
+    XGUI_InspectionPanel.cpp
+    XGUI_CompressFiles.cpp
 )
 
 SET(PROJECT_RESOURCES

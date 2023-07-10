@@ -224,6 +224,9 @@ void SketchAPI_Constraint::dump(ModelHighAPI_Dumper& theDumper) const
     if (aRefAttr && aRefAttr->isInitialized()) {
       theDumper << aRefAttr;
     }
+
+    bool isActive = aBase->boolean(SketchPlugin_Constraint::CONSTRAINT_ACTIVE())->value();
+    theDumper << ", " << isActive;
     theDumper << ")" << std::endl;
   }
   else
@@ -255,6 +258,10 @@ void SketchAPI_Constraint::dump(ModelHighAPI_Dumper& theDumper) const
       AttributeBooleanPtr isSigned = aBase->boolean(SketchPlugin_ConstraintDistance::SIGNED());
       theDumper << ", " << isSigned->value();
     }
+
+    bool isActive = aBase->boolean(SketchPlugin_Constraint::CONSTRAINT_ACTIVE())->value();
+    theDumper << ", " << isActive;
+    
     theDumper << ")" << std::endl;
   }
 

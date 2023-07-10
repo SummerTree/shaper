@@ -160,7 +160,7 @@ void SketcherPrs_Radius::Compute(
   }
 
   SetMeasuredGeometry(myCircle, myAnchorPoint);
-  myStyleListener->updateDimensions(this, myValue);
+  myStyleListener->updateDimensions(this, myValue, !myConstraint->data()->boolean(SketchPlugin_Constraint::CONSTRAINT_ACTIVE())->value());
 
   // Update variable aspect parameters (depending on viewer scale)
   double aTextSize = 0.0;

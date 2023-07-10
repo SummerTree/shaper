@@ -49,7 +49,7 @@ public:
                                const std::shared_ptr<GeomAPI_Ax3>& thePlane);
 protected:
 
-  virtual const char* iconName() const { return "collinear.png"; }
+  virtual const char* iconName(bool isActiveIcon = true) const { return isActiveIcon ? "collinear.png" : "collinear_deactivate.png"; }
 
   virtual void drawLines(const Handle(Prs3d_Presentation)& thePrs, Quantity_Color theColor) const;
 

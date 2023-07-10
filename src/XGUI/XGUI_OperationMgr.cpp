@@ -28,6 +28,7 @@
 #include "XGUI_FacesPanel.h"
 #include "XGUI_Tools.h"
 #include "XGUI_ObjectsBrowser.h"
+#include "XGUI_SketchConstraintsBrowser.h"
 #include "XGUI_ContextMenuMgr.h"
 #include "XGUI_Selection.h"
 #include "XGUI_SelectionMgr.h"
@@ -701,7 +702,16 @@ bool XGUI_OperationMgr::onKeyReleased(QObject *theObject, QKeyEvent* theEvent)
     break;
     case Qt::Key_Return:
     case Qt::Key_Enter: {
-      isAccepted = onProcessEnter(theObject);
+      if(xworkshop()->constraintsBrowser() && 
+         xworkshop()->constraintsBrowser()->IsInEditMode())
+      {
+        xworkshop()->constraintsBrowser()->CloseEditor();
+        isAccepted = true;
+      }
+      else
+      {
+        isAccepted = onProcessEnter(theObject);
+      }
     }
     break;
     case Qt::Key_N:

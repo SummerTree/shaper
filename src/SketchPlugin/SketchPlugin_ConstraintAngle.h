@@ -26,6 +26,8 @@
 
 #include <ModelAPI_IReentrant.h>
 
+#include <limits>
+
 /** \class SketchPlugin_ConstraintAngle
  *  \ingroup Plugins
  *  \brief Feature for creation of a new constraint fix angle between two lines
@@ -137,6 +139,16 @@ public:
 
   /// Returns the AIS preview
   SKETCHPLUGIN_EXPORT virtual AISObjectPtr getAISObject(AISObjectPtr thePrevious);
+
+  /// Set numeric value to atribute ANGLE_VALUE_ID()
+  /// \param theValue new set value
+  void setNumericValue(const double theValue) override;
+
+  /// Get numeric value of atribute MY_ANGLE_VALUE_ID()
+  inline double getNumericValue() override
+  {
+    return real(ANGLE_VALUE_ID())? real(ANGLE_VALUE_ID())->value() : std::numeric_limits<double>::lowest();
+  }
 
   /// Apply information of the message to current object.
   /// It fills selected point and the first object.

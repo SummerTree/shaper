@@ -47,7 +47,7 @@ public:
   static bool IsReadyToDisplay(ModelAPI_Feature* theConstraint,
                                const std::shared_ptr<GeomAPI_Ax3>& thePlane);
 protected:
-  virtual const char* iconName() const { return "mirror.png"; }
+  virtual const char* iconName(bool /*isActiveIcon*/) const { return "mirror.png"; }
 
   virtual void drawLines(const Handle(Prs3d_Presentation)& thePrs, Quantity_Color theColor) const;
 

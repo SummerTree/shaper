@@ -20,6 +20,7 @@
 #include "XGUI_ContextMenuMgr.h"
 #include "XGUI_Workshop.h"
 #include "XGUI_ObjectsBrowser.h"
+#include "XGUI_SketchConstraintsBrowser.h"
 #include "XGUI_SelectionMgr.h"
 #include "XGUI_Displayer.h"
 #include "XGUI_ViewerProxy.h"
@@ -101,6 +102,10 @@ void XGUI_ContextMenuMgr::createActions()
   anAction->setShortcut(Qt::Key_F2);
   addAction("RENAME_CMD", anAction);
 
+  anAction = ModuleBase_Tools::createAction(QIcon(":pictures/part_ico.png"), tr("Deactivate/Activate"),
+                                            aDesktop, this);
+  addAction("DEACTIVATE_CONSTRAINT_CMD", anAction);
+
 #ifdef HAVE_SALOME
   anAction = ModuleBase_Tools::createAction(QIcon(":pictures/move_to_end.png"),
                                            XGUI_Workshop::MOVE_TO_END_COMMAND, this);
@@ -165,6 +170,10 @@ void XGUI_ContextMenuMgr::createActions()
   anAction = ModuleBase_Tools::createAction(QIcon(":pictures/iso_lines.png"), tr("Define Isos..."),
                                            aDesktop);
   addAction("ISOLINES_CMD", anAction);
+
+  anAction = ModuleBase_Tools::createAction(QIcon(":pictures/rename_edit.png"), tr("Edit..."),
+    aDesktop);
+  addAction("EDIT_CONSTR_CMD", anAction);
 
   anAction = ModuleBase_Tools::createAction(QIcon(), tr("Show Isos"), aDesktop);
   anAction->setCheckable(true);
@@ -251,6 +260,7 @@ void XGUI_ContextMenuMgr::createActions()
   addAction("SET_VIEW_NORMAL_CMD", anAction);
 
   buildObjBrowserMenu();
+  buildConstrBrowserMenu();
   buildViewerMenu();
 }
 
@@ -304,6 +314,8 @@ void XGUI_ContextMenuMgr::onContextMenuRequest(QContextMenuEvent* theEvent)
   } else if (sender() == myWorkshop->viewer()) {
     updateViewerMenu();
     addViewerMenu(aMenu);
+  } else if (sender() == myWorkshop->constraintsBrowser()) {
+    addConstrBrowserMenu(aMenu);
   }
 
   if (aMenu && (aMenu->actions().size() > 0)) {
@@ -699,6 +711,11 @@ void XGUI_ContextMenuMgr::connectViewer()
           SLOT(onContextMenuRequest(QContextMenuEvent*)));
 }
 
+void XGUI_ContextMenuMgr::connectConstraintsBrowser()
+{
+  connect(myWorkshop->constraintsBrowser(), SIGNAL(contextMenuRequested(QContextMenuEvent*)), this,
+    SLOT(onContextMenuRequest(QContextMenuEvent*)));
+}
 
 void XGUI_ContextMenuMgr::buildObjBrowserMenu()
 {
@@ -820,6 +837,18 @@ void XGUI_ContextMenuMgr::buildObjBrowserMenu()
   myObjBrowserMenus[ModelAPI_ResultField::ModelAPI_FieldStep::group()] = aList;
 }
 
+void XGUI_ContextMenuMgr::buildConstrBrowserMenu()
+{
+  QAction* aSeparator = ModuleBase_Tools::createAction(QIcon(), "", myWorkshop->desktop());
+  aSeparator->setSeparator(true);
+
+  QActionsList aList;
+
+  aList.append(action("HIDE_CMD"));
+  aList.append(action("DELETE_CMD"));
+  aList.append(action("DEACTIVATE_CONSTRAINT_CMD"));
+}
+
 void XGUI_ContextMenuMgr::buildViewerMenu()
 {
   QActionsList aList;
@@ -886,6 +915,48 @@ void XGUI_ContextMenuMgr::buildViewerMenu()
   myViewerMenu[ModelAPI_ResultField::ModelAPI_FieldStep::group()] = aList;
 }
 
+void XGUI_ContextMenuMgr::addConstrBrowserMenu(QMenu* theMenu) const
+{
+  QActionsList anActions;
+  QObjectPtrList aObjects = myWorkshop->constraintsBrowser()->selectedObjects();
+  
+  // Check that state foreach constraint.
+  // If at least 1 is Activa - show Deactivate
+  // otherwise - show Activate
+  //
+  if (aObjects.size() > 0)
+  {
+    // It's update START
+
+    // Enable edit only if exist at least 1 dimensional constraint
+    bool isEditEnabled = false;
+    foreach(ObjectPtr anObject, aObjects)
+    {
+      if (auto aFeat = ModelAPI_Feature::feature(anObject))
+      {
+        if (aFeat->real("ConstraintValue"))
+        {
+          isEditEnabled = true;
+          break;
+        }
+      }
+    }
+
+    action("EDIT_CONSTR_CMD")->setEnabled(isEditEnabled);
+    action("DELETE_CMD")->setEnabled(true);
+    action("DEACTIVATE_CONSTRAINT_CMD")->setEnabled(true);
+    // It's update END
+
+    anActions.append(action("EDIT_CONSTR_CMD"));
+    anActions.append(action("DELETE_CMD"));
+    anActions.append(action("DEACTIVATE_CONSTRAINT_CMD"));
+  }
+
+
+  theMenu->addActions(anActions);
+  addFeatures(theMenu);
+
+}
 
 void XGUI_ContextMenuMgr::addObjBrowserMenu(QMenu* theMenu) const
 {

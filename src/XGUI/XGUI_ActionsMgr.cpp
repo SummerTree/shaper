@@ -121,7 +121,9 @@ void XGUI_ActionsMgr::updateCommandsStatus()
 {
   setAllEnabled();
   XGUI_Selection* aSelection = myWorkshop->selector()->selection();
-  if (aSelection->getSelected(ModuleBase_ISelection::AllControls).size() > 0)
+  // If ::ConstraintsBrowser and has Coincodence deleted - fail!!!
+  if (aSelection->getSelected(ModuleBase_ISelection::AllControls).size() > 0
+    && aSelection->getSelected(ModuleBase_ISelection::ConstraintsBrowser).size() == 0)
     updateOnViewSelection();
 
   FeaturePtr anActiveFeature = FeaturePtr();

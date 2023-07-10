@@ -21,6 +21,7 @@
 
 #include "XGUI_Workshop.h"
 #include "XGUI_ObjectsBrowser.h"
+#include "XGUI_SketchConstraintsBrowser.h"
 #include "XGUI_SalomeConnector.h"
 #include "XGUI_ViewerProxy.h"
 #include "XGUI_Displayer.h"
@@ -83,6 +84,8 @@ void XGUI_SelectionMgr::connectViewers()
 
   //Connect to other viewers
   connect(myWorkshop->viewer(), SIGNAL(selectionChanged()), this, SLOT(onViewerSelection()));
+  connect(myWorkshop->constraintsBrowser(), SIGNAL(selectionChanged()), this,
+    SLOT(onSketchConstraintsBrowserSelection()));
 }
 
 //**************************************************************
@@ -138,6 +141,23 @@ void XGUI_SelectionMgr::onObjectBrowserSelection()
   aDisplayer->setSelected(aSelectedPrs);
   myWorkshop->updateColorScaleVisibility();
   emit selectionChanged();
+}
+
+//**************************************************************
+void XGUI_SelectionMgr::onSketchConstraintsBrowserSelection()
+{
+  ModuleBase_Operation* aCurOperation = myWorkshop->operationMgr()->currentOperation();
+  
+  //prevent selection while child sketch-operation is active
+  if (myWorkshop->operationMgr()->previousOperation(aCurOperation) == NULL) {
+    myLastSelectionPlace = ModuleBase_ISelection::ConstraintsBrowser;
+    QList<ModuleBase_ViewerPrsPtr> aSelectedPrs =
+      myWorkshop->selector()->selection()->getSelected(ModuleBase_ISelection::ConstraintsBrowser);
+    XGUI_Displayer* aDisplayer = myWorkshop->displayer();
+    aDisplayer->setSelected(aSelectedPrs);
+    myWorkshop->updateColorScaleVisibility();
+    emit selectionChanged();
+  }
 }
 
 //**************************************************************

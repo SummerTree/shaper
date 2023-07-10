@@ -22,6 +22,7 @@
 #include "XGUI_Displayer.h"
 #include "XGUI_ViewerProxy.h"
 #include "XGUI_ObjectsBrowser.h"
+#include "XGUI_SketchConstraintsBrowser.h"
 
 #ifndef HAVE_SALOME
 #include <AIS_ViewCube.hxx>
@@ -79,6 +80,10 @@ QList<ModuleBase_ViewerPrsPtr> XGUI_Selection::getSelected(const SelectionPlace&
     case Viewer:
       getSelectedInViewer(aPresentations);
     break;
+    case ConstraintsBrowser:
+      getSelectedInSketchConstraintsBrowser(aPresentations);
+    break;
+
   case AllControls:
     // Get selection from object browser
     getSelectedInBrowser(aPresentations);
@@ -201,6 +206,34 @@ void XGUI_Selection::getSelectedInBrowser(QList<ModuleBase_ViewerPrsPtr>& thePre
   }
 }
 
+void XGUI_Selection::getSelectedInSketchConstraintsBrowser(QList<std::shared_ptr<ModuleBase_ViewerPrs>>& thePresentations) const
+{
+  QObjectPtrList anObjects;
+  if (myWorkshop->constraintsBrowser())
+    anObjects = myWorkshop->constraintsBrowser()->selectedObjects();
+
+  if (anObjects.isEmpty())
+    return;
+
+  QObjectPtrList::const_iterator anIt = anObjects.begin(), aLast = anObjects.end();
+  for (; anIt != aLast; anIt++) {
+    ObjectPtr anObject = *anIt;
+    if (anObject.get() != NULL) {
+      auto aConstrFeature = ModelAPI_Feature::feature(anObject);
+      thePresentations.append(std::shared_ptr<ModuleBase_ViewerPrs>(
+        new ModuleBase_ViewerPrs(anObject, GeomShapePtr(), NULL)));
+
+     /* AISObjectPtr aAisPtr = myWorkshop->displayer()->getAISObject(aConstrFeature);
+      if (!aAisPtr)
+        continue;
+      Handle(AIS_InteractiveObject) aAisObj = aAisPtr->impl<Handle(AIS_InteractiveObject)>();
+      auto aPrs = std::shared_ptr<ModuleBase_ViewerPrs>(
+        new ModuleBase_ViewerPrs(anObject, GeomShapePtr(), NULL));
+      aPrs->setInteractive(aAisObj);
+      thePresentations.append(aPrs);*/
+    }
+  }
+}
 void XGUI_Selection::fillPresentation(ModuleBase_ViewerPrsPtr& thePrs,
                                       const Handle(SelectMgr_EntityOwner)& theOwner) const
 {
@@ -381,6 +414,8 @@ QObjectPtrList XGUI_Selection::selectedObjects() const
 {
   if (myWorkshop->objectBrowser())
     return myWorkshop->objectBrowser()->selectedObjects();
+  if (myWorkshop->constraintsBrowser()) //probably this code can be deleted, because first condition is always true 
+    return myWorkshop->constraintsBrowser()->selectedObjects();
   return QObjectPtrList();
 }
 

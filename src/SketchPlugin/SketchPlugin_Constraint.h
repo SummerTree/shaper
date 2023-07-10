@@ -21,8 +21,10 @@
 #define SketchPlugin_Constraint_H_
 
 #include <SketchPlugin_Feature.h>
+#include <ModelAPI_AttributeDouble.h>
 
 #include <string>
+#include <limits>
 
 /// Size of the list of constraint attributes
 const int CONSTRAINT_ATTR_SIZE = 4;
@@ -45,6 +47,12 @@ class SketchPlugin_Constraint : public SketchPlugin_Feature
   {
     static const std::string MY_FLYOUT_VALUE_PNT("ConstraintFlyoutValuePnt");
     return MY_FLYOUT_VALUE_PNT;
+  }
+  /// State of constraint - Active - true, Suppressed - false
+  inline static const std::string& CONSTRAINT_ACTIVE()
+  {
+    static const std::string MY_STATE("ConstraintState");
+    return MY_STATE;
   }
   /// First entity for the constraint
   inline static const std::string& ENTITY_A()
@@ -88,6 +96,25 @@ class SketchPlugin_Constraint : public SketchPlugin_Feature
     }
     static const std::string EMPTY_STRING("");
     return EMPTY_STRING;
+  }
+
+  /// Get if a constraint is able to have a zero numeric value
+  virtual inline bool isZeroValueAllowed()
+  {
+    return true;
+  }
+
+  /// Set numeric value to atribute VALUE()
+  /// \param theValue new set value
+  virtual inline void setNumericValue(const double theValue)
+  {
+    real(VALUE())->setValue(theValue);
+  }
+
+  /// Get numeric value of atribute VALUE()
+  virtual inline double getNumericValue()
+  {
+    return real(VALUE())? real(VALUE())->value(): std::numeric_limits<double>::lowest();
   }
 
  protected:

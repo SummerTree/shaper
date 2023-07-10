@@ -31,6 +31,7 @@
 #include "PartSet_PreviewSketchPlane.h"
 
 #include <XGUI_ModuleConnector.h>
+#include <XGUI_SketchConstraintsBrowser.h>
 #include <XGUI_Displayer.h>
 #include <XGUI_Workshop.h>
 #include <XGUI_ContextMenuMgr.h>
@@ -108,9 +109,13 @@
 #include <ModelAPI_Events.h>
 #include <ModelAPI_Session.h>
 #include <ModelAPI_AttributeString.h>
+#include <ModelAPI_AttributeRefAttr.h>
+#include <ModelAPI_AttributeDouble.h>
 
 #include <ModelAPI_Validator.h>
 #include <ModelAPI_Tools.h>
+
+#include <Events_InfoMessage.h>
 
 #include <QMouseEvent>
 #include <QApplication>
@@ -217,6 +222,11 @@ PartSet_SketcherMgr::PartSet_SketcherMgr(PartSet_Module* theModule)
 PartSet_SketcherMgr::~PartSet_SketcherMgr()
 {
   delete mySketchPlane;
+}
+
+XGUI_SketchConstraintsBrowser* PartSet_SketcherMgr::constraintsBrowser()
+{
+  return workshop()->constraintsBrowser();
 }
 
 void PartSet_SketcherMgr::onEnterViewPort()
@@ -850,6 +860,107 @@ void PartSet_SketcherMgr::onAfterContextMenu()
   myIsPopupMenuActive = false;
 }
 
+void PartSet_SketcherMgr::onEditValues()
+{
+  auto aConstrBrowser = constraintsBrowser();
+
+  auto anOperMgr = workshop()->operationMgr();
+
+  ModuleBase_Operation* anOpAction = new ModuleBase_Operation("Edit Constraints value");
+
+  anOperMgr->startOperation(anOpAction);
+  int aRow = 0;
+  QTreeWidgetItemIterator anIter(aConstrBrowser->getViewTree());
+  while (*anIter) {
+    // Change value
+    auto aData = (*anIter)->data(3, 0);
+    if (!aData.isNull())
+    {
+      auto aName = (*anIter)->data(1, 0).toString();
+      FeaturePtr aConstrFeat;
+      for (int i = 0; i < myCurrentSketch->numberOfSubs(); ++i)
+      {
+        auto aFFeat = myCurrentSketch->subFeature(i);
+        if (aName == QString::fromStdWString(aFFeat->name()))
+        {
+          aConstrFeat = aFFeat;
+          break;
+        }
+      }
+      
+      double aNewValue = aData.toDouble();
+      ConstraintPtr aConstraint = std::dynamic_pointer_cast<SketchPlugin_Constraint>(aConstrFeat);
+      if(aNewValue < 0 || (aNewValue == 0 && !aConstraint->isZeroValueAllowed()))
+      {
+        aNewValue = aConstraint->getNumericValue();
+        (*anIter)->setData(3, 0, aNewValue);
+        Events_InfoMessage("PartSet_SketcherMgr", "Some values are not correct and cannot be set").send();
+        continue;
+      }
+      if(aNewValue != aConstraint->getNumericValue())
+        aConstraint->setNumericValue(aNewValue);
+    }
+
+    ++aRow;
+    ++anIter;
+  }
+  anOperMgr->commitOperation();
+  workshop()->viewer()->update();
+  delete anOpAction;
+}
+
+void PartSet_SketcherMgr::onUpdateConstraintsList()
+{
+  auto aConstrBrowser = constraintsBrowser();
+
+  std::vector<std::pair<FeaturePtr, std::vector<AttributePtr>>> aConstraints;
+
+  CompositeFeaturePtr aComposite =
+    std::dynamic_pointer_cast<ModelAPI_CompositeFeature>(activeSketch());
+  int aNumSubs = aComposite->numberOfSubs();
+  for (int i = 0; i < aNumSubs; ++i)
+  {
+    auto aFeat = aComposite->subFeature(i);
+    if (aFeat->refattr(SketchPlugin_Constraint::ENTITY_A()) &&
+      (!aFeat->attribute(SketchPlugin_Constraint::ENTITY_B()) || aFeat->refattr(SketchPlugin_Constraint::ENTITY_B())))
+    {
+      std::pair<FeaturePtr, std::vector<AttributePtr>> anElemContr;
+      anElemContr.first = aFeat;
+
+      anElemContr.second.push_back(aFeat->refattr(SketchPlugin_Constraint::ENTITY_A()));
+      if (aFeat->attribute(SketchPlugin_Constraint::ENTITY_B()))
+        anElemContr.second.push_back(aFeat->refattr(SketchPlugin_Constraint::ENTITY_B()));
+
+      aConstraints.push_back(anElemContr);
+    }
+  }
+  aConstrBrowser->UpdateTree(aConstraints);
+}
+
+void PartSet_SketcherMgr::onDeactivate(bool isNeedDeactivate, std::vector<FeaturePtr> theFeatures)
+{
+  std::list<ObjectPtr> anUpd;
+  auto anOperMgr = workshop()->operationMgr();
+
+  ModuleBase_OperationFeature* anOpAction = new ModuleBase_OperationFeature("Deactivate/Activate");
+  anOpAction->setFeature(myCurrentSketch);
+  startNestedSketch(anOpAction);
+  anOperMgr->startOperation(anOpAction);
+
+  for (size_t i = 0; i < theFeatures.size(); ++i)
+  {
+    theFeatures[i]->boolean(SketchPlugin_Constraint::CONSTRAINT_ACTIVE())->setValue(isNeedDeactivate);
+
+    static const Events_ID anEvent = Events_Loop::eventByName(EVENT_VISUAL_ATTRIBUTES);
+    ModelAPI_EventCreator::get()->sendUpdated(theFeatures[i], anEvent, false);
+  }
+
+  stopNestedSketch(anOpAction);
+  anOperMgr->commitOperation();
+  workshop()->viewer()->update();
+  delete anOpAction;
+}
+
 void PartSet_SketcherMgr::get2dPoint(ModuleBase_IViewWindow* theWnd, QMouseEvent* theEvent,
                                      Point& thePoint)
 {
@@ -1200,6 +1311,17 @@ void PartSet_SketcherMgr::startSketch(ModuleBase_Operation* theOperation)
 
   PartSet_Fitter* aFitter = new PartSet_Fitter(this);
   myModule->workshop()->viewer()->setFitter(aFitter);
+
+  auto aDesktop = workshop()->desktop();
+  myConstraintsBrowser = workshop()->createConstraintsBrowser(aDesktop);
+
+  // For process edit/delete and deactivate/activate constraints
+  connect(constraintsBrowser(), SIGNAL(editValues()), this, SLOT(onEditValues()));
+  connect(constraintsBrowser(), SIGNAL(deleteConstraints()), this, SLOT(onUpdateConstraintsList()));
+  connect(constraintsBrowser(), SIGNAL(deactivate(bool, std::vector<FeaturePtr>)), this, SLOT(onDeactivate(bool, std::vector<FeaturePtr>)));
+  aDesktop->addDockWidget(Qt::RightDockWidgetArea, myConstraintsBrowser);
+
+  onUpdateConstraintsList();
 }
 
 void PartSet_SketcherMgr::stopSketch(ModuleBase_Operation* theOperation)
@@ -1274,6 +1396,17 @@ void PartSet_SketcherMgr::stopSketch(ModuleBase_Operation* theOperation)
   workshop()->selectionActivate()->updateSelectionFilters();
   workshop()->selectionActivate()->updateSelectionModes();
   workshop()->viewer()->set2dMode(false);
+
+  disconnect(constraintsBrowser(), SIGNAL(editValues()), this, SLOT(onEditValues()));
+  disconnect(constraintsBrowser(), SIGNAL(deleteConstraints()), this, SLOT(onUpdateConstraintsList()));
+  disconnect(constraintsBrowser(), SIGNAL(deactivate(bool, std::vector<FeaturePtr>)), this, SLOT(onDeactivate(bool, std::vector<FeaturePtr>)));
+
+  workshop()->desktop()->removeDockWidget(myConstraintsBrowser);
+  std::vector<std::pair<FeaturePtr, std::vector<AttributePtr>>> anEmpty;
+  constraintsBrowser()->UpdateTree(anEmpty);
+  workshop()->removeConstrBrowser();
+
+  myConstraintsBrowser->deleteLater();
 }
 
 void PartSet_SketcherMgr::startNestedSketch(ModuleBase_Operation* theOperation)
@@ -2266,10 +2399,14 @@ bool isIncludeToResult(const ObjectPtr& theObject)
 
 //**************************************************************************************
 std::vector<int> PartSet_SketcherMgr::colorOfObject(const ObjectPtr& theObject,
-  const FeaturePtr& theFeature, bool isConstruction) const
+  const FeaturePtr& theFeature, bool isConstruction, bool isSuppressedConstraint) const
 {
   PartSet_OverconstraintListener* aOCListener = myModule->overconstraintListener();
   std::string aKind = theFeature->getKind();
+
+  // may be Preference Config_PropManager::color("Visualization", "sketch_deactivated_color");
+  if (isSuppressedConstraint)
+    return { 128, 128, 128 };
 
   if (aOCListener->isConflictingObject(theObject)) {
     return Config_PropManager::color("Visualization", "sketch_overconstraint_color");
@@ -2303,7 +2440,11 @@ void PartSet_SketcherMgr::customizeSketchPresentation(const ObjectPtr& theObject
     aFeature->data()->boolean(SketchPlugin_SketchEntity::AUXILIARY_ID());
   bool isConstruction = anAuxiliaryAttr.get() != NULL && anAuxiliaryAttr->value();
 
-  std::vector<int> aColor = colorOfObject(theObject, aFeature, isConstruction);
+  bool isSupressed = false;
+  if (aFeature->data()->boolean(SketchPlugin_Constraint::CONSTRAINT_ACTIVE()))
+    isSupressed = !aFeature->data()->boolean(SketchPlugin_Constraint::CONSTRAINT_ACTIVE())->value();
+
+  std::vector<int> aColor = colorOfObject(theObject, aFeature, isConstruction, isSupressed);
   if (!aColor.empty()) {
     // The code below causes redisplay again
     if (ModelAPI_Session::get()->isOperation()) {

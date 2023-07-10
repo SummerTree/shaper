@@ -149,6 +149,10 @@ class MODULEBASE_EXPORT ModuleBase_IModule : public QObject
   /// \param theMenu a popup menu to be shown in the object browser
   virtual void addObjectBrowserMenu(QMenu* theMenu) const {};
 
+  /// Add menu items for constraints browser into the given menu
+  /// \param theMenu a popup menu to be shown in the constraints browser
+  virtual void addConstraintBrowserMenu(QMenu* theMenu) const {};
+
   /// Creates custom widgets for property panel
   /// \param theType a type of widget
   /// \param theParent the parent object
