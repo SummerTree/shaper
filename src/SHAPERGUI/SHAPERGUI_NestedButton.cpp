@@ -106,3 +106,14 @@ QWidget * SHAPERGUI_NestedButton::createWidget(QWidget * theParent)
   connect(this, SIGNAL(toggled(bool)), this, SLOT(showAdditionalButtons(bool)));
   return myButtonFrame;
 }
+
+bool SHAPERGUI_NestedButton::event(QEvent* theEvent)
+{
+  if (theEvent->type() == QEvent::ActionChanged) {
+    if (myThisButton) {
+      myThisButton->setEnabled(isEnabled());
+      return true;
+    }
+  }
+  return QtxAction::event(theEvent);
+}
