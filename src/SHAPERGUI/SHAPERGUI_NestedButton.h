@@ -28,6 +28,9 @@
 #define SRC_SHAPERGUI_NESTEDBUTTON_H_
 
 #include <QtxAction.h>
+#include <QList>
+#include <QPointer>
+
 
 class QFrame;
 class QAction;
@@ -60,12 +63,13 @@ protected:
   /// Creates the button representation
   /// \param theParent a parent widget
   virtual QWidget * createWidget(QWidget * theParent);
+  virtual bool event(QEvent* theEvent);
 
 private:
   QList<QAction*> myNestedActions; ///< list of nested actions
-  QWidget* myAdditionalButtonsWidget; ///< widget to precess additional buttons visibility
-  QFrame* myButtonFrame; ///< frame arround button representation
-  QToolButton* myThisButton; ///< main button
+  QPointer<QWidget> myAdditionalButtonsWidget; ///< widget to process additional buttons visibility
+  QPointer<QFrame> myButtonFrame; ///< frame around button representation
+  QPointer<QToolButton> myThisButton; ///< main button
 };
 
 #endif /* SRC_SHAPERGUI_NESTEDBUTTON_H_ */
