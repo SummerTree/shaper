@@ -45,7 +45,12 @@ class TestConstraintCollinear(unittest.TestCase):
     model.begin()
     self.myDocument = model.moduleDocument()
     self.mySketch = model.addSketch(self.myDocument, model.defaultPlane("XOY"))
-    self.myTolerance = 1.e-6
+    # We are going to compare the difference between the dot product and the product of the lengths of the vectors,
+    # which corresponds to the cosine of the angle between the vectors. So, we have an angular tolerance, which should
+    # not be squared but multiplied by the product of the lengths of the vectors:
+    #   dot(a, b) = |a|*|b|*cos(angle)
+    #   dot(a, b) - |a|*|b| = |a|*|b|*(cos(angle) - 1) < |a|*|b|*|cos(1.e-6) - 1| ~ |a|*|b|*5.e-13
+    self.myTolerance = math.fabs(math.cos(1.e-6) - 1.0)
     self.myDOF = 0
 
   def tearDown(self):
@@ -56,7 +61,7 @@ class TestConstraintCollinear(unittest.TestCase):
     aLen1 = math.hypot(theX1, theY1)
     aLen2 = math.hypot(theX2, theY2)
     aDot = theX1 * theX2 + theY1 * theY2
-    self.assertTrue(math.fabs(math.fabs(aDot) - aLen1 * aLen2) < self.myTolerance**2, "Vectors ({0}, {1}) and ({2}, {3}) do not collinear".format(theX1, theY1, theX2, theY2))
+    self.assertTrue(math.fabs(math.fabs(aDot) - aLen1 * aLen2) < self.myTolerance*aLen1*aLen2, "Vectors ({0}, {1}) and ({2}, {3}) do not collinear".format(theX1, theY1, theX2, theY2))
 
   def checkLineCollinearity(self, theLine1, theLine2):
     aStartPoint1 = theLine1.startPoint()
