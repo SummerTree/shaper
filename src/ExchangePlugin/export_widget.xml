@@ -1,12 +1,12 @@
 <source>
   <switch id="ExportType">
-    <case id="Regular" title="BREP, STEP, IGES">
+    <case id="Regular" title="BREP, STEP, IGES, glTF">
       <export_file_selector id="file_path"
                             type="save"
                             title="Export file"
                             path="">
         <validator id="ExchangePlugin_ExportFormat"
-                   parameters="brep|brp:BREP,step|stp:STEP,iges|igs:IGES-5.1,iges|igs:IGES-5.3" />
+                   parameters="brep|brp:BREP,step|stp:STEP,iges|igs:IGES-5.1,iges|igs:IGES-5.3,gltf|glb:GLTF" />
       </export_file_selector>
       <multi_selector id="selection_list"
                       tooltip="Select a set of objects"

@@ -35,6 +35,7 @@
 #include <GeomAlgoAPI_IGESExport.h>
 #include <GeomAlgoAPI_STEPExport.h>
 #include <GeomAlgoAPI_STLExport.h>
+#include <GeomAlgoAPI_glTFExport.h>
 #include <GeomAlgoAPI_Tools.h>
 #include <GeomAlgoAPI_XAOExport.h>
 
@@ -262,6 +263,10 @@ void ExchangePlugin_ExportFeature::exportFile(const std::string& theFileName,
     aResult = STEPExport(theFileName, aShapes, aContexts, anError);
   } else if (aFormatName.substr(0, 4) == "IGES") {
     aResult = IGESExport(theFileName, aFormatName, aShape, anError);
+  } else if (aFormatName == "GLTF") {
+    aResult = GLTFExport(theFileName, aShapes, aContexts, false, anError);
+  } else if (aFormatName == "GLB") {
+    aResult = GLTFExport(theFileName, aShapes, aContexts, true, anError);
   } else {
     anError = "Unsupported format: " + aFormatName;
   }

@@ -54,6 +54,7 @@ SET(PROJECT_HEADERS
     GeomAlgoAPI_STLImport.h
     GeomAlgoAPI_ImageImport.h
     GeomAlgoAPI_IGESExport.h
+    GeomAlgoAPI_glTFExport.h
     GeomAlgoAPI_Transform.h
     GeomAlgoAPI_ShapeTools.h
     GeomAlgoAPI_Partition.h
@@ -136,6 +137,7 @@ SET(PROJECT_SOURCES
     GeomAlgoAPI_STLImport.cpp
     GeomAlgoAPI_ImageImport.cpp
     GeomAlgoAPI_IGESExport.cpp
+    GeomAlgoAPI_glTFExport.cpp
     GeomAlgoAPI_Transform.cpp
     GeomAlgoAPI_ShapeTools.cpp
     GeomAlgoAPI_Partition.cpp

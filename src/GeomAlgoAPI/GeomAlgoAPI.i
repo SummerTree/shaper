@@ -213,6 +213,7 @@
 %include "GeomAlgoAPI_BREPImport.h"
 %include "GeomAlgoAPI_IGESImport.h"
 %include "GeomAlgoAPI_STEPImport.h"
+%include "GeomAlgoAPI_glTFExport.h"
 %include "GeomAlgoAPI_Tools.h"
 %include "GeomAlgoAPI_PaveFiller.h"
 %include "GeomAlgoAPI_Intersection.h"

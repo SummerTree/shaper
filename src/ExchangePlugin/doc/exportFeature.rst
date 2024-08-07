@@ -99,11 +99,11 @@ The following property panel will be opened:
 
    **Export property panel**
 
-In this panel, it is necessary to select desirable format of export file. It can be **'BREP, STEP, IGES'** , **'XAO'** or **'STL'** . 
+In this panel, it is necessary to select desirable format of export file. It can be **'BREP, STEP, IGES, GLTF'** , **'XAO'** or **'STL'** . 
 
 
-Export to BREP, STEP, IGES
-""""""""""""""""""""""""""
+Export to BREP, STEP, IGES, GLTF
+""""""""""""""""""""""""""""""""
 
 In case of first choice the format of exported file will be defined according to file extension. The file name and path can be defined in **Export file** field by direct input or browsing with **'...'** button, which opens **Export file** dialog box:
 
@@ -114,9 +114,18 @@ In case of first choice the format of exported file will be defined according to
 
 Selection list in the property panel contains a list of exported objects which can be selected in a viewer or object browser.
 
+
 **Apply** button exports the file.
   
 **Cancel** button cancels the operation.
+
+**GLTF**
+
+GLTF (GL Transmission Format) is a file format for 3D scenes and models using the JSON standard. It supports two formats: `.gltf` (JSON) and `.glb` (binary).
+
+For the GLTF format, triangulation is required. This is usually computed during the visualization of the result, but if result was not displayed (SHAPER not active), triangulation will be computed manually using predefined value.
+In this case triangulation can be different with case, when it computed automatically.
+
 
 **TUI Command**:
 

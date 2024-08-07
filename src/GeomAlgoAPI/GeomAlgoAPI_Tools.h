@@ -22,6 +22,11 @@
 
 #include <GeomAlgoAPI.h>
 
+#include <ModelAPI_ResultBody.h>
+#include <TDF_Label.hxx>
+#include <GeomAPI_Shape.h>
+#include <Quantity_Color.hxx>
+
 #include <memory>
 #include <string>
 
@@ -87,6 +92,31 @@ public:
       std::string& theError);
 };
 
+/** \class AttributeExport_Tools
+ *  \ingroup DataAlgo
+ *  \brief Manage attributes for export
+ */
+class AttributeExport_Tools {
+public:
+
+  // a structure to manage exported attributes
+struct GeomAlgoAPI_Attributes {
+  bool myHasColor; ///< true if color is defined
+  Quantity_Color myColor;
+  std::wstring myName;
+  const TDF_Label myMain;
+
+  GeomAlgoAPI_Attributes(const TDF_Label& theMain) : myHasColor(false), myMain(theMain){ }
+};
+
+  GEOMALGOAPI_EXPORT static TDF_Label exportShape(const GeomShapePtr theShape, GeomAlgoAPI_Attributes& theAttrs,
+    const GeomShapePtr theFatherShape, TDF_Label& theFaterID);
+
+  GEOMALGOAPI_EXPORT static void getAttributes(const ResultPtr& theResult, GeomAlgoAPI_Attributes& theAttrs);
+
+  GEOMALGOAPI_EXPORT static void putResult(const ResultPtr& theResult, const GeomShapePtr theFatherShape,
+    TDF_Label& theFaterID, GeomAlgoAPI_Attributes& theAttrs);
+};
 } // GeomAlgoAPI_Tools
 
 #endif /* GEOMALGOAPI_TOOLS_H_ */
