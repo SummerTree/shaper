@@ -88,6 +88,7 @@ SET(PROJECT_HEADERS
     GeomAlgoAPI_CurveBuilder.h
     GeomAlgoAPI_NExplode.h
     GeomAlgoAPI_Offset.h
+    GeomAlgoAPI_Thickness.h
     GeomAlgoAPI_SolidClassifier.h
     GeomAlgoAPI_MapShapesAndAncestors.h
     GeomAlgoAPI_Projection.h
@@ -97,7 +98,7 @@ SET(PROJECT_HEADERS
     GeomAlgoAPI_NormalToFace.h
     GeomAlgoAPI_Tube.h
     GeomAlgoAPI_ShapeInfo.h
-	  GeomAlgoAPI_CanonicalRecognition.h
+    GeomAlgoAPI_CanonicalRecognition.h
     GeomAlgoAPI_GlueFaces.h
     GeomAlgoAPI_LimitTolerance.h
     GeomAlgoAPI_Utils.h
@@ -169,6 +170,7 @@ SET(PROJECT_SOURCES
     GeomAlgoAPI_CurveBuilder.cpp
     GeomAlgoAPI_NExplode.cpp
     GeomAlgoAPI_Offset.cpp
+    GeomAlgoAPI_Thickness.cpp
     GeomAlgoAPI_SolidClassifier.cpp
     GeomAlgoAPI_MapShapesAndAncestors.cpp
     GeomAlgoAPI_Projection.cpp
@@ -178,9 +180,8 @@ SET(PROJECT_SOURCES
     GeomAlgoAPI_NormalToFace.cpp
     GeomAlgoAPI_Tube.cpp
     GeomAlgoAPI_ShapeInfo.cpp
-	  GeomAlgoAPI_CanonicalRecognition.cpp
+    GeomAlgoAPI_CanonicalRecognition.cpp
     GeomAlgoAPI_GlueFaces.cpp
-  	GeomAlgoAPI_CanonicalRecognition.cpp
     GeomAlgoAPI_LimitTolerance.cpp
     GeomAlgoAPI_Utils.cpp
     GeomAlgoAPI_NonPlanarFace.cpp

@@ -85,6 +85,7 @@
 %shared_ptr(FeaturesAPI_MultiRotation)
 %shared_ptr(FeaturesAPI_MultiTranslation)
 %shared_ptr(FeaturesAPI_NormalToFace)
+%shared_ptr(FeaturesAPI_Offset)
 %shared_ptr(FeaturesAPI_Partition)
 %shared_ptr(FeaturesAPI_Pipe)
 %shared_ptr(FeaturesAPI_Placement)
@@ -101,6 +102,7 @@
 %shared_ptr(FeaturesAPI_Sewing)
 %shared_ptr(FeaturesAPI_SharedFaces)
 %shared_ptr(FeaturesAPI_Symmetry)
+%shared_ptr(FeaturesAPI_Thickness)
 %shared_ptr(FeaturesAPI_Translation)
 %shared_ptr(FeaturesAPI_Union)
 
@@ -233,6 +235,7 @@
 %include "FeaturesAPI_NormalToFace.h"
 %include "FeaturesAPI_MultiRotation.h"
 %include "FeaturesAPI_MultiTranslation.h"
+%include "FeaturesAPI_Offset.h"
 %include "FeaturesAPI_Partition.h"
 %include "FeaturesAPI_Pipe.h"
 %include "FeaturesAPI_Placement.h"
@@ -248,5 +251,6 @@
 %include "FeaturesAPI_Sewing.h"
 %include "FeaturesAPI_SharedFaces.h"
 %include "FeaturesAPI_Symmetry.h"
+%include "FeaturesAPI_Thickness.h"
 %include "FeaturesAPI_Translation.h"
 %include "FeaturesAPI_Union.h"

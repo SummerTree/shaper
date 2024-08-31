@@ -36,9 +36,11 @@ SET(PROJECT_HEADERS
   FeaturesAPI_NormalToFace.h
   FeaturesAPI_MultiRotation.h
   FeaturesAPI_MultiTranslation.h
+  FeaturesAPI_Offset.h
   FeaturesAPI_Partition.h
   FeaturesAPI_Pipe.h
   FeaturesAPI_Loft.h
+  FeaturesAPI_Thickness.h
   FeaturesAPI_Placement.h
   FeaturesAPI_PointCloudOnFace.h
   FeaturesAPI_Recover.h
@@ -79,9 +81,11 @@ SET(PROJECT_SOURCES
   FeaturesAPI_NormalToFace.cpp
   FeaturesAPI_MultiRotation.cpp
   FeaturesAPI_MultiTranslation.cpp
+  FeaturesAPI_Offset.cpp
   FeaturesAPI_Partition.cpp
   FeaturesAPI_Pipe.cpp
   FeaturesAPI_Loft.cpp
+  FeaturesAPI_Thickness.cpp
   FeaturesAPI_Placement.cpp
   FeaturesAPI_PointCloudOnFace.cpp
   FeaturesAPI_Recover.cpp

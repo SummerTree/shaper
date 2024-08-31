@@ -545,6 +545,19 @@
                             }
                         }
                     },
+                    "Offset3d": {
+                        "iconPath": "%SHAPER_ROOT_DIR%/share/salome/resources/shaper/icons/Features/offset3D.png",
+                        "langDependentAssets": {
+                            "en": {
+                                "name": "Offset (3D)",
+                                "tooltip": "Offset face or shell"
+                            },
+                            "fr": {
+                                "name": "Offset (3D)",
+                                "tooltip": "Face ou coque décalée"
+                            }
+                        }
+                    },
                     "Partition": {
                         "iconPath": "%SHAPER_ROOT_DIR%/share/salome/resources/shaper/icons/Features/partition.png",
                         "langDependentAssets": {
@@ -698,6 +711,19 @@
                             "fr": {
                                 "name": "Diviser",
                                 "tooltip": "Effectuer l'opération booléenne division avec des objets"
+                            }
+                        }
+                    },
+                    "Thickness": {
+                        "iconPath": "%SHAPER_ROOT_DIR%/share/salome/resources/shaper/icons/Features/thickness.png",
+                        "langDependentAssets": {
+                            "en": {
+                                "name": "Thickness (3D)",
+                                "tooltip": "Thicken faces"
+                            },
+                            "fr": {
+                                "name": "Thickness (3D)",
+                                "tooltip": "Épaissir les visages"
                             }
                         }
                     }

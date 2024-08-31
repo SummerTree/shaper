@@ -27,16 +27,51 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 
+#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Wire.hxx>
 
 GeomAlgoAPI_Offset::GeomAlgoAPI_Offset(const GeomShapePtr& theShape,
-                                       const double theOffsetValue)
+                                       const double        theOffsetValue)
 {
-  build(theShape, theOffsetValue);
+  buildSimple(theShape, theOffsetValue);
 }
 
-void GeomAlgoAPI_Offset::build(const GeomShapePtr& theShape, const double theOffsetValue)
+GeomAlgoAPI_Offset::GeomAlgoAPI_Offset(const GeomShapePtr& theShape,
+                                       const double        theOffsetValue,
+                                       const bool          isPipeJoint)
+{
+  buildByJoin(theShape, theOffsetValue, isPipeJoint);
+}
+
+GeomAlgoAPI_Offset::GeomAlgoAPI_Offset(const GeomShapePtr& theShape,
+                                       const ListOfShape&  theFaces,
+                                       const double        theOffsetValue)
+{
+  buildPartial(theShape, theFaces, theOffsetValue);
+}
+
+GeomAlgoAPI_Offset::GeomAlgoAPI_Offset(const GeomPlanePtr& thePlane,
+                                       const GeomShapePtr& theEdgeOrWire,
+                                       const double theOffsetValue,
+                                       const GeomAlgoAPI_OffsetJoint theJoint,
+                                       const bool theIsApprox)
+{
+  build2d(thePlane, theEdgeOrWire, theOffsetValue, theJoint, theIsApprox);
+}
+
+void GeomAlgoAPI_Offset::generated(const GeomShapePtr theOldShape,
+                                   ListOfShape& theNewShapes)
+{
+  try {
+    GeomAlgoAPI_MakeShape::generated(theOldShape, theNewShapes);
+  } catch(...) {
+    // nothing is generated
+  }
+}
+
+void GeomAlgoAPI_Offset::buildSimple(const GeomShapePtr& theShape,
+                                     const double        theOffsetValue)
 {
   BRepOffsetAPI_MakeOffsetShape* anOffsetAlgo = new BRepOffsetAPI_MakeOffsetShape;
   anOffsetAlgo->PerformBySimple(theShape->impl<TopoDS_Shape>(), theOffsetValue);
@@ -52,21 +87,96 @@ void GeomAlgoAPI_Offset::build(const GeomShapePtr& theShape, const double theOff
   }
 }
 
-void GeomAlgoAPI_Offset::generated(const GeomShapePtr theOldShape,
-                                   ListOfShape& theNewShapes)
+void GeomAlgoAPI_Offset::buildByJoin(const GeomShapePtr& theShape,
+                                     const double        theOffsetValue,
+                                     const bool          isPipeJoint)
 {
-  try {
-    GeomAlgoAPI_MakeShape::generated(theOldShape, theNewShapes);
-  } catch(...) {
-    // nothing is generated
+  Standard_Real aTol = Precision::Confusion();
+  BRepOffset_Mode aMode = BRepOffset_Skin;
+  Standard_Boolean anIntersection = Standard_False;
+  Standard_Boolean aSelfInter = Standard_False;
+
+  BRepOffsetAPI_MakeOffsetShape* anOffsetAlgo = new BRepOffsetAPI_MakeOffsetShape;
+  anOffsetAlgo->PerformByJoin(theShape->impl<TopoDS_Shape>(),
+                              theOffsetValue,
+                              aTol,
+                              aMode,
+                              anIntersection,
+                              aSelfInter,
+                              isPipeJoint ? GeomAbs_Arc : GeomAbs_Intersection);
+  setImpl(anOffsetAlgo);
+  setBuilderType(OCCT_BRepBuilderAPI_MakeShape);
+
+  if (anOffsetAlgo->IsDone()) {
+    const TopoDS_Shape& aResult = anOffsetAlgo->Shape();
+    std::shared_ptr<GeomAPI_Shape> aShape(new GeomAPI_Shape());
+    aShape->setImpl(new TopoDS_Shape(aResult));
+    setShape(aShape);
+    setDone(true);
   }
 }
 
-GeomAlgoAPI_Offset::GeomAlgoAPI_Offset(const GeomPlanePtr& thePlane,
-                                       const GeomShapePtr& theEdgeOrWire,
-                                       const double theOffsetValue,
-                                       const GeomAlgoAPI_OffsetJoint theJoint,
-                                       const bool theIsApprox)
+void GeomAlgoAPI_Offset::buildPartial(const GeomShapePtr& theShape,
+                                      const ListOfShape&  theFaces,
+                                      const double        theOffsetValue)
+{
+  if (theFaces.empty())
+    return;
+
+  TopoDS_Shape aShapeBase = theShape->impl<TopoDS_Shape>();
+
+  Standard_Real aTol = Precision::Confusion();
+  BRepOffset_Mode aMode = BRepOffset_Skin;
+  Standard_Boolean anIntersection = Standard_False;
+  Standard_Boolean aSelfInter = Standard_False;
+
+  BRepOffset_MakeOffset* aMakeOffset = new BRepOffset_MakeOffset;
+  aMakeOffset->Initialize(aShapeBase,
+                          theOffsetValue, // set offset on all faces to anOffset
+                          aTol,
+                          aMode,
+                          anIntersection,
+                          aSelfInter,
+                          GeomAbs_Intersection,
+                          Standard_False);
+
+  // put selected faces into a map
+  TopTools_MapOfShape aMapFaces;
+  for (ListOfShape::const_iterator anIt = theFaces.begin();
+       anIt != theFaces.end(); ++anIt) {
+    if ((*anIt)->isFace())
+      aMapFaces.Add((*anIt)->impl<TopoDS_Shape>());
+  }
+
+  // set offset on non-selected faces to zero
+  TopExp_Explorer anExp (aShapeBase, TopAbs_FACE);
+  for (; anExp.More(); anExp.Next()) {
+    const TopoDS_Shape &aFace = anExp.Current();
+    if (!aMapFaces.Contains(aFace)) {
+      aMakeOffset->SetOffsetOnFace(TopoDS::Face(aFace), 0.0);
+    }
+  }
+
+  // perform offset operation
+  aMakeOffset->MakeOffsetShape();
+
+  setImpl(aMakeOffset);
+  setBuilderType(OCCT_BRepOffset_MakeOffset);
+
+  if (aMakeOffset->IsDone()) {
+    const TopoDS_Shape& aResult = aMakeOffset->Shape();
+    std::shared_ptr<GeomAPI_Shape> aShape(new GeomAPI_Shape());
+    aShape->setImpl(new TopoDS_Shape(aResult));
+    setShape(aShape);
+    setDone(true);
+  }
+}
+
+void GeomAlgoAPI_Offset::build2d(const GeomPlanePtr& thePlane,
+                                 const GeomShapePtr& theEdgeOrWire,
+                                 const double theOffsetValue,
+                                 const GeomAlgoAPI_OffsetJoint theJoint,
+                                 const bool theIsApprox)
 {
   // 1. Make wire from edge, if need
   TopoDS_Wire aWire;

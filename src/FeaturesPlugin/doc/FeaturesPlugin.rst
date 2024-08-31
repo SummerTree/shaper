@@ -31,6 +31,7 @@ Features plug-in provides a set of common topological operations. It implements 
    loftFeature.rst
    measurementFeature.rst
    normalToFaceFeature.rst
+   offsetFeature.rst
    pipeFeature.rst
    placementFeature.rst
    pointCoordinatesFeature.rst
@@ -42,5 +43,6 @@ Features plug-in provides a set of common topological operations. It implements 
    rotationFeature.rst
    sewingFeature.rst
    symmetryFeature.rst
+   thicknessFeature.rst
    transformationFeature.rst
    translationFeature.rst

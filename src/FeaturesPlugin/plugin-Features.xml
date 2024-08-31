@@ -5,6 +5,10 @@
                icon="icons/Features/scale.png" helpfile="transformationFeature.html">
         <source path="scale_widget.xml"/>
       </feature>
+      <feature id="Offset3d" title="Offset" tooltip="Perform offset"
+               icon="icons/Features/offset3D.png" helpfile="offsetFeature.html">
+        <source path="offset_widget.xml"/>
+      </feature>
     </group>
     <group id="Extrusion">
       <feature id="Extrusion" title="Extrusion" tooltip="Create a solid by extrusion of a face"
@@ -42,6 +46,10 @@
       <feature id="Loft" title="Loft" tooltip="Generates a shape with two elements"
                icon="icons/Features/loft.png" helpfile="loftFeature.html">
         <source path="loft_widget.xml"/>
+      </feature>
+      <feature id="Thickness" title="Thickness" tooltip="Make a thickness or a hollowed solid"
+               icon="icons/Features/thickness.png" helpfile="thicknessFeature.html">
+        <source path="thickness_widget.xml"/>
       </feature>
     </group>
     <group id="Boolean" toolbar="yes">

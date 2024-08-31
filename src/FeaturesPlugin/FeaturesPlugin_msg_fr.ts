@@ -62,6 +62,14 @@
       <translation>Normale d&apos;une face</translation>
     </message>
     <message>
+      <source>Offset</source>
+      <translation>Décalage</translation>
+    </message>
+    <message>
+      <source>Thickness</source>
+      <translation>Épaisseur</translation>
+    </message>
+    <message>
       <source>Partition</source>
       <translation>Partition</translation>
     </message>
@@ -1340,6 +1348,182 @@
     <message>
       <source>Additional tolerance to eliminate tiny result.</source>
       <translation>Tolérance supplémentaire pour éliminer les petits résultats.</translation>
+    </message>
+  </context>
+
+  <!-- Offset -->
+  <context>
+    <name>Offset3d</name>
+    <message>
+      <source>Offset</source>
+      <translation>Décalage</translation>
+    </message>
+    <message>
+      <source>Perform offset</source>
+      <translation>Effectuer des décalage</translation>
+    </message>
+  </context>
+  <context>
+    <name>Offset3d:base_shape</name>
+    <message>
+      <source>Shape:</source>
+      <translation>Forme:</translation>
+    </message>
+    <message>
+      <source>Select a shape to offset.</source>
+      <translation>Sélectionnez une forme à décaler.</translation>
+    </message>
+    <message>
+      <source>Attribute "%1" is not initialized.</source>
+      <translation>Sélectionnez un objet</translation>
+    </message>
+  </context>
+  <context>
+    <name>Offset3d:base_shape:GeomValidators_ShapeType</name>
+    <message>
+      <source>The object is empty</source>
+      <translation>L&apos;objet est vide</translation>
+    </message>
+  </context>
+  <context>
+    <name>Offset3d:offset_value</name>
+    <message>
+      <source>Offset</source>
+      <translation>Décalage</translation>
+    </message>
+  </context>
+  <context>
+    <name>Offset3d:creation_method</name>
+    <message>
+      <source>Offset</source>
+      <translation>Décalage</translation>
+    </message>
+    <message>
+      <source>Partial offset</source>
+      <translation>Décalage partiel</translation>
+    </message>
+  </context>
+  <context>
+    <name>Offset3d:pipe_joint</name>
+    <message>
+      <source>Join by pipes</source>
+      <translation>Rejoindre par des tuyaux</translation>
+    </message>
+  </context>
+  <context>
+    <name>Offset3d:faces_to_offset</name>
+    <message>
+      <source>Faces to offset:</source>
+      <translation>Faces à décaler :</translation>
+    </message>
+    <message>
+      <source>Select faces of the main shape.</source>
+      <translation>Sélectionnez les faces de la forme principale.</translation>
+    </message>
+  </context>
+  <context>
+    <name>Offset3d:faces_to_offset:FeaturesPlugin_ValidatorOffsetFacesSelection</name>
+    <message>
+      <source>Error: Empty context.</source>
+      <translation>Erreur : contexte vide.</translation>
+    </message>
+    <message>
+      <source>Error: No faces selected.</source>
+      <translation>Erreur: Aucun face sélectionné.</translation>
+    </message>
+  </context>
+
+  <!-- Thickness -->
+  <context>
+    <name>Thickness</name>
+    <message>
+      <source>Thickness</source>
+      <translation>Épaisseur</translation>
+    </message>
+    <message>
+      <source>Make a thickness or a hollowed solid</source>
+      <translation>Réaliser une épaisseur ou un solide creux</translation>
+    </message>
+  </context>
+  <context>
+    <name>Thickness:creation_method</name>
+    <message>
+      <source>Thickness</source>
+      <translation>Épaisseur</translation>
+    </message>
+    <message>
+      <source>Hollowed Solid</source>
+      <translation>Solide évidé</translation>
+    </message>
+  </context>
+  <context>
+    <name>Thickness:base_shape</name>
+    <message>
+      <source>Face or Shell:</source>
+      <translation>Face ou Coque:</translation>
+    </message>
+    <message>
+      <source>Select a face or a shell.</source>
+      <translation>Sélectionnez une face ou une coque.</translation>
+    </message>
+    <message>
+      <source>Solid:</source>
+      <translation>Solide:</translation>
+    </message>
+    <message>
+      <source>Select a solid.</source>
+      <translation>Sélectionnez un solide.</translation>
+    </message>
+    <message>
+      <source>Attribute "%1" is not initialized.</source>
+      <translation>Sélectionnez un objet</translation>
+    </message>
+  </context>
+  <context>
+    <name>Thickness:base_shape:FeaturesPlugin_ValidatorThicknessSelection</name>
+    <message>
+      <source>Error: Empty context.</source>
+      <translation>Erreur : contexte vide.</translation>
+    </message>
+  </context>
+  <context>
+    <name>Thickness:faces_to_remove</name>
+    <message>
+      <source>Faces to remove:</source>
+      <translation>Faces à supprimer:</translation>
+    </message>
+    <message>
+      <source>Select faces of the main shape.</source>
+      <translation>Sélectionnez les faces de la forme principale.</translation>
+    </message>
+  </context>
+  <context>
+    <name>Thickness:faces_to_remove:FeaturesPlugin_ValidatorThicknessSelection</name>
+    <message>
+      <source>Error: Empty context.</source>
+      <translation>Erreur : contexte vide.</translation>
+    </message>
+    <message>
+      <source>Error: No faces selected.</source>
+      <translation>Erreur: Aucun face sélectionné.</translation>
+    </message>
+  </context>
+  <context>
+    <name>Thickness:thickness_value</name>
+    <message>
+      <source>Thickness</source>
+      <translation>Épaisseur</translation>
+    </message>
+    <message>
+      <source>Thickness value</source>
+      <translation>Valeur d'épaisseur</translation>
+    </message>
+  </context>
+  <context>
+    <name>Thickness:is_inside</name>
+    <message>
+      <source>Thicken towards the inside</source>
+      <translation>Épaissir vers l'intérieur</translation>
     </message>
   </context>
 

@@ -24,6 +24,7 @@
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepGProp.hxx>
+#include <BRepOffset_MakeOffset.hxx>
 #include <GProp_GProps.hxx>
 #include <Precision.hxx>
 #include <TopExp_Explorer.hxx>
@@ -102,6 +103,9 @@ void GeomAlgoAPI_MakeShape::generated(const GeomShapePtr theOldShape,
   } else if(myBuilderType == OCCT_BOPAlgo_Builder) {
     BOPAlgo_Builder* aBOPBuilder = implPtr<BOPAlgo_Builder>();
     aList = aBOPBuilder->Generated(theOldShape->impl<TopoDS_Shape>());
+  } else if(myBuilderType == OCCT_BRepOffset_MakeOffset) {
+    BRepOffset_MakeOffset* aMakeOffset = implPtr<BRepOffset_MakeOffset>();
+    aList = aMakeOffset->Generated(theOldShape->impl<TopoDS_Shape>());
   }
   for(TopTools_ListIteratorOfListOfShape anIt(aList); anIt.More(); anIt.Next()) {
     GeomShapePtr aShape(new GeomAPI_Shape());
@@ -126,6 +130,12 @@ void GeomAlgoAPI_MakeShape::modified(const GeomShapePtr theOldShape,
   } else if(myBuilderType == OCCT_BOPAlgo_Builder) {
     BOPAlgo_Builder* aBOPBuilder = implPtr<BOPAlgo_Builder>();
     aList = aBOPBuilder->Modified(theOldShape->impl<TopoDS_Shape>());
+  } else if(myBuilderType == OCCT_BRepOffset_MakeOffset) {
+    BRepOffset_MakeOffset* aMakeOffset = implPtr<BRepOffset_MakeOffset>();
+    try {
+      aList = aMakeOffset->Modified(theOldShape->impl<TopoDS_Shape>());
+    } catch(Standard_NoSuchObject const&) {
+    }
   }
   for(TopTools_ListIteratorOfListOfShape anIt(aList); anIt.More(); anIt.Next()) {
     GeomShapePtr aShape(new GeomAPI_Shape());
@@ -163,6 +173,9 @@ bool GeomAlgoAPI_MakeShape::isDeleted(const GeomShapePtr theOldShape)
   } else if(myBuilderType == OCCT_BOPAlgo_Builder) {
     BOPAlgo_Builder* aBOPBuilder = implPtr<BOPAlgo_Builder>();
     isDeleted = aBOPBuilder->IsDeleted(theOldShape->impl<TopoDS_Shape>()) == Standard_True;
+  } else if(myBuilderType == OCCT_BRepOffset_MakeOffset) {
+    BRepOffset_MakeOffset* aMakeOffset = implPtr<BRepOffset_MakeOffset>();
+    isDeleted = aMakeOffset->IsDeleted(theOldShape->impl<TopoDS_Shape>()) == Standard_True;
   }
 
   return isDeleted;
@@ -255,6 +268,12 @@ void GeomAlgoAPI_MakeShape::initialize()
       myDone = true;
       myShape.reset(new GeomAPI_Shape());
       myShape->setImpl(new TopoDS_Shape(implPtr<BOPAlgo_Builder>()->Shape()));
+      break;
+    }
+    case OCCT_BRepOffset_MakeOffset: {
+      myDone = implPtr<BRepOffset_MakeOffset>()->IsDone() == Standard_True;
+      myShape.reset(new GeomAPI_Shape());
+      myShape->setImpl(new TopoDS_Shape(implPtr<BRepOffset_MakeOffset>()->Shape()));
       break;
     }
     default:

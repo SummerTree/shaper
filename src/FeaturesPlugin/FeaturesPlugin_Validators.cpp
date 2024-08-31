@@ -48,6 +48,7 @@
 #include <GeomValidators_ShapeType.h>
 
 #include <GeomAPI_DataMapOfShapeShape.h>
+#include <GeomAPI_IndexedMapOfShape.h>
 #include <GeomAPI_Lin.h>
 #include <GeomAPI_PlanarEdges.h>
 #include <GeomAPI_Pln.h>
@@ -1108,6 +1109,160 @@ bool FeaturesPlugin_ValidatorFillet1DSelection::isValid(const AttributePtr& theA
     GeomVertexPtr aSharedVertex(new GeomAPI_Vertex(aVertex));
     if (GeomAlgoAPI_ShapeTools::isTangent(anEdge1, anEdge2, aSharedVertex)) {
       theError = "Error: Edges are tangent";
+      return false;
+    }
+  }
+
+  return true;
+}
+
+//=============================================================================================
+bool FeaturesPlugin_ValidatorOffsetFacesSelection::isValid(const AttributePtr& theAttribute,
+                                                     const std::list<std::string>& theArguments,
+                                                     Events_InfoMessage& theError) const
+{
+  AttributeSelectionListPtr aSubShapesAttrList =
+    std::dynamic_pointer_cast<ModelAPI_AttributeSelectionList>(theAttribute);
+  if (!aSubShapesAttrList.get()) {
+    theError = "Error: This validator can only work with selection list in \"Offset\" feature.";
+    return false;
+  }
+
+  static const std::string aBaseShapeID = "base_shape";
+  FeaturePtr aFeature = std::dynamic_pointer_cast<ModelAPI_Feature>(theAttribute->owner());
+  AttributeSelectionPtr aShapeAttrSelection = aFeature->selection(aBaseShapeID);
+
+  if (!aShapeAttrSelection.get()) {
+    theError = "Error: Could not get \"%1\" attribute.";
+    theError.arg(aBaseShapeID);
+    return false;
+  }
+
+  GeomShapePtr aBaseShape = aShapeAttrSelection->value();
+  ResultPtr aContext = aShapeAttrSelection->context();
+  if (!aContext.get()) {
+    theError = "Error: Empty context.";
+    return false;
+  }
+  if (!aBaseShape.get()) {
+    aBaseShape = aContext->shape();
+  }
+  if (!aBaseShape.get()) {
+    theError = "Error: Empty base shape.";
+    return false;
+  }
+
+  if (!aSubShapesAttrList->size()) {
+    theError = "Error: No faces selected.";
+    return false;
+  }
+
+  GeomAPI_IndexedMapOfShape aSubShapesMap (aBaseShape);
+  for (int anIndex = 0; anIndex < aSubShapesAttrList->size(); ++anIndex) {
+    AttributeSelectionPtr anAttrSelectionInList = aSubShapesAttrList->value(anIndex);
+    GeomShapePtr aShapeToAdd = anAttrSelectionInList->value();
+    if (!aShapeToAdd.get()) {
+      theError = "Error: Wrong shape selected.";
+      return false;
+    }
+    if (!aSubShapesMap.FindIndex(aShapeToAdd)) {
+      theError = "Error: Only sub-shapes of selected shape are allowed for selection.";
+      return false;
+    }
+  }
+
+  return true;
+}
+
+//=============================================================================================
+bool FeaturesPlugin_ValidatorThicknessSelection::isValid(const AttributePtr& theAttribute,
+                                                   const std::list<std::string>& theArguments,
+                                                   Events_InfoMessage& theError) const
+{
+  static const std::string aBaseShapeID = "base_shape";
+  static const std::string aCreationMethodID = "creation_method";
+  static const std::string aCreationMethodTH = "thickness";
+
+  FeaturePtr aFeature = std::dynamic_pointer_cast<ModelAPI_Feature>(theAttribute->owner());
+
+  AttributeSelectionPtr aShapeAttrSelection =
+    std::dynamic_pointer_cast<ModelAPI_AttributeSelection>(theAttribute);
+  if (aShapeAttrSelection.get()) {
+    // 1. Check main objects type (depends on creation method)
+    GeomShapePtr aBaseShape = aShapeAttrSelection->value();
+    ResultPtr aContext = aShapeAttrSelection->context();
+    if (!aContext.get()) {
+      theError = "Error: Empty context.";
+      return false;
+    }
+    if (!aBaseShape.get()) {
+      aBaseShape = aContext->shape();
+    }
+    if (!aBaseShape.get()) {
+      theError = "Error: Empty base shape.";
+      return false;
+    }
+
+    AttributeStringPtr aCreationMethodAttr = aFeature->string(aCreationMethodID);
+    if (aCreationMethodAttr->value() == aCreationMethodTH) {
+      // should be a face or a shell
+      return aBaseShape->isShell() || aBaseShape->isFace();
+    }
+
+    // shoud be a solid
+    return aBaseShape->isSolid();
+  }
+
+  // 2. Check faces selection
+  AttributeSelectionListPtr aSubShapesAttrList =
+    std::dynamic_pointer_cast<ModelAPI_AttributeSelectionList>(theAttribute);
+  if (!aSubShapesAttrList.get()) {
+    theError = "Error: This validator can only work with selection in \"Thickness\" feature.";
+    return false;
+  }
+
+  // base shape
+  aShapeAttrSelection = aFeature->selection(aBaseShapeID);
+
+  if (!aShapeAttrSelection.get()) {
+    theError = "Error: Could not get \"%1\" attribute.";
+    theError.arg(aBaseShapeID);
+    return false;
+  }
+
+  GeomShapePtr aBaseShape = aShapeAttrSelection->value();
+  ResultPtr aContext = aShapeAttrSelection->context();
+  if (!aContext.get()) {
+    theError = "Error: Empty context.";
+    return false;
+  }
+  if (!aBaseShape.get()) {
+    aBaseShape = aContext->shape();
+  }
+  if (!aBaseShape.get()) {
+    theError = "Error: Empty base shape.";
+    return false;
+  }
+
+  if (!aSubShapesAttrList->size()) {
+    theError = "Error: No faces selected.";
+    return false;
+  }
+
+  GeomAPI_IndexedMapOfShape aSubShapesMap (aBaseShape);
+  for (int anIndex = 0; anIndex < aSubShapesAttrList->size(); ++anIndex) {
+    AttributeSelectionPtr anAttrSelectionInList = aSubShapesAttrList->value(anIndex);
+    GeomShapePtr aShapeToAdd = anAttrSelectionInList->value();
+    if (!aShapeToAdd.get()) {
+      theError = "Error: Wrong shape selected.";
+      return false;
+    }
+    if (!aSubShapesMap.FindIndex(aShapeToAdd)) {
+      theError = "Error: Only sub-shapes of selected shape are allowed for selection.";
+      return false;
+    }
+    if (!aShapeToAdd->isFace()) {
+      theError = "Error: Only faces are allowed for selection.";
       return false;
     }
   }

@@ -38,7 +38,8 @@ public:
   enum BuilderType {
     Unknown,
     OCCT_BRepBuilderAPI_MakeShape,
-    OCCT_BOPAlgo_Builder
+    OCCT_BOPAlgo_Builder,
+    OCCT_BRepOffset_MakeOffset
   };
 
 public:

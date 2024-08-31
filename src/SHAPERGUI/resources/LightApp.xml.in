@@ -106,6 +106,7 @@
     <parameter name="Features/Intersection" value=""/>
     <parameter name="Features/LimitTolerance" value=""/>
     <parameter name="Features/Loft" value=""/>
+    <parameter name="Features/Offset3d" value=""/>
     <parameter name="Features/Partition" value=""/>
     <parameter name="Features/Pipe" value=""/>
     <parameter name="Features/Recover" value=""/>
@@ -118,6 +119,7 @@
     <parameter name="Features/SketchCopy" value=""/>
     <parameter name="Features/Smash" value=""/>
     <parameter name="Features/Split" value=""/>
+    <parameter name="Features/Thickness" value=""/>
     <parameter name="File/Export/Part" value=""/>
     <parameter name="File/Export/PartSet" value=""/>
     <parameter name="File/Export/Shape" value=""/>

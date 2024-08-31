@@ -532,6 +532,8 @@ SET(TEST_NAMES_PARA
                Test23885.py
                TestNormalToFace.py
                TestLoft.py
+               TestOffset.py
+               TestThickness.py
                TestSewing_Manifold.py
                TestSewing_NonManifold.py
                TestSewing_Groups.py

@@ -47,6 +47,8 @@
 #include <FeaturesPlugin_Partition.h>
 #include <FeaturesPlugin_Pipe.h>
 #include <FeaturesPlugin_Loft.h>
+#include <FeaturesPlugin_Thickness.h>
+#include <FeaturesPlugin_Offset.h>
 #include <FeaturesPlugin_Placement.h>
 #include <FeaturesPlugin_PointCloudOnFace.h>
 #include <FeaturesPlugin_Recover.h>
@@ -101,6 +103,10 @@ FeaturesPlugin_Plugin::FeaturesPlugin_Plugin()
                               new FeaturesPlugin_ValidatorExtrusionBoundaryFace);
   aFactory->registerValidator("FeaturesPlugin_ValidatorBooleanSelection",
                               new FeaturesPlugin_ValidatorBooleanSelection);
+  aFactory->registerValidator("FeaturesPlugin_ValidatorOffsetFacesSelection",
+                              new FeaturesPlugin_ValidatorOffsetFacesSelection);
+  aFactory->registerValidator("FeaturesPlugin_ValidatorThicknessSelection",
+                              new FeaturesPlugin_ValidatorThicknessSelection);
   aFactory->registerValidator("FeaturesPlugin_ValidatorPartitionSelection",
                               new FeaturesPlugin_ValidatorPartitionSelection);
   aFactory->registerValidator("FeaturesPlugin_ValidatorRemoveSubShapesSelection",
@@ -176,6 +182,8 @@ FeaturePtr FeaturesPlugin_Plugin::createFeature(std::string theFeatureID)
     return FeaturePtr(new FeaturesPlugin_Pipe);
   } else if (theFeatureID == FeaturesPlugin_Loft::ID()) {
     return FeaturePtr(new FeaturesPlugin_Loft);
+  } else if (theFeatureID == FeaturesPlugin_Thickness::ID()) {
+    return FeaturePtr(new FeaturesPlugin_Thickness);
   } else if (theFeatureID == FeaturesPlugin_Placement::ID()) {
     return FeaturePtr(new FeaturesPlugin_Placement);
   } else if (theFeatureID == FeaturesPlugin_Recover::ID()) {
@@ -198,6 +206,8 @@ FeaturePtr FeaturesPlugin_Plugin::createFeature(std::string theFeatureID)
     return FeaturePtr(new FeaturesPlugin_Symmetry);
   } else if (theFeatureID == FeaturesPlugin_Scale::ID()) {
     return FeaturePtr(new FeaturesPlugin_Scale);
+  } else if (theFeatureID == FeaturesPlugin_Offset::ID()) {
+    return FeaturePtr(new FeaturesPlugin_Offset);
   } else if (theFeatureID == FeaturesPlugin_Sewing::ID()) {
     return FeaturePtr(new FeaturesPlugin_Sewing);
   } else if (theFeatureID == FeaturesPlugin_MultiTranslation::ID()) {

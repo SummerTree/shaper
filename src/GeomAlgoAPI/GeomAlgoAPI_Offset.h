@@ -41,11 +41,31 @@ enum class GeomAlgoAPI_OffsetJoint { KeepDistance, Arcs, Lines };
 class GeomAlgoAPI_Offset : public GeomAlgoAPI_MakeShape
 {
 public:
-  /// \brief Construct offset.
+  /// \brief Perform simple offset.
+  /// \param[in] theShape base shape
+  /// \param[in] theOffsetValue offset distance, it can be negative
   GEOMALGOAPI_EXPORT GeomAlgoAPI_Offset(const GeomShapePtr& theShape,
                                         const double theOffsetValue);
 
-  /// \brief Perform the offset algorithm on the plane
+  /// \brief Perform 3d offset algorithm
+  /// \param[in] theShape base shape
+  /// \param[in] theOffsetValue offset distance, it can be negative
+  /// \param[in] isPipeJoint type of joint of faces (pipes or intersections)
+  GEOMALGOAPI_EXPORT GeomAlgoAPI_Offset
+    (const GeomShapePtr& theShape,
+     const double        theOffsetValue,
+     const bool          isPipeJoint);
+
+  /// \brief Perform partial 3d offset algorithm
+  /// \param[in] theShape base shape
+  /// \param[in] theFaces list of faces to be offset
+  /// \param[in] theOffsetValue offset distance for selected faces, it can be negative
+  GEOMALGOAPI_EXPORT GeomAlgoAPI_Offset
+    (const GeomShapePtr& theShape,
+     const ListOfShape&  theFaces,
+     const double        theOffsetValue);
+
+  /// \brief Perform 2d offset algorithm on the plane
   /// \param[in] thePlane base plane for all offsets
   /// \param[in] theEdgesOrWire base shapes
   /// \param[in] theOffsetValue offset distance, it can be negative
@@ -63,10 +83,27 @@ public:
   GEOMALGOAPI_EXPORT virtual void generated(const GeomShapePtr theOldShape,
                                             ListOfShape& theNewShapes);
 
-
 private:
-  /// \brief Perform offset operation
-  void build(const GeomShapePtr& theShape, const double theOffsetValue);
+  /// \brief Perform simple offset operation
+  void buildSimple(const GeomShapePtr& theShape,
+                   const double        theOffsetValue);
+
+  /// \brief Perform 3d offset algorithm by join
+  void buildByJoin(const GeomShapePtr& theShape,
+                   const double        theOffsetValue,
+                   const bool          isPipeJoint);
+
+  /// \brief Perform partial 3d offset algorithm
+  void buildPartial(const GeomShapePtr& theShape,
+                    const ListOfShape&  theFaces,
+                    const double        theOffsetValue);
+
+  /// \brief Perform 2d offset algorithm on the plane
+  void build2d(const std::shared_ptr<GeomAPI_Pln>& thePlane,
+               const GeomShapePtr& theEdgeOrWire,
+               const double theOffsetValue,
+               const GeomAlgoAPI_OffsetJoint theJoint = GeomAlgoAPI_OffsetJoint::KeepDistance,
+               const bool theIsApprox = false);
 };
 
 #endif

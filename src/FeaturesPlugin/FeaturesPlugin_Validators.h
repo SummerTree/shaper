@@ -219,6 +219,38 @@ public:
                        Events_InfoMessage& theError) const;
 };
 
+/// \class FeaturesPlugin_ValidatorOffsetFacesSelection
+/// \ingroup Validators
+/// \brief Validates selection for "Offset" feature.
+class FeaturesPlugin_ValidatorOffsetFacesSelection: public ModelAPI_AttributeValidator
+{
+public:
+  /// \return True if the attribute is valid. It checks whether the selection
+  /// is acceptable for operation.
+  /// \param[in] theAttribute an attribute to check.
+  /// \param[in] theArguments a filter parameters.
+  /// \param[out] theError error message.
+  virtual bool isValid(const AttributePtr& theAttribute,
+                       const std::list<std::string>& theArguments,
+                       Events_InfoMessage& theError) const;
+};
+
+/// \class FeaturesPlugin_ValidatorThicknessSelection
+/// \ingroup Validators
+/// \brief Validates selection for "Thickness" feature.
+class FeaturesPlugin_ValidatorThicknessSelection: public ModelAPI_AttributeValidator
+{
+public:
+  /// \return True if the attribute is valid. It checks whether the selection
+  /// is acceptable for operation.
+  /// \param[in] theAttribute an attribute to check.
+  /// \param[in] theArguments a filter parameters.
+  /// \param[out] theError error message.
+  virtual bool isValid(const AttributePtr& theAttribute,
+                       const std::list<std::string>& theArguments,
+                       Events_InfoMessage& theError) const;
+};
+
 /// \class FeaturesPlugin_ValidatorPartitionSelection
 /// \ingroup Validators
 /// \brief Validates selection for partition.

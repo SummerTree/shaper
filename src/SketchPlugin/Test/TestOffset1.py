@@ -18,7 +18,7 @@
 #
 
 """
-    TestOffset.py
+    TestOffset1.py
     Unit test of SketchPlugin_Offset class
 
     SketchPlugin_Offset
