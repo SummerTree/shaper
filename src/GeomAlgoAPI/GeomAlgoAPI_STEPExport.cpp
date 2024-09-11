@@ -142,8 +142,11 @@ bool STEPExport(const std::string& theFileName,
       getAttributes(*aResult, anAttrs);
       exportShape(*aShape, anAttrs, GeomShapePtr(), aNullLab);
     }
-    else { // whole result selection
+    else if (aResult->get()) { // whole result selection
       putResult(*aResult, GeomShapePtr(), aNullLab, anAttrs);
+    }
+    else { // feature selection => export simple shape
+      exportShape(*aShape, anAttrs, GeomShapePtr(), aNullLab);
     }
   }
   // store the XCAF document to STEP file
