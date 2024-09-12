@@ -211,7 +211,7 @@ void Config_FeatureReader::fillFeature(xmlNodePtr theFeatureNode,
   bool isGroupToolbar = false;
   if (isGroupToolbarId.length() > 0)
     isGroupToolbar = (isGroupToolbarId == "yes");
-  outFeatureMessage->setGroupId(aGroupName);
+  outFeatureMessage->setGroupId(aGroupName); // Is it ID or name? ID must be language-independent.
   outFeatureMessage->setWorkbenchId(aWBNName);
   outFeatureMessage->setToolBarId(isGroupToolbar ? aGroupName : aWBNName);
 

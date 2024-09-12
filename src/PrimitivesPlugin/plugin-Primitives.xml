@@ -19,19 +19,19 @@
       </feature>
     </group>
     <group id="Primitives">
-      <feature id="Torus" title="Torus" tooltip="Create a Torus" icon="icons/Primitives/torus.png"
+      <feature id="Torus" title="Torus" tooltip="Create a torus" icon="icons/Primitives/torus.png"
                helpfile="torusFeature.html">
         <source path="torus_widget.xml"/>
       </feature>
     </group>
     <group id="Primitives">
-      <feature id="Cone" title="Cone" tooltip="Create a Cone" icon="icons/Primitives/cone.png"
+      <feature id="Cone" title="Cone" tooltip="Create a cone" icon="icons/Primitives/cone.png"
                helpfile="coneFeature.html">
         <source path="cone_widget.xml"/>
       </feature>
     </group>
     <group id="Primitives">
-      <feature id="Tube" title="Tube" tooltip="Create a Tube" icon="icons/Primitives/tube.png"
+      <feature id="Tube" title="Tube" tooltip="Create a tube" icon="icons/Primitives/tube.png"
                helpfile="tubeFeature.html">
         <source path="tube_widget.xml"/>
       </feature>

@@ -444,7 +444,7 @@ void XGUI_Workshop::initMenu()
 
 #ifdef HAVE_SALOME
   // Create only Undo, Redo commands
-  QAction* aAction = salomeConnector()->addDesktopCommand("UNDO_CMD", tr("Undo"),
+  QAction* aAction = salomeConnector()->addDesktopCommand("Edit/#Undo", tr("Undo"),
                                                         tr("Undo last command"),
                                                         QIcon(":pictures/undo.png"),
                                                         QKeySequence::Undo, false,
@@ -455,7 +455,7 @@ void XGUI_Workshop::initMenu()
   connect(aAction, SIGNAL(triggered(bool)), this, SLOT(onUndo()));
   addHistoryMenu(aAction, SIGNAL(updateUndoHistory(const QList<ActionInfo>&)), SLOT(onUndo(int)));
 
-  aAction = salomeConnector()->addDesktopCommand("REDO_CMD", tr("Redo"), tr("Redo last command"),
+  aAction = salomeConnector()->addDesktopCommand("Edit/#Redo", tr("Redo"), tr("Redo last command"),
                                               QIcon(":pictures/redo.png"), QKeySequence::Redo,
                                               false, "MEN_DESK_EDIT");
   salomeConnector()->addActionInToolbar( aAction, aToolBarTitle );
@@ -478,44 +478,44 @@ void XGUI_Workshop::initMenu()
 
   // Add commands to a file menu
   // Import sub-menu
-  aAction = salomeConnector()->addDesktopCommand("OPEN_CMD", tr("Part set..."),
+  aAction = salomeConnector()->addDesktopCommand("File/Import/PartSet", tr("Part set..."),
                                               tr("Import native file"),
                                               QIcon(), QKeySequence(),
                                               false, "MEN_DESK_FILE", tr("Import"), 10, 10);
   connect(aAction, SIGNAL(triggered(bool)), this, SLOT(onOpen()));
 
-  aAction = salomeConnector()->addDesktopCommand("IMPORT_PART_CMD", tr("Part..."),
+  aAction = salomeConnector()->addDesktopCommand("File/Import/Part", tr("Part..."),
                                           tr("Import structure of a part"),
                                           QIcon(), QKeySequence(),
                                           false, "MEN_DESK_FILE", tr("Import"), 10, 10);
   connect(aAction, SIGNAL(triggered(bool)), this, SLOT(onImportPart()));
 
-  aAction = salomeConnector()->addDesktopCommand("IMPORT_SHAPE_CMD", tr("From CAD format..."),
+  aAction = salomeConnector()->addDesktopCommand("File/Import/Shape", tr("From CAD format..."),
     tr("Import shape from a CAD format file"),
     ModuleBase_IconFactory::loadIcon("icons/Exchange/import.png"),
     QKeySequence(), false, "MEN_DESK_FILE", tr("Import"), 10, 10);
   connect(aAction, SIGNAL(triggered(bool)), this, SLOT(onImportShape()));
 
-  aAction = salomeConnector()->addDesktopCommand("IMPORT_IMAGE_CMD", tr("Picture..."),
+  aAction = salomeConnector()->addDesktopCommand("File/Import/Image", tr("Picture..."),
     tr("Import a picture from an image file"),
     QIcon(),
     QKeySequence(), false, "MEN_DESK_FILE", tr("Import"), 10, 10);
   connect(aAction, SIGNAL(triggered(bool)), this, SLOT(onImportImage()));
 
   // Export sub-menu
-  aAction = salomeConnector()->addDesktopCommand("SAVEAS_CMD", tr("Part set..."),
+  aAction = salomeConnector()->addDesktopCommand("File/Export/PartSet", tr("Part set..."),
                                              tr("Export the current document into a native file"),
                                               QIcon(), QKeySequence(),
                                               false, "MEN_DESK_FILE", tr("Export"), 10, 11);
   connect(aAction, SIGNAL(triggered(bool)), this, SLOT(onSaveAs()));
 
-  aAction = salomeConnector()->addDesktopCommand("EXPORT_PART_CMD", tr("Part..."),
+  aAction = salomeConnector()->addDesktopCommand("File/Export/Part", tr("Part..."),
                                           tr("Export a part of the current document into a file"),
                                           QIcon(), QKeySequence(),
                                           false, "MEN_DESK_FILE", tr("Export"), 10, 11);
   connect(aAction, SIGNAL(triggered(bool)), this, SLOT(onExportPart()));
 
-  aAction = salomeConnector()->addDesktopCommand("EXPORT_SHAPE_CMD", tr("To CAD format..."),
+  aAction = salomeConnector()->addDesktopCommand("File/Export/Shape", tr("To CAD format..."),
     tr("Export shape to a CAD format file"),
     ModuleBase_IconFactory::loadIcon("icons/Exchange/export.png"),
     QKeySequence(), false, "MEN_DESK_FILE", tr("Export"), 10, 11);
@@ -536,7 +536,7 @@ void XGUI_Workshop::initMenu()
                                 QIcon(":pictures/save.png"), QKeySequence());
   aCommand->connectTo(this, SLOT(onSaveAs()));
 
-  QString aUndoId = "UNDO_CMD";
+  QString aUndoId = "Edit/#Undo";
   aCommand = aGroup->addFeature(aUndoId, tr("Undo"), tr("Undo last command"),
                                 QIcon(":pictures/undo.png"), QKeySequence::Undo);
   aCommand->connectTo(this, SLOT(onUndo()));
@@ -545,7 +545,7 @@ void XGUI_Workshop::initMenu()
                  SIGNAL(updateUndoHistory(const QList<ActionInfo>&)),
                  SLOT(onUndo(int)));
 
-  QString aRedoId = "REDO_CMD";
+  QString aRedoId = "Edit/#Redo";
   aCommand = aGroup->addFeature(aRedoId, tr("Redo"), tr("Redo last command"),
                                 QIcon(":pictures/redo.png"), QKeySequence::Redo);
   aCommand->connectTo(this, SLOT(onRedo()));
@@ -1539,7 +1539,7 @@ void XGUI_Workshop::updateCommandStatus()
   if (aMgr->hasModuleDocument()) {
     foreach(QAction* aCmd, aCommands) {
       QString aId = aCmd->data().toString();
-      if (aId == "UNDO_CMD") {
+      if (aId == "Edit/#Undo") {
         bool isActionEnabled = false;
         // if ultimate is true -> using result of operation only, or using OR combination
         ModuleBase_ModelWidget* anActiveWidget = myOperationMgr->activeWidget();
@@ -1548,7 +1548,7 @@ void XGUI_Workshop::updateCommandStatus()
         else
           aCmd->setEnabled(myModule->canUndo());
       }
-      else if (aId == "REDO_CMD") {
+      else if (aId == "Edit/#Redo") {
         bool isActionEnabled = false;
         // if ultimate is true -> using result of operation only, or using OR combination
         ModuleBase_ModelWidget* anActiveWidget = myOperationMgr->activeWidget();

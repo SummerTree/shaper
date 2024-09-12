@@ -205,7 +205,7 @@
       <translation>Cône</translation>
     </message>
     <message>
-      <source>Create a Cone</source>
+      <source>Create a cone</source>
       <translation>Créer un cône</translation>
     </message>
   </context>
@@ -529,7 +529,7 @@
   <context>
     <name>Torus</name>
     <message>
-      <source>Create a Torus</source>
+      <source>Create a torus</source>
       <translation>Créer un tore</translation>
     </message>
     <message>
@@ -593,12 +593,7 @@
   <context>
     <name>Tube</name>
     <message>
-      <source>Create a Tube
-      </source>
-      <translation>Créer un tube</translation>
-    </message>
-    <message>
-      <source>Create a Tube</source>
+      <source>Create a tube</source>
       <translation>Créer un tube</translation>
     </message>
     <message>

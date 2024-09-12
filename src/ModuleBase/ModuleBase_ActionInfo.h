@@ -36,6 +36,8 @@
 struct MODULEBASE_EXPORT ModuleBase_ActionInfo
 {
   QString id; //!< action's (command) id
+  QString workbenchID; //!< Workbench's language-independent ID.
+
   bool checkable; //!< action's checkable state
   bool checked; //!< action's checked state
   bool enabled; //!< action's enabled state
@@ -61,7 +63,7 @@ struct MODULEBASE_EXPORT ModuleBase_ActionInfo
   ModuleBase_ActionInfo(const QString &text);
   //! Initializes structure with default values, except icon and text
   ModuleBase_ActionInfo(const QIcon &icon, const QString &text);
-  virtual ~ModuleBase_ActionInfo();
+  virtual ~ModuleBase_ActionInfo() = default;
 
   //! Fills itself with info from given \param theAction
   void initFrom(QAction* theAction);
@@ -71,6 +73,10 @@ struct MODULEBASE_EXPORT ModuleBase_ActionInfo
  protected:
   //! Initializes structure with default values, like QAction()
   void initDefault();
+
+public:
+  //! For debug purposes.
+  QString toString() const;
 };
 
 typedef ModuleBase_ActionInfo ActionInfo;

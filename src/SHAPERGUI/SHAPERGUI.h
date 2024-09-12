@@ -67,16 +67,29 @@ Q_OBJECT
 
   //--- XGUI connector interface -----
 
+  virtual QAction* addFeature(
+    const QString& theWorkBenchID,
+    const QString& theWorkBenchName,
+    const QString& theToolBarName,
+    const QString& theActionIdLastToken,
+    const QString& theActionTitle,
+    const QString& theActionToolTip,
+    const QString& theActionStatusTip,
+    const QIcon& theActionIcon,
+    const QKeySequence& theKS,
+    const bool theIsCheckable,
+    const bool theAddSeparator
+  );
+
   virtual QAction* addFeature(const QString& theWBName, const QString& theTBName,
-                              const QString& theId, const QString& theTitle,
+                              const QString& theIdLastToken, const QString& theTitle,
                               const QString& theTip, const QIcon& theIcon,
                               const QKeySequence& theKeys/* = QKeySequence()*/,
-                              bool isCheckable /*= false*/, const bool isAddSeparator/* = false*/,
-                              const QString& theStatusTip);
+                              const bool theIsCheckable /* = false*/, const bool theAddSeparator/* = false*/,
+                              const QString& theStatusTip /* = ""*/);
 
   //! Add feature (QAction) in the \a theWBName toolbar with given \a theInfo about action
-  virtual QAction* addFeature(const QString& theWBName,
-                              const ActionInfo& theInfo, const bool isAddSeparator);
+  virtual QAction* addFeature(const QString& theWBName, const ActionInfo& theInfo, const bool theAddSeparator);
 
   /// Add a nested feature
   /// \param theWBName a workbench name

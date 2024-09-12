@@ -21,6 +21,12 @@
 #include <ModuleBase_IconFactory.h>
 #include <ModuleBase_Tools.h>
 
+
+// #define ModuleBase_ActionInfo_DBG
+#ifdef ModuleBase_ActionInfo_DBG
+#include <iostream>
+#endif //ModuleBase_ActionInfo_DBG
+
 ModuleBase_ActionInfo::ModuleBase_ActionInfo()
 {
   initDefault();
@@ -37,10 +43,6 @@ ModuleBase_ActionInfo::ModuleBase_ActionInfo(const QIcon & theIcon, const QStrin
   initDefault();
   icon = theIcon;
   text = theText;
-}
-
-ModuleBase_ActionInfo::~ModuleBase_ActionInfo()
-{
 }
 
 void ModuleBase_ActionInfo::initFrom(QAction* theAction)
@@ -61,11 +63,17 @@ void ModuleBase_ActionInfo::initFrom(QAction* theAction)
   // whatsThis = theAction->whatsThis();
   shortcut = theAction->shortcut();
   font = theAction->font();
+
+  #ifdef ModuleBase_ActionInfo_DBG
+    std::wcout << "ModuleBase_ActionInfo::initFrom(QAction*). State after: " << toString().toStdWString() << std::endl;
+  #endif
 }
 
 void ModuleBase_ActionInfo::initFrom(std::shared_ptr<Config_FeatureMessage> theMessage)
 {
   id = QString::fromStdString(theMessage->id());
+  workbenchID = QString::fromStdString(theMessage->workbenchId());
+
   iconFile = QString::fromStdString(theMessage->icon());
   if (!iconFile.isEmpty()) {
     icon = ModuleBase_IconFactory::loadIcon(iconFile);
@@ -81,6 +89,10 @@ void ModuleBase_ActionInfo::initFrom(std::shared_ptr<Config_FeatureMessage> theM
   checkable = theMessage->isUseInput();
   // If Feature requires modal Dialog box for input
   modal = theMessage->isModal();
+
+  #ifdef ModuleBase_ActionInfo_DBG
+    std::wcout << "ModuleBase_ActionInfo::initFrom(std::shared_ptr<Config_FeatureMessage>). State after: " << toString().toStdWString() << std::endl;
+  #endif
 }
 
 void ModuleBase_ActionInfo::initDefault()
@@ -99,4 +111,40 @@ void ModuleBase_ActionInfo::initDefault()
   // whatsThis = QString();
   shortcut = QKeySequence();
   font = QFont();
+}
+
+QString ModuleBase_ActionInfo::toString() const
+{
+  QString res = "ModuleBase_ActionInfo {\n";
+  res += "\tid: \"" + id + "\";\n";
+
+  if (!workbenchID.isEmpty())
+    res += "\tworkbenchID: \"" + workbenchID + "\";\n";
+
+  res += QString("\tcheckable: ") + (checkable ? "+" : "-") +
+  "; checked: " + (checked ? "+" : "-") +
+  "; enabled: " + (enabled ? "+" : "-") +
+  "; visible: " + (visible ? "+" : "-") +
+  "; modal: " + (modal ? "+" : "-") + ";\n";
+
+  if (!text.isEmpty())
+    res += "\ttext: \"" + text + "\";\n";
+
+  if (!iconText.isEmpty())
+    res += "\ticonText: \"" + iconText + "\";\n";
+
+  if (!iconFile.isEmpty())
+    res += "\ticonFile: \"" + iconFile + "\";\n";
+
+  if (!toolTip.isEmpty())
+    res += "\ttoolTip: \"" + toolTip + "\";\n";
+
+  if (!toolBar.isEmpty())
+    res += "\ttoolBar: \"" + toolBar + "\";\n";
+
+  if (!shortcut.isEmpty())
+    res += "\tshortcut: \"" + shortcut.toString() + "\";\n";
+
+  res += "};\n";
+  return res;
 }

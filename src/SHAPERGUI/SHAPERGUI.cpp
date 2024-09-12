@@ -715,42 +715,33 @@ SHAPERGUI_OCCSelector* SHAPERGUI::createSelector(SUIT_ViewManager* theMgr)
   }
   return 0;
 }
-
 //******************************************************
+
 CAM_DataModel* SHAPERGUI::createDataModel()
 {
   return new SHAPERGUI_DataModel(this);
 }
-
-QAction* SHAPERGUI::addFeature(const QString& theWBName, const ActionInfo& theInfo,
-                               const bool isAddSeparator)
-{
-  return addFeature(theWBName,
-                    theInfo.toolBar,
-                    theInfo.id,
-                    theInfo.text,
-                    //Issue #650: in the SALOME mode the tooltip should be same as text
-                    theInfo.text,
-                    theInfo.icon,
-                    theInfo.shortcut,
-                    theInfo.checkable,
-                    isAddSeparator,
-                    theInfo.toolTip);
-}
-
 //******************************************************
-QAction* SHAPERGUI::addFeature(const QString& theWBName, const QString& theTBName,
-                               const QString& theId, const QString& theTitle, const QString& theTip,
-                               const QIcon& theIcon, const QKeySequence& theKeys,
-                               bool isCheckable, const bool isAddSeparator,
-                               const QString& theStatusTip)
-{
+
+QAction* SHAPERGUI::addFeature(
+  const QString& theWorkBenchID,
+  const QString& theWorkBenchName,
+  const QString& theToolBarName,
+  const QString& theActionIdLastToken,
+  const QString& theActionTitle,
+  const QString& theActionToolTip,
+  const QString& theActionStatusTip,
+  const QIcon& theActionIcon,
+  const QKeySequence& theKS = QKeySequence(),
+  const bool theIsCheckable = false,
+  const bool theAddSeparator = false
+) {
   static QString aLastTool = "";
   static int aNb = 0;
   if (aLastTool.isEmpty())
-    aLastTool = theWBName;
-  else if (theWBName != aLastTool) {
-    aLastTool = theWBName;
+    aLastTool = theWorkBenchName;
+  else if (theWorkBenchName != aLastTool) {
+    aLastTool = theWorkBenchName;
     if (aNb > 20) {
       desktop()->addToolBarBreak();
       aNb = 0;
@@ -762,18 +753,20 @@ QAction* SHAPERGUI::addFeature(const QString& theWBName, const QString& theTBNam
   myActionsList.append(aId);
   SUIT_Desktop* aDesk = application()->desktop();
   int aKeys = 0;
-  for (int i = 0; i < theKeys.count(); i++)
-    aKeys += theKeys[i];
+  for (int i = 0; i < theKS.count(); i++)
+    aKeys += theKS[i];
 
-  QAction* aAction = createAction(aId, theTip, theIcon, theTitle, theTip, aKeys, aDesk,
-                                  isCheckable, nullptr, nullptr, theId);
-  aAction->setStatusTip(theStatusTip);
+  const QString inModuleActionID = theWorkBenchID.isEmpty() ? theActionIdLastToken : theWorkBenchID + "/" + theActionIdLastToken ;
+  QAction* aAction = createAction(aId, theActionToolTip, theActionIcon, theActionTitle, theActionToolTip, theKS,
+                                  aDesk, theIsCheckable, nullptr, nullptr, inModuleActionID);
 
-  aAction->setData(theId);
+  aAction->setStatusTip(theActionStatusTip);
 
-  int aWBMenu = createMenu(theWBName, -1, -1, 30/*10-Window, 1000 - Help*/);
+  aAction->setData(theActionIdLastToken);
 
-  if( theId == "PointCoordinates" )
+  const int aWBMenu = createMenu(theWorkBenchName, -1, -1, 30/*10-Window, 1000 - Help*/);
+
+  if( theActionIdLastToken == "PointCoordinates" )
     createMenu(separator(), aWBMenu);
 
 #ifdef _DEBUG
@@ -781,21 +774,61 @@ QAction* SHAPERGUI::addFeature(const QString& theWBName, const QString& theTBNam
 #endif
     createMenu(aId, aWBMenu);
 
-  if (isAddSeparator)
+  if (theAddSeparator)
     createMenu(separator(), aWBMenu);
 
-  int aWBTool = createTool(theTBName, theTBName);
+  int aWBTool = createTool(theToolBarName, theToolBarName);
 #ifdef _DEBUG
   int aToolId =
 #endif
     createTool(aId, aWBTool);
-  registerCommandToolbar(theTBName, aId);
-  if (isAddSeparator) {
+  registerCommandToolbar(theToolBarName, aId);
+  if (theAddSeparator) {
     createTool(separator(), aWBTool);
-    registerCommandToolbar(theTBName, -1);
+    registerCommandToolbar(theToolBarName, -1);
   }
   connect(aAction, SIGNAL(triggered(bool)), this, SLOT(logShaperGUIEvent()));
   return aAction;
+}
+//******************************************************
+
+QAction* SHAPERGUI::addFeature(const QString& theWorkBenchName, const ActionInfo& theInfo, const bool theAddSeparator)
+{
+  return addFeature(
+    theInfo.workbenchID,
+    theWorkBenchName,
+    theInfo.toolBar,
+    theInfo.id,
+    theInfo.text,
+    theInfo.text, //Issue #650: in the SALOME mode the tooltip should be same as text.
+    theInfo.toolTip,
+    theInfo.icon,
+    theInfo.shortcut,
+    theInfo.checkable,
+    theAddSeparator
+  );
+}
+//******************************************************
+
+QAction* SHAPERGUI::addFeature(const QString& theWBName, const QString& theTBName,
+                               const QString& theIdLastToken, const QString& theTitle, const QString& theTip,
+                               const QIcon& theIcon, const QKeySequence& theKeySequence = QKeySequence(),
+                               const bool theIsCheckable = false, const bool theAddSeparator = false,
+                               const QString& theStatusTip = "")
+{
+  return addFeature(
+    "" /*theWorkBenchID*/,
+    theWBName,
+    theTBName,
+    theIdLastToken,
+    theTitle,
+    theTip,
+    theStatusTip,
+    theIcon,
+    theKeySequence,
+    theIsCheckable,
+    theAddSeparator
+  );
 }
 
 bool SHAPERGUI::isFeatureOfNested(const QAction* theAction)
@@ -842,12 +875,12 @@ QAction* SHAPERGUI::addFeatureOfNested(const QString& theWBName,
 
 //******************************************************
 QAction* SHAPERGUI::addDesktopCommand(const QString& theId, const QString& theTitle,
-                                           const QString& theTip, const QIcon& theIcon,
-                                           const QKeySequence& theKeys, bool isCheckable,
-                                           const char* theMenuSourceText,
-                                           const QString& theSubMenu,
-                                           const int theMenuPosition,
-                                           const int theSubMenuPosition)
+                                      const QString& theTip, const QIcon& theIcon,
+                                      const QKeySequence& theKeys, bool isCheckable,
+                                      const char* theMenuSourceText,
+                                      const QString& theSubMenu,
+                                      const int theMenuPosition,
+                                      const int theSubMenuPosition)
 {
   int aMenu = createMenu(tr(theMenuSourceText), -1, -1);
   if (!theSubMenu.isNull())
