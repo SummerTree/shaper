@@ -18,6 +18,23 @@ The **Export file** dialog will be opened:
 
 Specify file name and press **Save** button to export the file. **Cancel** button cancels the operation.
 
+**TUI Command**:
+
+One cannot export entire PartSet into a single file from python interface, but it is possible to save Shaper session contents into a directory:
+
+.. py:function:: ModelAPI_Session.save(FolderNameString, FilesList)
+
+    :param string: The folder name to save in
+    :param list: A list of stored files (output)
+
+Result
+""""""
+
+The Result of operation is some exported files.
+
+**See Also** a sample TUI Script of :ref:`tui_save_session` operation.
+
+
 
 Export Part
 -----------
@@ -57,6 +74,8 @@ If the PartSet is active, only results (construction elements) of this PartSet m
     :param part: The current part object
     :param string: The file name
     :param list: A list of exporting objects, if necessary
+
+    *Note:* You can also pass the entire PartSet as the first argument to export features created in it (those that are at global level, not within parts).
 
 Result
 """"""

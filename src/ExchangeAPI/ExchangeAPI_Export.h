@@ -194,6 +194,9 @@ PyObject* exportToXAOMem(const std::shared_ptr<ModelAPI_Document> & thePart,
 
 /** \ingroup CPPHighAPI
  *  \brief Export selected features or the whole part to the binary file.
+ *  \param thePart Part document
+ *  \param theFilePath File to store the part (recommended extension is .shaperpart)
+ *  \param Selected objects list. If empty, the whole part is saved.
  */
 EXCHANGEAPI_EXPORT void exportPart(
     const std::shared_ptr<ModelAPI_Document> & thePart,
