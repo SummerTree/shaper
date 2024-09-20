@@ -20,7 +20,7 @@ Specify file name and press **Save** button to export the file. **Cancel** butto
 
 **TUI Command**:
 
-One cannot export entire PartSet into a single file from python interface, but it is possible to save Shaper session contents into a directory:
+It is not possible to export the entire PartSet into a single file using the Python interface, but the contents of a Shaper session can be saved into a directory:
 
 .. py:function:: ModelAPI_Session.save(FolderNameString, FilesList)
 
@@ -30,7 +30,7 @@ One cannot export entire PartSet into a single file from python interface, but i
 Result
 """"""
 
-The Result of operation is some exported files.
+The result of the operation is several files saved in the specified directory.
 
 **See Also** a sample TUI Script of :ref:`tui_save_session` operation.
 

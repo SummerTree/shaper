@@ -46,6 +46,7 @@ indices = np.arange(0, num_pts, dtype=float) + 0.5
 phi0 = np.arccos(1 - 2*indices/num_pts)
 theta0 = np.pi * (1 + 5**0.5) * indices
 # ajout de bruit Gaussien pour rendre légèrement aléatoire les positions des tubes :
+np.random.seed(0) # This allows to avoid randomness and appearance of fillet bug (issue #42429), while increasing num_pts over 50 still may introduce a position where the fillet problem occurs!
 bruit=np.pi*np.random.normal(0, bruit, num_pts)  # std = np.pi*0.05
 phi = phi0+bruit
 theta = theta0+bruit

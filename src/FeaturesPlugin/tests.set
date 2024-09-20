@@ -318,6 +318,7 @@ SET(TEST_NAMES_PARA
                TestFillet1.py
                TestFillet_ErrorMsg.py
                TestFillet_History.py
+               TestFillet_NearSeamEdge.py
                TestScale1.py
                TestScale2.py
                Test1816.py
