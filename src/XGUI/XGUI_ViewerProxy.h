@@ -93,6 +93,16 @@ Q_OBJECT
   virtual void setViewProjection( double theX, double theY, double theZ,
                                   double theTwist );
 
+  //! Sets the view projection and up direction
+  /// \param theX the X projection value
+  /// \param theY the Y projection value
+  /// \param theZ the Z projection value
+  /// \param theUpX the X value of the up direction vector
+  /// \param theUpY the Y value of the up direction vector
+  /// \param theUpZ the Z value of the up direction vector
+  virtual void setViewProjection( double theX, double theY, double theZ,
+                                  double theUpX, double theUpY, double theUpZ);
+
   //! Sets the view fitted all
   virtual void fitAll();
 

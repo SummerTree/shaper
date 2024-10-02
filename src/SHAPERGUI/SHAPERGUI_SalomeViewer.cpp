@@ -430,6 +430,26 @@ void SHAPERGUI_SalomeViewer::setViewProjection(double theX, double theY,
   }
 }
 
+//**********************************************
+void SHAPERGUI_SalomeViewer::setViewProjection(double theX, double theY, double theZ, double theUpX, double theUpY, double theUpZ)
+{
+  if (!mySelector)
+    return;
+
+  SUIT_ViewManager* aMgr = mySelector->viewer()->getViewManager();
+  OCCViewer_ViewFrame* aVFrame = dynamic_cast<OCCViewer_ViewFrame*>(aMgr->getActiveView());
+  if (aVFrame) {
+    Handle(V3d_View) aView3d = aVFrame->getViewPort()->getView();
+    if (!aView3d.IsNull()) {
+      aView3d->SetProj(theX, theY, theZ);
+      aView3d->SetUp (theUpX, theUpY, theUpZ);
+      aView3d->FitAll(0.01, false);
+      if (aView3d->Depth() < 0.1)
+        aView3d->DepthFitAll();
+    }
+  }
+}
+
 //***************************************
 void SHAPERGUI_SalomeViewer::addSelectionFilter(const Handle(SelectMgr_Filter)& theFilter)
 {

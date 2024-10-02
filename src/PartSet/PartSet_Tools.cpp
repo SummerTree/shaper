@@ -307,8 +307,17 @@ std::shared_ptr<GeomAPI_Pln> PartSet_Tools::sketchPlane(CompositeFeaturePtr theS
       theSketch->data()->attribute(SketchPlugin_Sketch::NORM_ID()));
 
   if (aNormal.get() && aNormal->isInitialized() &&
-      anOrigin.get() && anOrigin->isInitialized())
-    aPlane = std::shared_ptr<GeomAPI_Pln>(new GeomAPI_Pln(anOrigin->pnt(), aNormal->dir()));
+      anOrigin.get() && anOrigin->isInitialized()) {
+    std::shared_ptr<GeomDataAPI_Dir> aDirX = std::dynamic_pointer_cast<GeomDataAPI_Dir>(
+        theSketch->data()->attribute(SketchPlugin_Sketch::DIRX_ID()));
+    if (aDirX.get() && aDirX->isInitialized()) {
+      std::shared_ptr<GeomAPI_Ax3> anAxes = std::shared_ptr<GeomAPI_Ax3>(new GeomAPI_Ax3(anOrigin->pnt(), aDirX->dir(), aNormal->dir()));
+      aPlane = std::shared_ptr<GeomAPI_Pln>(new GeomAPI_Pln(anAxes));
+    }
+    else {
+      aPlane = std::shared_ptr<GeomAPI_Pln>(new GeomAPI_Pln(anOrigin->pnt(), aNormal->dir()));
+    }
+  }
 
   return aPlane;
 }

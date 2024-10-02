@@ -88,6 +88,30 @@
 #define DBL_MAX 1.7976931348623158e+308
 #endif
 
+
+
+//=============================================================================
+//function : setViewProjection
+//purpose  : Set the view projection with a specific plane orientation
+//=============================================================================
+static void setViewProjection(ModuleBase_IWorkshop* theWorkshop, const GeomPlanePtr thePlane, bool theReversed)
+{
+  GeomDirPtr aDirection = thePlane->direction();
+  GeomDirPtr aXDirection = thePlane->xDirection();
+  gp_Dir aNormDir = aDirection->impl<gp_Dir>();
+  gp_Dir aXDirPln = aXDirection->impl<gp_Dir>();
+  if (theReversed) {
+    aNormDir.Reverse();
+    aXDirPln.Reverse();
+  }
+
+  gp_Dir aYDirPln = aNormDir.Crossed(aXDirPln);
+
+  // Set the view projection and up direction
+  theWorkshop->viewer()->setViewProjection(aNormDir.X(), aNormDir.Y(), aNormDir.Z(), aYDirPln.X(), aYDirPln.Y(), aYDirPln.Z());
+}
+
+
 PartSet_WidgetSketchLabel::PartSet_WidgetSketchLabel(QWidget* theParent,
                         ModuleBase_IWorkshop* theWorkshop,
                         const Config_WidgetAPI* theData,
@@ -383,15 +407,12 @@ void PartSet_WidgetSketchLabel::updateByPlaneSelected(const ModuleBase_ViewerPrs
   }
   // 2. if the planes were displayed, change the view projection
 
-  std::shared_ptr<GeomAPI_Dir> aDir = aPlane->direction();
-  gp_XYZ aXYZ = aDir->impl<gp_Dir>().XYZ();
-  double aTwist = 0.0;
-
   // Rotate view if the sketcher plane is selected only from preview planes
   // Preview planes are created only if there is no any shape
   bool aRotate = Config_PropManager::boolean(SKETCH_TAB_NAME, "rotate_to_plane");
   if (aRotate) {
-    myWorkshop->viewer()->setViewProjection(aXYZ.X(), aXYZ.Y(), aXYZ.Z(), aTwist);
+    bool aReversed = myViewInverted->isChecked();
+    setViewProjection(myWorkshop, aPlane, aReversed);
   }
   if (isSetSizeOfView && aSizeOfView > 0) {
     Handle(V3d_View) aView3d = myWorkshop->viewer()->activeView();
@@ -739,11 +760,9 @@ void PartSet_WidgetSketchLabel::onSetPlaneView()
 {
   std::shared_ptr<GeomAPI_Pln> aPlane = plane();
   if (aPlane.get()) {
-    std::shared_ptr<GeomAPI_Dir> aDirection = aPlane->direction();
-    gp_Dir aDir = aDirection->impl<gp_Dir>();
-    if (myViewInverted->isChecked())
-      aDir.Reverse();
-    myWorkshop->viewer()->setViewProjection(aDir.X(), aDir.Y(), aDir.Z(), 0.);
+    bool aReversed = myViewInverted->isChecked();
+    setViewProjection(myWorkshop, aPlane, aReversed);
+
     PartSet_Module* aModule = dynamic_cast<PartSet_Module*>(myWorkshop->module());
     if (aModule)
       aModule->onViewTransformed();

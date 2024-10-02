@@ -128,6 +128,18 @@ void XGUI_ViewerProxy::setViewProjection(double theX, double theY, double theZ, 
   }
 }
 
+void XGUI_ViewerProxy::setViewProjection(double theX, double theY, double theZ, double theUpX, double theUpY, double theUpZ)
+{
+  Handle(V3d_View) aView3d = activeView();
+  if (!aView3d.IsNull()) {
+    aView3d->SetProj(theX, theY, theZ);
+    aView3d->SetUp (theUpX, theUpY, theUpZ);
+    aView3d->FitAll(0.01, false);
+    if (aView3d->Depth() < 0.1)
+      aView3d->DepthFitAll();
+  }
+}
+
 void XGUI_ViewerProxy::fitAll()
 {
 #ifdef HAVE_SALOME

@@ -97,6 +97,16 @@ Q_OBJECT
   virtual void setViewProjection( double theX, double theY, double theZ,
                                   double theTwist ) = 0;
 
+  //! Sets the view projection and up direction
+  /// \param theX the X projection value
+  /// \param theY the Y projection value
+  /// \param theZ the Z projection value
+  /// \param theUpX the X value of the up direction vector
+  /// \param theUpY the Y value of the up direction vector
+  /// \param theUpZ the Z value of the up direction vector
+  virtual void setViewProjection( double theX, double theY, double theZ,
+                                  double theUpX, double theUpY, double theUpZ) = 0;
+
   /// Add selection filter to the viewer
   /// \param theFilter a selection filter
   virtual void addSelectionFilter(const Handle(SelectMgr_Filter)& theFilter) = 0;
