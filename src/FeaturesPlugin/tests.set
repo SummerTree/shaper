@@ -525,6 +525,7 @@ SET(TEST_NAMES_PARA
                Test20247.py
                Test22847.py
                TestPointCoordinates.py
+               TestPointCloud_Cone.py
                TestPointCloud.py
                TestGeometryCalculation.py
                TestBoundingBox.py

@@ -102,6 +102,7 @@
 
 #include <ShapeUpgrade_ShapeDivideArea.hxx>
 #include <ShapeUpgrade_UnifySameDomain.hxx>
+#include <ShapeFix.hxx>
 
 #include <GEOMAlgo_PassKeyShape.hxx>
 
@@ -1016,6 +1017,13 @@ Standard_Integer GEOMAlgo_AlgoTools::PointCloudInFace(const TopoDS_Face& theFace
   tool.NbParts() = theNbPnts;
   tool.Perform();
   TopoDS_Shape res = tool.Result();
+  if (res.IsNull())
+    return -1;
+
+  // Splitting algorithm can produces invalid shapes that results in
+  // infinite loop on ShapeUpgrade_UnifySameDomain::build() call.
+  // Here is a fix from OCCT DRAW: SWDRAW_ShapeUpgrade: splitbynumber().
+  ShapeFix::SameParameter(res, Standard_False);
 
   BRep_Builder aBB;
   TopoDS_Compound aGlobalRes;
@@ -1236,6 +1244,13 @@ gp_Pnt GetMidPnt2d(const TopoDS_Face&     theFace,
     {
       const TopoDS_Edge& anEdge = aWexp.Current();
       BRepAdaptor_Curve2d aBAcurve2d (anEdge, theFace);
+      // Initialization of curve could fail in constructor,
+      // so we need to check if we actually have a curve here.
+      if (!aBAcurve2d.Curve())
+      {
+        continue;
+      }
+
       Standard_Real aDelta = (aBAcurve2d.LastParameter() - aBAcurve2d.FirstParameter())/aNbSamples;
       for (Standard_Integer ii = 0; ii < aNbSamples; ii++)
       {
@@ -1497,6 +1512,12 @@ void ModifyFacesForGlobalResult(const TopoDS_Face&     theInputFace,
         aLocalTool.SetNumbersUVSplits (1, aNumberToSplit);
       aLocalTool.Perform();
       aLocalResult = aLocalTool.Result();
+
+      // Splitting algorithm can produces invalid shapes that results in
+      // infinite loop on ShapeUpgrade_UnifySameDomain::build() call.
+      // Here is a fix from OCCT DRAW: SWDRAW_ShapeUpgrade: splitbynumber().
+      ShapeFix::SameParameter(aLocalResult, Standard_False);
+
       aNbFacesInLocalResult = aNumberToSplit;
 #endif
     }
@@ -1575,6 +1596,11 @@ void ModifyFacesForGlobalResult(const TopoDS_Face&     theInputFace,
         aLocalTool.SetNumbersUVSplits (1, aNumberToSplit);
       aLocalTool.Perform();
       aLocalResult = aLocalTool.Result();
+
+      // Splitting algorithm can produces invalid shapes that results in
+      // infinite loop on ShapeUpgrade_UnifySameDomain::build() call.
+      // Here is a fix from OCCT DRAW: SWDRAW_ShapeUpgrade: splitbynumber().
+      ShapeFix::SameParameter(aLocalResult, Standard_False);
 #endif
     }
     else
