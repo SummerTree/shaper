@@ -199,7 +199,7 @@ assert (model.dof(aSketchFeature) == 7)
 aSession.startOperation()
 aRefListInitial.remove(aSketchLine2.lastResult())
 aSession.finishOperation()
-checkOffset(aRefListA, aRefListB, anOffsetToBaseMap, VALUE, IS_REVERSED, 2, 4)
+checkOffset(aRefListA, aRefListB, anOffsetToBaseMap, VALUE, IS_REVERSED, 2, 3)
 assert (model.dof(aSketchFeature) == 7)
 
 #=========================================================================
