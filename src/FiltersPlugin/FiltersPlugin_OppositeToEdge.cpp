@@ -56,11 +56,15 @@ static GeomShapePtr oppositeEdgeInQuadFace(const GeomShapePtr theEdge,
   GeomShapePtr anOppositeEdge;
   GeomAPI_ShapeExplorer aWExp(theFace, GeomAPI_Shape::WIRE);
   GeomWirePtr aWire = aWExp.current()->wire();
+
+  // face with a hole is not a quadrangle
   aWExp.next();
-  if (aWExp.more()) {
-    // face with a hole is not a quadrangle
+  if (aWExp.more())
     return anOppositeEdge;
-  }
+
+  // not quad face
+  if(aWire->subShapes(GeomAPI_Shape::EDGE).size() != 4)
+    return anOppositeEdge;
 
   GeomAPI_WireExplorer anExp(aWire);
   while (anExp.more()) {
@@ -122,7 +126,6 @@ static void cacheOppositeEdges(const GeomShapePtr theTopLevelShape,
   // cache opposite edges
   cacheOppositeEdge(theEdge, anEdgesToFaces, theCache);
 }
-
 
 bool FiltersPlugin_OppositeToEdge::isSupported(GeomAPI_Shape::ShapeType theType) const
 {

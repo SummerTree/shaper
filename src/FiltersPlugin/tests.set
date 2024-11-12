@@ -55,6 +55,7 @@ SET(TEST_NAMES
   TestFilter_OnPlaneSide_Multi.py
   TestFilter_OppositeToEdge.py
   TestFilter_OppositeToEdge_Exclude.py
+  TestFilter_OppositeToEdge_43493.py
   TestFilter_RelativeToSolid_In.py
   TestFilter_RelativeToSolid_Out.py
   TestFilter_RelativeToSolid_On.py
