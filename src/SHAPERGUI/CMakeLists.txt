@@ -62,6 +62,7 @@ SET(PROJECT_RESOURCES
     resources/SalomeApp.xml
     resources/shaper.png
     resources/action_assets.json
+    resources/action_id_mutations.json
 )
 
 SET(TEXT_RESOURCES

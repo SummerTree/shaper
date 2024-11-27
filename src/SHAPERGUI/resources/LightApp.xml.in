@@ -66,6 +66,9 @@
   <section name="action_assets">
     <parameter name="%SHAPER_ROOT_DIR%/share/salome/resources/shaper/action_assets.json" value=""/>
   </section>
+  <section name="actionID_mutations">
+    <parameter name="%SHAPER_ROOT_DIR%/share/salome/resources/shaper/action_id_mutations.json" value=""/>
+  </section>
   <section name="shortcuts_vA1.0:SHAPER">
     <parameter name="Build/Compound" value=""/>
     <parameter name="Build/CompSolid" value=""/>
