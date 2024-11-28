@@ -29,6 +29,7 @@ class GeomAPI_Face;
 class GeomAPI_Pln;
 class GeomAPI_Pnt;
 class GeomAPI_Vertex;
+class gp_Ax3;
 
 /// \class GeomAlgoAPI_FaceBuilder
 /// \ingroup DataAlgo
@@ -37,12 +38,12 @@ class GEOMALGOAPI_EXPORT GeomAlgoAPI_FaceBuilder
 {
  public:
   /// Creates square planar face by given point of the center,
-  /// normal to the plane and size of square
+  /// normal to the plane and size of square.
   static std::shared_ptr<GeomAPI_Face> squareFace(const std::shared_ptr<GeomAPI_Pnt> theCenter,
                                                   const std::shared_ptr<GeomAPI_Dir> theNormal,
                                                   const double theSize);
   /// Creates square planar face by given point of the center,
-  /// normal to the plane and size of square
+  /// normal to the plane and size of square.
   static std::shared_ptr<GeomAPI_Face> squareFace(const std::shared_ptr<GeomAPI_Pln> thePlane,
                                                   const double theSize);
 
@@ -50,10 +51,17 @@ class GEOMALGOAPI_EXPORT GeomAlgoAPI_FaceBuilder
   static std::shared_ptr<GeomAPI_Face> planarFace(const std::shared_ptr<GeomAPI_Pnt> theCenter,
                                                   const std::shared_ptr<GeomAPI_Dir> theNormal);
 
-  /// Creates a planar face by given plane, left lower point and size.
+  /// Creates a planar face by given plane, left lower point and size. Does not take into account X & Y directions of thePlane!
   static std::shared_ptr<GeomAPI_Face> planarFace(const std::shared_ptr<GeomAPI_Pln> thePlane,
                                                   const double theX, const double theY,
                                                   const double theWidth, const double theHeight);
+
+  /*! \brief Creates rectangular planar face, with normal, X and Y directions as of theCS. */
+  static std::shared_ptr<GeomAPI_Face> planarRectangularFace(
+    const gp_Ax3& theCS,
+    double theWidth, double theHeight,
+    double theOffsetX = 0, double theOffsetY = 0
+  );
 
   /// Creates a planar face by three vertices.
   static std::shared_ptr<GeomAPI_Face> planarFaceByThreeVertices(

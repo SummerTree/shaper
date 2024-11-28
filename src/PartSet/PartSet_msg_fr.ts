@@ -99,6 +99,47 @@ Erreur : %1</translation>
     </message>
 </context>
 <context>
+    <name>PartSet_WidgetSketchGrid</name>
+    <message>
+        <source>Reset</source>
+        <translation>Réinitialiser</translation>
+    </message>
+    <message>
+        <source>Set default pitches and zero offsets.</source>
+        <translation>Définissez le pas par défaut et les offsets zéro.</translation>
+    </message>
+    <message>
+        <source>Offset angle,°</source>
+        <translation>Offset angulaire,°</translation>
+    </message>
+    <message>
+        <source>Offset</source>
+        <translation>Offset</translation>
+    </message>
+</context>
+<context>
+    <name>PartSet_WidgetSketchRectangularGrid</name>
+    <message>
+        <source>Pitch</source>
+        <translation>Pas</translation>
+    </message>
+</context>
+<context>
+    <name>PartSet_WidgetSketchCircularGrid</name>
+    <message>
+        <source>Pitch</source>
+        <translation>Pas</translation>
+    </message>
+    <message>
+        <source>Num of angular segments</source>
+        <translation>Nombre de segments angulaires</translation>
+    </message>
+    <message>
+        <source>Even numbers only.</source>
+        <translation>Chiffres pairs uniquement.</translation>
+    </message>
+</context>
+<context>
     <name>PartSet_WidgetSketchLabel</name>
     <message>
         <source>Size of the view</source>
@@ -117,8 +158,44 @@ Erreur : %1</translation>
         <translation>Renversé</translation>
     </message>
     <message>
+        <source>Axes</source>
+        <translation>Axes</translation>
+    </message>
+    <message>
+        <source>Substrate</source>
+        <translation>Substrat</translation>
+    </message>
+    <message>
         <source>Set plane view</source>
         <translation>Définir la vue plane</translation>
+    </message>
+    <message>
+        <source>Construction grid</source>
+        <translation>Grille de construction</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <translation>Désactivé</translation>
+    </message>
+    <message>
+        <source>Rectangular</source>
+        <translation>Rectangulaire</translation>
+    </message>
+    <message>
+        <source>Circular</source>
+        <translation>Circulaire</translation>
+    </message>
+    <message>
+        <source>Don't snap</source>
+        <translation>Ne t'accroche pas</translation>
+    </message>
+    <message>
+        <source>Snap anyway</source>
+        <translation>Pour s'accrocher quand même</translation>
+    </message>
+    <message>
+        <source>Snap in proximity</source>
+        <translation>Pour s'accrocher à proximité</translation>
     </message>
     <message>
         <source>Show geometrical constraints</source>

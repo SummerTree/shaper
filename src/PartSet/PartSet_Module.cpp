@@ -1802,9 +1802,9 @@ void PartSet_Module::processEvent(const std::shared_ptr<Events_Message>& theMess
     CompositeFeaturePtr aSketch = mySketchMgr->activeSketch();
     if (aSketch.get()) {
       ModuleBase_Operation* anOperation = myWorkshop->currentOperation();
-      if (PartSet_SketcherMgr::isSketchOperation(anOperation) &&
-        mySketchMgr->previewSketchPlane()->isDisplayed())
-        mySketchMgr->previewSketchPlane()->createSketchPlane(aSketch, myWorkshop);
+      if (PartSet_SketcherMgr::isSketchOperation(anOperation)) {
+        mySketchMgr->previewSketchPlane()->setAllUsingSketch(aSketch);
+      }
     }
   }
   else if (theMessage->eventID() == Events_Loop::loop()->eventByName(EVENT_FEATURE_LICENSE_VALID)) {

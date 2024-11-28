@@ -41,6 +41,7 @@
 #include <ModelAPI_ResultBody.h>
 #include <ModelAPI_AttributeSelection.h>
 #include <ModelAPI_AttributeSelectionList.h>
+#include <ModelAPI_AttributeDouble.h>
 #include <ModelAPI_Validator.h>
 #include <ModelAPI_Events.h>
 #include <ModelAPI_ResultConstruction.h>
@@ -254,10 +255,6 @@ bool PartSet_WidgetSketchCreator::isValidSelectionCustom(const ModuleBase_Viewer
 
 void PartSet_WidgetSketchCreator::activateSelectionControl()
 {
-  // reset previously set size of view needed on restart extrusion after Sketch
-  if (myModule->sketchMgr()->previewSketchPlane()->isUseSizeOfView())
-    myModule->sketchMgr()->previewSketchPlane()->setSizeOfView(0, false);
-
   // we need to call activate here as the widget has no focus accepted controls
   // if these controls are added here, activate will happens automatically after focusIn()
   XGUI_Workshop* aWorkshop = XGUI_Tools::workshop(myModule->workshop());
@@ -431,20 +428,18 @@ bool PartSet_WidgetSketchCreator::startSketchOperation(
   }
   aSketchStarted = true;
   // Set View size if a plane is selected
-  if (myPreviewPlanes->isPreviewDisplayed() &&
-      myPreviewPlanes->isPreviewShape(aValue->shape())) {
+  if (myPreviewPlanes->isPreviewDisplayed() && myPreviewPlanes->isPreviewShape(aValue->shape())) {
     // set default plane size
-    bool isSetSizeOfView = false;
-    double aSizeOfView = 0;
-    QString aSizeOfViewStr = mySizeOfView->text();
-    if (!aSizeOfViewStr.isEmpty()) {
-      aSizeOfView = aSizeOfViewStr.toDouble(&isSetSizeOfView);
-      if (isSetSizeOfView && aSizeOfView <= 0) {
-        isSetSizeOfView = false;
-      }
-    }
-    if (isSetSizeOfView)
-      myModule->sketchMgr()->previewSketchPlane()->setSizeOfView(aSizeOfView, true);
+    bool isValidSizeInput = true;
+    double aSizeOfView = mySizeOfView->text().toDouble(&isValidSizeInput);
+    if (aSizeOfView <= 0 || !isValidSizeInput)
+      aSizeOfView = PartSet_PreviewSketchPlane::defaultSketchSize();
+
+    const auto sketch = myModule->sketchMgr()->activeSketch();
+    if (sketch)
+      PartSet_Tools::sketchPlaneDefaultSize(sketch)->setValue(aSizeOfView);
+
+    myModule->sketchMgr()->previewSketchPlane()->setAllUsingSketch(sketch);
   }
   // manually deactivation because the widget was not activated as has no focus acceptin controls
   deactivate();

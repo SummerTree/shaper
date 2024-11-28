@@ -27,10 +27,11 @@ class GeomAPI_Ax3;
 class GeomAPI_Pnt;
 class GeomAPI_Dir;
 class GeomAPI_Lin;
+class gp_Pln;
 
 /**\class GeomAPI_Pln
  * \ingroup DataModel
- * \brief 3D point defined by three coordinates
+ * \Plane in 3D place, defined by normal, center and x-direction.
  */
 
 class GeomAPI_Pln : public GeomAPI_Interface
@@ -38,7 +39,7 @@ class GeomAPI_Pln : public GeomAPI_Interface
  public:
   /// Creation of plane by the axis placement
   GEOMAPI_EXPORT
-  GeomAPI_Pln(const std::shared_ptr<GeomAPI_Ax3>& theAxis);
+  GeomAPI_Pln(const std::shared_ptr<GeomAPI_Ax3>& theAxes);
 
   /// Creation of plane by the point and normal
   GEOMAPI_EXPORT

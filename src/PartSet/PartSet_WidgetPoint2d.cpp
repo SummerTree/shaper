@@ -73,6 +73,7 @@
 #include <QMouseEvent>
 #include <QApplication>
 
+#include <Aspect_Grid.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <BRep_Tool.hxx>
@@ -126,7 +127,7 @@ PartSet_WidgetPoint2D::PartSet_WidgetPoint2D(QWidget* theParent,
   aLayout->addWidget(myGroupBox);
   setLayout(aLayout);
 
-  myWidgetValidator = new ModuleBase_WidgetValidator(this, myWorkshop);
+  myWidgetValidator.reset(new ModuleBase_WidgetValidator(this, myWorkshop));
   myExternalObjectMgr = new PartSet_ExternalObjectsMgr(theData->getProperty("use_external"),
                                          theData->getProperty("can_create_external"), true);
 }
@@ -365,8 +366,10 @@ bool PartSet_WidgetPoint2D::restoreValueCustom()
   std::shared_ptr<ModelAPI_Data> aData = myFeature->data();
   AttributePoint2DPtr aPoint = std::dynamic_pointer_cast<GeomDataAPI_Point2D>(
       aData->attribute(attributeID()));
+
   double aValueX = aPoint->isInitialized() ? aPoint->x() : 0.;
   double aValueY = aPoint->isInitialized() ? aPoint->y() : 0.;
+
   myXSpin->setValue(aValueX);
   myYSpin->setValue(aValueY);
 
@@ -548,7 +551,6 @@ void PartSet_WidgetPoint2D::mouseReleased(ModuleBase_IViewWindow* theWindow, QMo
     return;
 
   ModuleBase_ISelection* aSelection = myWorkshop->selection();
-  Handle(V3d_View) aView = theWindow->v3dView();
 
   QList<ModuleBase_ViewerPrsPtr> aList = aSelection->getSelected(ModuleBase_ISelection::Viewer);
   ModuleBase_ViewerPrsPtr aFirstValue =
@@ -563,6 +565,7 @@ void PartSet_WidgetPoint2D::mouseReleased(ModuleBase_IViewWindow* theWindow, QMo
     GeomShapePtr aShape = aFirstValue->shape();
     if (aShape.get() && aShape->shapeType() == GeomAPI_Shape::VERTEX) {
       const TopoDS_Shape& aTDShape = aShape->impl<TopoDS_Shape>();
+      Handle(V3d_View) aView = theWindow->v3dView();
       GeomPnt2dPtr aPnt = PartSet_Tools::getPnt2d(aView, aTDShape, mySketch);
       aX = aPnt->x();
       aY = aPnt->y();
@@ -570,8 +573,9 @@ void PartSet_WidgetPoint2D::mouseReleased(ModuleBase_IViewWindow* theWindow, QMo
     }
   }
   if (!aHasPoint) {
-    gp_Pnt aPoint = PartSet_Tools::convertClickToPoint(theEvent->pos(), aView);
-    PartSet_Tools::convertTo2D(aPoint, mySketch, aView, aX, aY);
+    bool success = PartSet_MouseProcessor::convertPointToLocal(myWorkshop, mySketch, theWindow, theEvent->pos(), aX, aY, true, false);
+    if (!success)
+      return;
   }
   processSelection(aFirstValue, aX, aY);
 }
@@ -643,6 +647,7 @@ void PartSet_WidgetPoint2D::processSelection(const ModuleBase_ViewerPrsPtr& theV
       }
     }
     else {
+
       if (!isFeatureContainsPoint(myFeature, theX, theY)) {
         double aX = 0, aY = 0;
         bool anOrphanPoint = isOrphanPoint(aSelectedFeature, mySketch, aX, aY);
@@ -738,10 +743,11 @@ void PartSet_WidgetPoint2D::mouseMoved(ModuleBase_IViewWindow* theWindow, QMouse
   if (isEditingMode() || aModule->sketchReentranceMgr()->isInternalEditActive())
     return;
 
-  gp_Pnt aPoint = PartSet_Tools::convertClickToPoint(theEvent->pos(), theWindow->v3dView());
+  double aX = 0, aY = 0; // Coords at sketch plane.
+  bool success = PartSet_MouseProcessor::convertPointToLocal(myWorkshop, mySketch, theWindow, theEvent->pos(), aX, aY, true, true, true);
+  if (!success)
+    return;
 
-  double aX = 0, aY = 0;
-  PartSet_Tools::convertTo2D(aPoint, mySketch, theWindow->v3dView(), aX, aY);
   if (myState != ModifiedInViewer)
     storeCurentValue();
   // we need to block the value state change

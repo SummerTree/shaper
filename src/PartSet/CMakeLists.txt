@@ -93,6 +93,7 @@ SET(PROJECT_SOURCES
     PartSet_IconFactory.cpp
     PartSet_MenuMgr.cpp
     PartSet_Module.cpp
+    PartSet_MouseProcessor.cpp
     PartSet_OperationPrs.cpp
     PartSet_OverconstraintListener.cpp
     PartSet_PreviewPlanes.cpp

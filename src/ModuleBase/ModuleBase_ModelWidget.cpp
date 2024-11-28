@@ -52,7 +52,7 @@
 ModuleBase_ModelWidget::ModuleBase_ModelWidget(QWidget* theParent,
   const Config_WidgetAPI* theData)
   : QWidget(theParent),
-  myWidgetValidator(0),
+  myWidgetValidator(nullptr),
   myState(Stored),
   myIsEditing(false),
   myIsValueStateBlocked(false),

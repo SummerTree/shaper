@@ -37,6 +37,9 @@
 
 #include <ModelAPI_ResultBody.h>
 #include <ModelAPI_Tools.h>
+#include <ModelAPI_AttributeDouble.h>
+#include <ModelAPI_AttributeInteger.h>
+#include <ModelAPI_AttributeBoolean.h>
 #include <ModelAPI_AttributeString.h>
 #include <ModelAPI_Events.h>
 
@@ -73,12 +76,22 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QGroupBox>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QDoubleValidator>
+#include <QDoubleSpinBox>
 #include <QDialog>
 #include <QTimer>
+#include <QToolTip>
+#include <QRect>
+
+#include <limits>
+#include <iostream>
+#include <cmath>
+#include <utility>
+
 
 #ifdef WIN32
 #pragma warning(disable : 4456) // for nested foreach
@@ -113,11 +126,11 @@ static void setViewProjection(ModuleBase_IWorkshop* theWorkshop, const GeomPlane
 
 
 PartSet_WidgetSketchLabel::PartSet_WidgetSketchLabel(QWidget* theParent,
-                        ModuleBase_IWorkshop* theWorkshop,
-                        const Config_WidgetAPI* theData,
-                        const QMap<PartSet_Tools::ConstraintVisibleState, bool>& toShowConstraints)
-: ModuleBase_WidgetValidated(theParent, theWorkshop, theData), myOpenTransaction(false),
-myIsSelection(false)
+  ModuleBase_IWorkshop* theWorkshop,
+  const Config_WidgetAPI* theData,
+  const QMap<PartSet_Tools::ConstraintVisibleState, bool>& toShowConstraints
+) : ModuleBase_WidgetValidated(theParent, theWorkshop, theData),
+  mySketchDataIsModified(false), myOpenTransaction(false), myIsSelection(false)
 {
   QVBoxLayout* aLayout = new QVBoxLayout(this);
   ModuleBase_Tools::zeroMargins(aLayout);
@@ -179,37 +192,104 @@ myIsSelection(false)
 
   myStackWidget->addWidget(aFirstWgt);
 
-  // Define widget for sketch manmagement
+  // Define widget for sketch management
   QWidget* aSecondWgt = new QWidget(this);
   aLayout = new QVBoxLayout(aSecondWgt);
   ModuleBase_Tools::zeroMargins(aLayout);
 
-  QGroupBox* aViewBox = new QGroupBox(tr("Sketcher plane"), this);
-  QGridLayout* aViewLayout = new QGridLayout(aViewBox);
+  { // Sketch view controls.
+    mySketchViewGroupBox = new QGroupBox(tr("Sketcher plane"), this);
+    QGridLayout* aViewLayout = new QGridLayout(mySketchViewGroupBox);
 
-  myViewInverted = new QCheckBox(tr("Reversed"), aViewBox);
-  aViewLayout->addWidget(myViewInverted, 0, 0);
+    PartSet_Module* const aModule = dynamic_cast<PartSet_Module*>(myWorkshop->module());
+    PartSet_PreviewSketchPlane* const aPreviewPlane = aModule->sketchMgr()->previewSketchPlane();
+    const CompositeFeaturePtr sketch = std::dynamic_pointer_cast<ModelAPI_CompositeFeature>(myFeature);
 
-  // Sketch plane visibility
-  myViewVisible = new QCheckBox(tr("Visible"), aViewBox);
-  PartSet_Module* aModule = dynamic_cast<PartSet_Module*>(myWorkshop->module());
-  PartSet_PreviewSketchPlane* aPreviewPlane = aModule->sketchMgr()->previewSketchPlane();
-  if (aPreviewPlane->isPlaneCreated())
-    // init with current state
-    myViewVisible->setChecked(aPreviewPlane->isDisplayed());
-  else
-    // true by default (at start of sketch creation)
-    myViewVisible->setChecked(true);
+    { // Reverse flag.
+      myViewInverted = new QCheckBox(tr("Reversed"), mySketchViewGroupBox);
+      aViewLayout->addWidget(myViewInverted, 0, 0);
+    }
 
-  aViewLayout->addWidget(myViewVisible, 0, 1, Qt::AlignRight);
-  connect(myViewVisible, SIGNAL(toggled(bool)), this, SLOT(onShowViewPlane(bool)));
+    { // Sketch axes visibility.
+      myAxesVisibleCheckBox = new QCheckBox(tr("Axes"), mySketchViewGroupBox);
+      myAxesVisibleCheckBox->setChecked(sketch ? PartSet_Tools::sketchPlaneAxesEnabled(sketch)->value() : false);
 
-  QPushButton* aSetViewBtn =
-    new QPushButton(QIcon(":icons/plane_view.png"), tr("Set plane view"), aViewBox);
-  connect(aSetViewBtn, SIGNAL(clicked(bool)), this, SLOT(onSetPlaneView()));
-  aViewLayout->addWidget(aSetViewBtn, 1, 0, 1, 2);
+      aViewLayout->addWidget(myAxesVisibleCheckBox, 0, 1);
+      connect(myAxesVisibleCheckBox, SIGNAL(toggled(bool)), this, SLOT(onShowAxes(bool)));
+    }
 
-  aLayout->addWidget(aViewBox);
+    { // Sketch substrate-plane visibility.
+      mySubstrateVisibleCheckBox = new QCheckBox(tr("Substrate"), mySketchViewGroupBox);
+      mySubstrateVisibleCheckBox->setChecked(sketch ? PartSet_Tools::sketchPlaneSubstrateEnabled(sketch)->value() : false);
+
+      aViewLayout->addWidget(mySubstrateVisibleCheckBox, 0, 2);
+      connect(mySubstrateVisibleCheckBox, SIGNAL(toggled(bool)), this, SLOT(onShowSubstrate(bool)));
+    }
+
+    {
+      QPushButton* aSetViewBtn = new QPushButton(QIcon(":icons/plane_view.png"), tr("Set plane view"), mySketchViewGroupBox);
+      connect(aSetViewBtn, SIGNAL(clicked(bool)), this, SLOT(onSetPlaneView()));
+      aViewLayout->addWidget(aSetViewBtn, 1, 0, 1, 3);
+    }
+
+    { // Sketch construction grid.
+      QGroupBox* aCGBox = new QGroupBox(tr("Construction grid"), this);
+      QGridLayout* aCGLayout = new QGridLayout(aCGBox);
+
+      {
+        myGridTypeComboBox = new QComboBox(aCGBox);
+        myGridTypeComboBox->addItem(tr("Disabled"),    PartSet_Tools::SketchPlaneGridType::No);
+        myGridTypeComboBox->addItem(tr("Rectangular"), PartSet_Tools::SketchPlaneGridType::Rectangular);
+        myGridTypeComboBox->addItem(tr("Circular"),    PartSet_Tools::SketchPlaneGridType::Circular);
+        myGridTypeComboBox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+        myGridTypeComboBox->setCurrentIndex(0);
+        if (sketch) {
+          const int idx = myGridTypeComboBox->findData(PartSet_Tools::getSketchPlaneGridType(sketch));
+          if (idx != -1)
+            myGridTypeComboBox->setCurrentIndex(idx);
+        }
+
+        aCGLayout->addWidget(myGridTypeComboBox, 0, 0);
+        connect(myGridTypeComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onGridTypeChanged(int)));
+      }
+
+      {
+        myGridSnappingModeComboBox = new QComboBox(aCGBox);
+        myGridSnappingModeComboBox->addItem(tr("Don't snap"), PartSet_PreviewSketchPlane::GridSnappingMode::Off);
+        myGridSnappingModeComboBox->addItem(tr("Snap anyway"), PartSet_PreviewSketchPlane::GridSnappingMode::SnapAnyway);
+        myGridSnappingModeComboBox->addItem(tr("Snap in proximity"), PartSet_PreviewSketchPlane::GridSnappingMode::SnapInProximity);
+        myGridSnappingModeComboBox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+        myGridSnappingModeComboBox->setCurrentIndex(int(aPreviewPlane->getGridSnappingMode()));
+
+        aCGLayout->addWidget(myGridSnappingModeComboBox, 0, 1);
+        connect(myGridSnappingModeComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onGridSnappingModeChanged(int)));
+      }
+
+      {
+        const auto widgetGrouper = new QWidget(aCGBox);
+        aCGLayout->addWidget(widgetGrouper, 1, 0, 1, 2);
+        const auto grouperLayout = new QVBoxLayout(widgetGrouper);
+
+        const auto currentGridType = myGridTypeComboBox->currentData();
+
+        myWidgetRectangularGrid = new PartSet_WidgetSketchRectangularGrid(aCGBox, this);
+        grouperLayout->addWidget(myWidgetRectangularGrid);
+        myWidgetRectangularGrid->setVisible(currentGridType == PartSet_Tools::SketchPlaneGridType::Rectangular);
+
+        myWidgetCircularGrid = new PartSet_WidgetSketchCircularGrid(aCGBox, this);
+        grouperLayout->addWidget(myWidgetCircularGrid);
+        myWidgetCircularGrid->setVisible(currentGridType == PartSet_Tools::SketchPlaneGridType::Circular);
+      }
+
+      aViewLayout->addWidget(aCGBox, 2, 0, 1, 3);
+    } // Sketch construction grid.
+
+    aLayout->addWidget(mySketchViewGroupBox);
+
+    aPreviewPlane->setAllUsingSketch(sketch);
+    reconfigureSketchViewWidgets();
+  } // View box.
+
 
   QMap<PartSet_Tools::ConstraintVisibleState, QString> aStates;
   aStates[PartSet_Tools::Geometrical] = tr("Show geometrical constraints");
@@ -258,8 +338,16 @@ myIsSelection(false)
   myPreviewPlanes = new PartSet_PreviewPlanes();
 }
 
-PartSet_WidgetSketchLabel::~PartSet_WidgetSketchLabel()
-{
+void PartSet_WidgetSketchLabel::setFeature(
+  const FeaturePtr& theFeature,
+  const bool theToStoreValue,
+  const bool isUpdateFlushed
+) {
+  ModuleBase_WidgetValidated::setFeature(theFeature, theToStoreValue, isUpdateFlushed);
+  PartSet_Module* aModule = dynamic_cast<PartSet_Module*>(myWorkshop->module());
+  const CompositeFeaturePtr sketch = std::dynamic_pointer_cast<ModelAPI_CompositeFeature>(myFeature);
+  aModule->sketchMgr()->previewSketchPlane()->setAllUsingSketch(sketch);
+  reconfigureSketchViewWidgets();
 }
 
 bool PartSet_WidgetSketchLabel::setSelection(QList<ModuleBase_ViewerPrsPtr>& theValues,
@@ -387,24 +475,19 @@ void PartSet_WidgetSketchLabel::updateByPlaneSelected(const ModuleBase_ViewerPrs
   // 1. hide main planes if they have been displayed and display sketch preview plane
   myPreviewPlanes->erasePreviewPlanes(myWorkshop);
 
-  QString aSizeOfViewStr = mySizeOfView->text();
-  bool isSetSizeOfView = false;
-  double aSizeOfView = 0;
-  if (!aSizeOfViewStr.isEmpty()) {
-    aSizeOfView = aSizeOfViewStr.toDouble(&isSetSizeOfView);
-    if (isSetSizeOfView && aSizeOfView <= 0) {
-      isSetSizeOfView = false;
-    }
-  }
+  bool isValidSizeInput = true;
+  double aSizeOfView = mySizeOfView->text().toDouble(&isValidSizeInput);
+  if (aSizeOfView <= 0 || !isValidSizeInput)
+    aSizeOfView = PartSet_PreviewSketchPlane::defaultSketchSize();
+
   PartSet_Module* aModule = dynamic_cast<PartSet_Module*>(myWorkshop->module());
   if (aModule) {
-    CompositeFeaturePtr aSketch = std::dynamic_pointer_cast<ModelAPI_CompositeFeature>(myFeature);
-    aModule->sketchMgr()->previewSketchPlane()->setSizeOfView(aSizeOfView, isSetSizeOfView);
-    if (myViewVisible->isChecked())
-      aModule->sketchMgr()->previewSketchPlane()->createSketchPlane(aSketch, myWorkshop);
-    else
-      aModule->sketchMgr()->previewSketchPlane()->clearPlanePreview();
+    CompositeFeaturePtr sketch = std::dynamic_pointer_cast<ModelAPI_CompositeFeature>(myFeature);
+    PartSet_Tools::sketchPlaneDefaultSize(sketch)->setValue(aSizeOfView);
+    aModule->sketchMgr()->previewSketchPlane()->setAllUsingSketch(sketch);
   }
+  reconfigureSketchViewWidgets();
+
   // 2. if the planes were displayed, change the view projection
 
   // Rotate view if the sketcher plane is selected only from preview planes
@@ -414,15 +497,15 @@ void PartSet_WidgetSketchLabel::updateByPlaneSelected(const ModuleBase_ViewerPrs
     bool aReversed = myViewInverted->isChecked();
     setViewProjection(myWorkshop, aPlane, aReversed);
   }
-  if (isSetSizeOfView && aSizeOfView > 0) {
-    Handle(V3d_View) aView3d = myWorkshop->viewer()->activeView();
-    if (!aView3d.IsNull()) {
-      Bnd_Box aBndBox;
-      double aHalfSize = aSizeOfView/2.0;
-      aBndBox.Update(-aHalfSize, -aHalfSize, -aHalfSize, aHalfSize, aHalfSize, aHalfSize);
-      aView3d->FitAll(aBndBox, 0.01, false);
-    }
+
+  Handle(V3d_View) aView3d = myWorkshop->viewer()->activeView();
+  if (!aView3d.IsNull()) {
+    Bnd_Box aBndBox;
+    double aHalfSize = aSizeOfView/2.0;
+    aBndBox.Update(-aHalfSize, -aHalfSize, -aHalfSize, aHalfSize, aHalfSize, aHalfSize);
+    aView3d->FitAll(aBndBox, 0.01, false);
   }
+
   if (myOpenTransaction) {
     SessionPtr aMgr = ModelAPI_Session::get();
     aMgr->finishOperation();
@@ -642,6 +725,23 @@ void PartSet_WidgetSketchLabel::hideEvent(QHideEvent* theEvent)
 }
 
 
+void PartSet_WidgetSketchLabel::onShowDOF()
+{
+  CompositeFeaturePtr aCompFeature =
+    std::dynamic_pointer_cast<ModelAPI_CompositeFeature>(myFeature);
+  if (aCompFeature.get()) {
+    static const Events_ID anEvent = Events_Loop::eventByName(EVENT_GET_DOF_OBJECTS);
+    ModelAPI_EventCreator::get()->sendUpdated(aCompFeature, anEvent);
+    Events_Loop::loop()->flush(anEvent);
+
+    // Transfer focus to the current viewport for correct processing of a key event
+    QWidget* aViewPort = myWorkshop->viewer()->activeViewPort();
+    if (aViewPort)
+      aViewPort->setFocus();
+  }
+}
+
+
 void PartSet_WidgetSketchLabel::onShowPanel()
 {
   //if (mySizeOfViewWidget->isVisible()) {
@@ -658,6 +758,112 @@ void PartSet_WidgetSketchLabel::onShowPanel()
       mySizeMessage->show();
     }
   }
+}
+
+void PartSet_WidgetSketchLabel::onShowAxes(bool toShow)
+{
+  const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(feature());
+  if (sketch) {
+    PartSet_Tools::sketchPlaneAxesEnabled(sketch)->setValue(toShow);
+    mySketchDataIsModified = true;
+  }
+
+  const auto module = dynamic_cast<PartSet_Module*>(myWorkshop->module());
+  PartSet_PreviewSketchPlane* const previewPlane = module->sketchMgr()->previewSketchPlane();
+  previewPlane->showAxes(toShow);
+  myWorkshop->viewer()->update();
+}
+
+void PartSet_WidgetSketchLabel::onShowSubstrate(bool toShow)
+{
+  const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(feature());
+  if (sketch) {
+    PartSet_Tools::sketchPlaneSubstrateEnabled(sketch)->setValue(toShow);
+    mySketchDataIsModified = true;
+  }
+
+  const auto module = dynamic_cast<PartSet_Module*>(myWorkshop->module());
+  PartSet_PreviewSketchPlane* const previewPlane = module->sketchMgr()->previewSketchPlane();
+  previewPlane->showSubstrate(toShow);
+  myWorkshop->viewer()->update();
+}
+
+void PartSet_WidgetSketchLabel::onGridTypeChanged(int theComboBoxIdx) {
+  (void)theComboBoxIdx;
+  const auto module = dynamic_cast<PartSet_Module*>(myWorkshop->module());
+  const auto previewPlane = module->sketchMgr()->previewSketchPlane();
+  const auto gridType = PartSet_Tools::SketchPlaneGridType::Enum(myGridTypeComboBox->currentData().toInt());
+
+  const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(feature());
+  if (sketch) {
+    PartSet_Tools::setSketchPlaneGridType(sketch, gridType);
+    mySketchDataIsModified = true;
+  }
+
+  previewPlane->setGridType(gridType);
+  myGridSnappingModeComboBox->setEnabled(gridType != PartSet_Tools::SketchPlaneGridType::No);
+  myWidgetRectangularGrid->setVisible(gridType == PartSet_Tools::SketchPlaneGridType::Rectangular);
+  myWidgetCircularGrid->setVisible(gridType == PartSet_Tools::SketchPlaneGridType::Circular);
+  myWorkshop->viewer()->update();
+}
+
+void PartSet_WidgetSketchLabel::onGridSnappingModeChanged(int theModeIdx) {
+  const auto module = dynamic_cast<PartSet_Module*>(myWorkshop->module());
+  PartSet_PreviewSketchPlane* const previewPlane = module->sketchMgr()->previewSketchPlane();
+  previewPlane->setGridSnappingMode(static_cast<PartSet_PreviewSketchPlane::GridSnappingMode>(theModeIdx));
+}
+
+void PartSet_WidgetSketchLabel::reconfigureSketchViewWidgets()
+{
+  const auto module = dynamic_cast<PartSet_Module*>(myWorkshop->module());
+  if (module) {
+    const PartSet_PreviewSketchPlane* const previewPlane = module->sketchMgr()->previewSketchPlane();
+
+    myAxesVisibleCheckBox->setChecked(previewPlane->isShowAxes());
+    mySubstrateVisibleCheckBox->setChecked(previewPlane->isShowSubstrate());
+
+    const auto gridType = previewPlane->getGridType();
+    const int gridTypeIdx = myGridTypeComboBox->findData(gridType);
+    myGridTypeComboBox->setCurrentIndex(gridTypeIdx != -1 ? gridTypeIdx : 0);
+    myWidgetRectangularGrid->setVisible(gridType == PartSet_Tools::SketchPlaneGridType::Rectangular);
+    myWidgetRectangularGrid->recongifure();
+    myWidgetCircularGrid->setVisible(gridType == PartSet_Tools::SketchPlaneGridType::Circular);
+    myWidgetCircularGrid->recongifure();
+
+    myGridSnappingModeComboBox->setEnabled(gridType != PartSet_Tools::SketchPlaneGridType::No);
+    myGridSnappingModeComboBox->setCurrentIndex(int(previewPlane->getGridSnappingMode()));
+
+    mySketchViewGroupBox->setEnabled(true);
+  }
+  else {
+    mySketchViewGroupBox->setEnabled(false);
+
+    myAxesVisibleCheckBox->setChecked(false);
+    mySubstrateVisibleCheckBox->setChecked(false);
+
+    myGridTypeComboBox->setCurrentIndex(0);
+    myWidgetRectangularGrid->setVisible(false);
+    myWidgetRectangularGrid->recongifure();
+    myWidgetCircularGrid->setVisible(false);
+    myWidgetCircularGrid->recongifure();
+
+    myGridSnappingModeComboBox->setEnabled(false);
+  }
+
+  mySketchDataIsModified = false;
+  myWorkshop->viewer()->update();
+}
+
+void PartSet_WidgetSketchLabel::saveSketchViewPreferenceToSkethData()
+{
+  const auto module = dynamic_cast<PartSet_Module*>(myWorkshop->module());
+  if (!module)
+    return;
+
+  const PartSet_PreviewSketchPlane* const previewPlane = module->sketchMgr()->previewSketchPlane();
+  const auto sketch = std::dynamic_pointer_cast<ModelAPI_CompositeFeature>(myFeature);
+  previewPlane->savePreferencesIntoSketchData(sketch);
+  mySketchDataIsModified = false;
 }
 
 void PartSet_WidgetSketchLabel::deactivate()
@@ -769,7 +975,6 @@ void PartSet_WidgetSketchLabel::onSetPlaneView()
   }
 }
 
-
 //******************************************************
 QList<ModuleBase_ViewerPrsPtr> PartSet_WidgetSketchLabel::findCircularEdgesInPlane()
 {
@@ -856,6 +1061,14 @@ void PartSet_WidgetSketchLabel::setShowPointsState(bool theState)
   myShowPoints->blockSignals(aBlock);
 }
 
+bool PartSet_WidgetSketchLabel::storeValueCustom()
+{
+  if (mySketchDataIsModified)
+    saveSketchViewPreferenceToSkethData();
+
+  return true;
+}
+
 bool PartSet_WidgetSketchLabel::restoreValueCustom()
 {
   if (myFeature.get()) {
@@ -877,6 +1090,12 @@ bool PartSet_WidgetSketchLabel::restoreValueCustom()
           myShowDOFBtn->setEnabled(true);
         }
       }
+
+      PartSet_Module* aModule = dynamic_cast<PartSet_Module*>(myWorkshop->module());
+      if (aModule)
+        aModule->sketchMgr()->previewSketchPlane()->setAllUsingSketch(aSketch);
+
+      reconfigureSketchViewWidgets();
     }
     else {
       myDoFLabel->setText("");
@@ -884,23 +1103,6 @@ bool PartSet_WidgetSketchLabel::restoreValueCustom()
     }
   }
   return true;
-}
-
-
-void PartSet_WidgetSketchLabel::onShowDOF()
-{
-  CompositeFeaturePtr aCompFeature =
-    std::dynamic_pointer_cast<ModelAPI_CompositeFeature>(myFeature);
-  if (aCompFeature.get()) {
-    static const Events_ID anEvent = Events_Loop::eventByName(EVENT_GET_DOF_OBJECTS);
-    ModelAPI_EventCreator::get()->sendUpdated(aCompFeature, anEvent);
-    Events_Loop::loop()->flush(anEvent);
-
-    // Transfer focus to the current viewport for correct processing of a key event
-    QWidget* aViewPort = myWorkshop->viewer()->activeViewPort();
-    if (aViewPort)
-      aViewPort->setFocus();
-  }
 }
 
 bool PartSet_WidgetSketchLabel::eventFilter(QObject* theObj, QEvent* theEvent)
@@ -919,19 +1121,453 @@ bool PartSet_WidgetSketchLabel::eventFilter(QObject* theObj, QEvent* theEvent)
   return ModuleBase_WidgetValidated::eventFilter(theObj, theEvent);
 }
 
-void PartSet_WidgetSketchLabel::onShowViewPlane(bool toShow)
+
+PitchSpinBox::PitchSpinBox(QWidget* theParent) : QDoubleSpinBox(theParent)
 {
-  PartSet_Module* aModule = dynamic_cast<PartSet_Module*>(myWorkshop->module());
-  PartSet_PreviewSketchPlane* aPreviewPlane = aModule->sketchMgr()->previewSketchPlane();
-  if (toShow) {
-    CompositeFeaturePtr aSketch = std::dynamic_pointer_cast<ModelAPI_CompositeFeature>(myFeature);
-    if (aPreviewPlane->isPlaneCreated())
-      aPreviewPlane->displaySketchPlane(myWorkshop);
-    else
-      aPreviewPlane->createSketchPlane(aSketch, myWorkshop);
+  setRange(std::pow(10, -PartSet_WidgetSketchGrid::NUM_OF_DECIMAL_DIGITS_TRANS), std::numeric_limits<double>::max());
+  setDecimals(PartSet_WidgetSketchGrid::NUM_OF_DECIMAL_DIGITS_TRANS);
+  setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+  setMinimumWidth(PartSet_WidgetSketchGrid::SPIN_BOX_MIN_WIDTH);
+  myPrevVal = 1;
+
+  connect(this, SIGNAL(textChanged(const QString&)), this, SLOT(onTextChanged()));
+  connect(this, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+}
+
+void PitchSpinBox::setValue(double theVal)
+{
+  myPrevVal = theVal;
+  QDoubleSpinBox::setValue(theVal);
+}
+
+void PitchSpinBox::onTextChanged()
+{
+  if (value() <= Precision::Confusion())
+    return;
+
+  setSingleStep(PartSet_WidgetSketchGrid::reasonablePitchIncrement(value()));
+  emit valueSet(value());
+}
+
+void PitchSpinBox::onEditingFinished()
+{
+  if (value() <= Precision::Confusion()) {
+    QDoubleSpinBox::setValue(myPrevVal);
   }
   else {
-    aPreviewPlane->eraseSketchPlane(myWorkshop, false);
+    myPrevVal = value();
+    emit valueSet(value());
   }
-  myWorkshop->viewer()->update();
+}
+
+
+PartSet_WidgetSketchGrid::PartSet_WidgetSketchGrid(QWidget* theParent, PartSet_WidgetSketchLabel* theSketchLabel)
+: QWidget(theParent), mySketchLabel(theSketchLabel), myPreviewPlane(nullptr)
+{
+  static const double MAX_DOUBLE = std::numeric_limits<double>::max();
+  static const double MIN_DOUBLE = std::numeric_limits<double>::lowest();
+
+  myResetButton = new QPushButton(tr("Reset"), this);
+  myResetButton->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+  myResetButton->setToolTip(tr("Set default pitches and zero offsets."));
+
+  const auto offsetAngleLabel = new QLabel(this);
+  offsetAngleLabel->setText(tr("Offset angle,°"));
+
+  myOffsetAngleSpinBox = new QDoubleSpinBox(this);
+  myOffsetAngleSpinBox->setRange(-180, 180);
+  myOffsetAngleSpinBox->setDecimals(PartSet_WidgetSketchGrid::NUM_OF_DECIMAL_DIGITS_ROTAT);
+  myOffsetAngleSpinBox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+  myOffsetAngleSpinBox->setMinimumWidth(PartSet_WidgetSketchGrid::SPIN_BOX_MIN_WIDTH);
+
+  const auto offsetXLabel = new QLabel(this);
+  offsetXLabel->setText(tr("Offset") + " X'");
+
+  myOffsetXSpinBox = new QDoubleSpinBox(this);
+  myOffsetXSpinBox->setRange(MIN_DOUBLE, MAX_DOUBLE);
+  myOffsetXSpinBox->setDecimals(PartSet_WidgetSketchGrid::NUM_OF_DECIMAL_DIGITS_TRANS);
+  myOffsetXSpinBox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+  myOffsetXSpinBox->setMinimumWidth(PartSet_WidgetSketchGrid::SPIN_BOX_MIN_WIDTH);
+
+  const auto offsetYLabel = new QLabel(this);
+  offsetYLabel->setText(tr("Offset")  + " Y'");
+
+  myOffsetYSpinBox = new QDoubleSpinBox(this);
+  myOffsetYSpinBox->setRange(MIN_DOUBLE, MAX_DOUBLE);
+  myOffsetYSpinBox->setDecimals(PartSet_WidgetSketchGrid::NUM_OF_DECIMAL_DIGITS_TRANS);
+  myOffsetYSpinBox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+  myOffsetYSpinBox->setMinimumWidth(PartSet_WidgetSketchGrid::SPIN_BOX_MIN_WIDTH);
+
+  myLayout = new QGridLayout(this);
+  myLayout->addWidget(myResetButton , 2, 0);
+  myLayout->addWidget(offsetAngleLabel, 3, 0);
+  myLayout->addWidget(offsetXLabel    , 3, 1);
+  myLayout->addWidget(offsetYLabel    , 3, 2);
+  myLayout->addWidget(myOffsetAngleSpinBox, 4, 0);
+  myLayout->addWidget(myOffsetXSpinBox    , 4, 1);
+  myLayout->addWidget(myOffsetYSpinBox    , 4, 2);
+
+  connect(myResetButton, SIGNAL(clicked(bool)), this, SLOT(onResetClicked()));
+  connect(myOffsetAngleSpinBox, SIGNAL(valueChanged(double)), this, SLOT(onOffsetAngleChanged(double)));
+  connect(myOffsetXSpinBox, SIGNAL(valueChanged(double)), this, SLOT(onOffsetXChanged(double)));
+  connect(myOffsetYSpinBox, SIGNAL(valueChanged(double)), this, SLOT(onOffsetYChanged(double)));
+
+  setEnabled(false);
+}
+
+/*static*/ double PartSet_WidgetSketchGrid::clampValue(double theValue, double theIntervalWidth)
+{
+  theValue = std::remainder(theValue, theIntervalWidth);
+  if (theValue > theIntervalWidth/2)
+    theValue = theValue - theIntervalWidth;
+  else if (theValue <= -theIntervalWidth/2)
+    theValue = theIntervalWidth + theValue;
+
+  return theValue;
+}
+
+/*static*/ double PartSet_WidgetSketchGrid::reasonableOffsetIncrement(double theStep)
+{
+  const double stepTenth = theStep / 10;
+  if (std::abs(stepTenth) < Precision::Confusion())
+    return 0;
+
+  return std::pow(10, std::floor(std::log10(stepTenth)));
+}
+
+/*static*/ double PartSet_WidgetSketchGrid::reasonablePitchIncrement(double theStep)
+{
+  return PartSet_WidgetSketchGrid::reasonableOffsetIncrement(theStep);
+}
+
+void PartSet_WidgetSketchGrid::retrieveSketchAndPlane()
+{
+  const auto module = dynamic_cast<PartSet_Module*>(mySketchLabel->myWorkshop->module());
+  if (!module)
+    myPreviewPlane = nullptr;
+  else
+    myPreviewPlane = module->sketchMgr()->previewSketchPlane();
+}
+
+/*static*/ const int PartSet_WidgetSketchGrid::NUM_OF_DECIMAL_DIGITS_TRANS = 3;
+/*static*/ const int PartSet_WidgetSketchGrid::NUM_OF_DECIMAL_DIGITS_ROTAT = 4; // Fits angular second.
+/*static*/ const int PartSet_WidgetSketchGrid::SPIN_BOX_MIN_WIDTH = 80;
+
+
+PartSet_WidgetSketchRectangularGrid::PartSet_WidgetSketchRectangularGrid(QWidget* theParent, PartSet_WidgetSketchLabel* theSketchLabel)
+: PartSet_WidgetSketchGrid(theParent, theSketchLabel)
+{
+  static const double MAX_DOUBLE = std::numeric_limits<double>::max();
+  static const double MIN_DOUBLE = std::numeric_limits<double>::min();
+
+  const auto stepXLabel = new QLabel(this);
+  stepXLabel->setText(tr("Pitch") + " X'");
+
+  myStepXSpinBox = new PitchSpinBox(this);
+
+  const auto stepYLabel = new QLabel(this);
+  stepYLabel->setText(tr("Pitch") + " Y'");
+
+  myStepYSpinBox = new PitchSpinBox(this);
+
+  myLayout->addWidget(stepXLabel    , 1, 1);
+  myLayout->addWidget(stepYLabel    , 1, 2);
+  myLayout->addWidget(myStepXSpinBox, 2, 1);
+  myLayout->addWidget(myStepYSpinBox, 2, 2);
+
+  connect(myStepXSpinBox, SIGNAL(valueSet(double)), this, SLOT(onStepXSet(double)));
+  connect(myStepYSpinBox, SIGNAL(valueSet(double)), this, SLOT(onStepYSet(double)));
+}
+
+void PartSet_WidgetSketchRectangularGrid::recongifure()
+{
+  retrieveSketchAndPlane();
+
+  if (myPreviewPlane) {
+    const auto steps = myPreviewPlane->getRectangularGridSteps();
+    myStepXSpinBox->setValue(steps.first);
+    myStepYSpinBox->setValue(steps.second);
+
+    const auto offsets = myPreviewPlane->getRectangularGridOffsets();
+    myOffsetAngleSpinBox->setValue(PartSet_WidgetSketchGrid::clampValue(offsets.second, 360));
+    myOffsetXSpinBox->setValue(offsets.first.first);
+    myOffsetYSpinBox->setValue(offsets.first.second);
+
+    setEnabled(true);
+  }
+  else {
+    setEnabled(false);
+
+    myStepXSpinBox->setValue(0);
+    myStepYSpinBox->setValue(0);
+    myOffsetAngleSpinBox->setValue(0);
+    myOffsetXSpinBox->setValue(0);
+    myOffsetYSpinBox->setValue(0);
+  }
+}
+
+void PartSet_WidgetSketchRectangularGrid::onStepXSet(double theStep)
+{
+  myOffsetXSpinBox->setSingleStep(PartSet_WidgetSketchGrid::reasonableOffsetIncrement(theStep));
+
+  const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(mySketchLabel->myFeature);
+  if (sketch) {
+    PartSet_Tools::sketchPlaneRectangularGridStepX(sketch)->setValue(theStep);
+    mySketchLabel->mySketchDataIsModified = true;
+  }
+
+  if (myPreviewPlane) {
+    myPreviewPlane->setRectangularGridStepX(theStep);
+    myPreviewPlane->reconfigureGrid();
+    mySketchLabel->myWorkshop->viewer()->update();
+  }
+}
+
+void PartSet_WidgetSketchRectangularGrid::onStepYSet(double theStep)
+{
+  myOffsetYSpinBox->setSingleStep(PartSet_WidgetSketchGrid::reasonableOffsetIncrement(theStep));
+
+  const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(mySketchLabel->myFeature);
+  if (sketch) {
+    PartSet_Tools::sketchPlaneRectangularGridStepY(sketch)->setValue(theStep);
+    mySketchLabel->mySketchDataIsModified = true;
+  }
+
+  if (myPreviewPlane) {
+    myPreviewPlane->setRectangularGridStepY(theStep);
+    myPreviewPlane->reconfigureGrid();
+    mySketchLabel->myWorkshop->viewer()->update();
+  }
+}
+
+void PartSet_WidgetSketchRectangularGrid::onResetClicked()
+{
+  if (!myPreviewPlane)
+    return;
+
+  myPreviewPlane->resetRectangularGrid();
+  recongifure();
+
+  const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(mySketchLabel->feature());
+  if (sketch) {
+    myPreviewPlane->saveRectangularGridPreferencesIntoSketchData(sketch);
+    mySketchLabel->mySketchDataIsModified = true;
+  }
+
+  mySketchLabel->myWorkshop->viewer()->update();
+}
+
+void PartSet_WidgetSketchRectangularGrid::onOffsetAngleChanged(double theOffset)
+{
+  const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(mySketchLabel->feature());
+  if (sketch) {
+    PartSet_Tools::sketchPlaneRectangularGridOffsetAngle(sketch)->setValue(theOffset);
+    mySketchLabel->mySketchDataIsModified = true;
+  }
+
+  if (myPreviewPlane) {
+    myPreviewPlane->setRectangularGridOffsetA(theOffset);
+    myPreviewPlane->reconfigureGrid();
+    mySketchLabel->myWorkshop->viewer()->update();
+  }
+}
+
+void PartSet_WidgetSketchRectangularGrid::onOffsetXChanged(double theOffset)
+{
+  const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(mySketchLabel->feature());
+  if (sketch) {
+    PartSet_Tools::sketchPlaneRectangularGridOffsetX(sketch)->setValue(theOffset);
+    mySketchLabel->mySketchDataIsModified = true;
+  }
+
+  if (myPreviewPlane) {
+    myPreviewPlane->setRectangularGridOffsetX(theOffset);
+    myPreviewPlane->reconfigureGrid();
+    mySketchLabel->myWorkshop->viewer()->update();
+  }
+}
+
+void PartSet_WidgetSketchRectangularGrid::onOffsetYChanged(double theOffset)
+{
+  const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(mySketchLabel->feature());
+  if (sketch) {
+    PartSet_Tools::sketchPlaneRectangularGridOffsetY(sketch)->setValue(theOffset);
+    mySketchLabel->mySketchDataIsModified = true;
+  }
+
+  if (myPreviewPlane) {
+    myPreviewPlane->setRectangularGridOffsetY(theOffset);
+    myPreviewPlane->reconfigureGrid();
+    mySketchLabel->myWorkshop->viewer()->update();
+  }
+}
+
+
+PartSet_WidgetSketchCircularGrid::PartSet_WidgetSketchCircularGrid(QWidget* theParent, PartSet_WidgetSketchLabel* theSketchLabel)
+: PartSet_WidgetSketchGrid(theParent, theSketchLabel)
+{
+  static const double MAX_DOUBLE = std::numeric_limits<double>::max();
+  static const double MIN_DOUBLE = std::numeric_limits<double>::min();
+
+  const auto stepRLabel = new QLabel(this);
+  stepRLabel->setText(tr("Pitch") + " R");
+
+  myStepRSpinBox = new PitchSpinBox(this);
+
+  const auto aNASLabel = new QLabel(this);
+  aNASLabel->setText(tr("Num of angular segments"));
+
+  myNASSpinBox = new QSpinBox(this);
+  myNASSpinBox->setRange(2, std::numeric_limits<int>::max());
+  myNASSpinBox->setSingleStep(2);
+  myNASSpinBox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+  myNASSpinBox->setToolTip(tr("Even numbers only."));
+  myNASSpinBox->setMinimumWidth(PartSet_WidgetSketchGrid::SPIN_BOX_MIN_WIDTH);
+
+  myLayout->addWidget(stepRLabel    , 1, 1);
+  myLayout->addWidget(aNASLabel     , 1, 2);
+  myLayout->addWidget(myStepRSpinBox, 2, 1);
+  myLayout->addWidget(myNASSpinBox  , 2, 2);
+
+  connect(myStepRSpinBox, SIGNAL(valueSet(double)), this, SLOT(onStepRChanged(double)));
+  connect(myNASSpinBox, SIGNAL(valueChanged(int)), this, SLOT(onNumOfAngularSegmentsChanged(int)));
+}
+
+void PartSet_WidgetSketchCircularGrid::recongifure()
+{
+  retrieveSketchAndPlane();
+
+  if (myPreviewPlane) {
+    const auto stepAndNum = myPreviewPlane->getCircularGrid_dR_and_NAS();
+    myStepRSpinBox->setValue(stepAndNum.first);
+    myNASSpinBox->setValue(stepAndNum.second);
+    updateSegmentsToolTip();
+
+    const auto offsets = myPreviewPlane->getCircularGridOffsets();
+    myOffsetAngleSpinBox->setValue(PartSet_WidgetSketchGrid::clampValue(offsets.second, 360));
+    myOffsetXSpinBox->setValue(offsets.first.first);
+    myOffsetYSpinBox->setValue(offsets.first.second);
+
+    setEnabled(true);
+  }
+  else {
+    setEnabled(false);
+
+    myStepRSpinBox->setValue(0);
+    myNASSpinBox->setValue(1);
+    updateSegmentsToolTip();
+    myOffsetAngleSpinBox->setValue(0);
+    myOffsetXSpinBox->setValue(0);
+    myOffsetYSpinBox->setValue(0);
+  }
+}
+
+void PartSet_WidgetSketchCircularGrid::onStepRChanged(double theStep)
+{
+  const double increment = PartSet_WidgetSketchGrid::reasonableOffsetIncrement(theStep);
+  myOffsetXSpinBox->setSingleStep(increment);
+  myOffsetYSpinBox->setSingleStep(increment);
+
+  const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(mySketchLabel->myFeature);
+  if (sketch) {
+    PartSet_Tools::sketchPlaneCircularGridStepR(sketch)->setValue(theStep);
+    mySketchLabel->mySketchDataIsModified = true;
+  }
+
+  if (myPreviewPlane) {
+    myPreviewPlane->setCircularGridRadialStep(theStep);
+    myPreviewPlane->reconfigureGrid();
+    mySketchLabel->myWorkshop->viewer()->update();
+  }
+}
+
+void PartSet_WidgetSketchCircularGrid::onNumOfAngularSegmentsChanged(int theNum)
+{
+  theNum = theNum + theNum % 2;
+  myNASSpinBox->setValue(theNum);
+  updateSegmentsToolTip();
+
+  const double increment = PartSet_WidgetSketchGrid::reasonableOffsetIncrement(double(360)/theNum);
+  myOffsetAngleSpinBox->setSingleStep(increment);
+
+  const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(mySketchLabel->myFeature);
+  if (sketch) {
+    PartSet_Tools::sketchPlaneCircularGridNumOfAngSegments(sketch)->setValue(theNum);
+    mySketchLabel->mySketchDataIsModified = true;
+  }
+
+  if (myPreviewPlane) {
+    myPreviewPlane->setCircularGridNumOfAngularSegments(theNum);
+    myPreviewPlane->reconfigureGrid();
+    mySketchLabel->myWorkshop->viewer()->update();
+  }
+}
+
+void PartSet_WidgetSketchCircularGrid::onResetClicked()
+{
+  if (!myPreviewPlane)
+    return;
+
+  myPreviewPlane->resetCircularGrid();
+  recongifure();
+
+  const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(mySketchLabel->feature());
+  if (sketch) {
+    myPreviewPlane->saveCircularGridPreferencesIntoSketchData(sketch);
+    mySketchLabel->mySketchDataIsModified = true;
+  }
+
+  mySketchLabel->myWorkshop->viewer()->update();
+}
+
+void PartSet_WidgetSketchCircularGrid::onOffsetAngleChanged(double theOffset)
+{
+  const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(mySketchLabel->feature());
+  if (sketch) {
+    PartSet_Tools::sketchPlaneCircularGridOffsetAngle(sketch)->setValue(theOffset);
+    mySketchLabel->mySketchDataIsModified = true;
+  }
+
+  if (myPreviewPlane) {
+    myPreviewPlane->setCircularGridOffsetA(theOffset);
+    myPreviewPlane->reconfigureGrid();
+    mySketchLabel->myWorkshop->viewer()->update();
+  }
+}
+
+void PartSet_WidgetSketchCircularGrid::onOffsetXChanged(double theOffset)
+{
+  const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(mySketchLabel->feature());
+  if (sketch) {
+    PartSet_Tools::sketchPlaneCircularGridOffsetX(sketch)->setValue(theOffset);
+    mySketchLabel->mySketchDataIsModified = true;
+  }
+
+  if (myPreviewPlane) {
+    myPreviewPlane->setCircularGridOffsetX(theOffset);
+    myPreviewPlane->reconfigureGrid();
+    mySketchLabel->myWorkshop->viewer()->update();
+  }
+}
+
+void PartSet_WidgetSketchCircularGrid::onOffsetYChanged(double theOffset)
+{
+  const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(mySketchLabel->feature());
+  if (sketch) {
+    PartSet_Tools::sketchPlaneCircularGridOffsetY(sketch)->setValue(theOffset);
+    mySketchLabel->mySketchDataIsModified = true;
+  }
+
+  if (myPreviewPlane) {
+    myPreviewPlane->setCircularGridOffsetY(theOffset);
+    myPreviewPlane->reconfigureGrid();
+    mySketchLabel->myWorkshop->viewer()->update();
+  }
+}
+
+void PartSet_WidgetSketchCircularGrid::updateSegmentsToolTip()
+{
+   const int N = myNASSpinBox->value();
+   QString toolTip = tr("Even numbers only.") + "\nAngle " + QString::number(180 - double(N-2)/N * 180, 'f', PartSet_WidgetSketchGrid::NUM_OF_DECIMAL_DIGITS_ROTAT) + "°";
+   myNASSpinBox->setToolTip(toolTip);
 }

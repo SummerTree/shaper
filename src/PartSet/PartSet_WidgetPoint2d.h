@@ -220,7 +220,7 @@ protected:
 
    /// Create a coincidence constraint between the attribute and the parameter object
    /// \theObject a result object
-   /// \return true if succed
+   /// \return true if succeed
    bool setConstraintToObject(const ObjectPtr& theObject);
 
    /// Process selected value
@@ -228,7 +228,6 @@ protected:
    /// \param theX X coordinate of clicked point
    /// \param theY Y coordinate of clicked point
    void processSelection(const ModuleBase_ViewerPrsPtr& theValue, double theX, double theY);
-
 
 public:
    /// Returns if the feature is an orphan point, circle or an arc. Returns true if it

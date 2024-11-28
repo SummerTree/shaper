@@ -209,6 +209,19 @@ public:
   bool displayAIS(AISObjectPtr theAIS, const bool toActivateInSelectionModes,
     const Standard_Integer theDisplayMode = 0, bool theUpdateViewer = true);
 
+  /// Display the given AISIO.
+  /// This object is not added to the displayer internal map of objects
+  /// So, it can not be obtained from displayer. This is just a wrap method of OCC display in
+  /// order to perform the display with correct flags.
+  /// \param theAISIO is an object to display
+  /// \param toActivateInSelectionModes boolean value whether the presentation should be
+  /// activated in the current selection modes
+  /// \param theDisplayMode mode how the presentation should be displayed
+  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \return true if the object visibility state is changed
+  bool displayAIS(Handle(AIS_InteractiveObject) theAISIO, const bool toActivateInSelectionModes,
+    const Standard_Integer theDisplayMode = 0, bool theUpdateViewer = true);
+
   /// Redisplay the shape if it was displayed
   /// \param theObject an object instance
   /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
@@ -242,6 +255,11 @@ public:
   /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
   /// \return true if the object visibility state is changed
   bool eraseAIS(AISObjectPtr theAIS, const bool theUpdateViewer = true);
+
+  /// Erase the given AISIO displayed by corresponded display method
+  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \return true if the object visibility state is changed
+  bool eraseAIS(Handle(AIS_InteractiveObject) theAISIO, const bool theUpdateViewer = true);
 
   /// Erase all presentations
   /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly

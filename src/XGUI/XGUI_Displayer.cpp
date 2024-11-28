@@ -789,25 +789,31 @@ Handle(SelectMgr_AndFilter) XGUI_Displayer::GetFilter()
 bool XGUI_Displayer::displayAIS(AISObjectPtr theAIS, const bool toActivateInSelectionModes,
                                 const Standard_Integer theDisplayMode, bool theUpdateViewer)
 {
+  Handle(AIS_InteractiveObject) anAISIO = theAIS->impl<Handle(AIS_InteractiveObject)>();
+  return displayAIS(anAISIO, toActivateInSelectionModes, theDisplayMode, theUpdateViewer);
+}
+
+bool XGUI_Displayer::displayAIS(Handle(AIS_InteractiveObject) theAISIO, const bool toActivateInSelectionModes,
+    const Standard_Integer theDisplayMode, bool theUpdateViewer)
+{
   bool aDisplayed = false;
   Handle(AIS_InteractiveContext) aContext = AISContext();
-  Handle(AIS_InteractiveObject) anAISIO = theAIS->impl<Handle(AIS_InteractiveObject)>();
-  if (!aContext.IsNull() && !anAISIO.IsNull()) {
-    aContext->Display(anAISIO, theDisplayMode, 0, false/*update viewer*/, AIS_DS_Displayed);
+  if (!aContext.IsNull() && !theAISIO.IsNull()) {
+    aContext->Display(theAISIO, theDisplayMode, 0, false/*update viewer*/, AIS_DS_Displayed);
     #ifdef TINSPECTOR
-    if (getCallBack()) getCallBack()->Display(anAISIO);
+    if (getCallBack()) getCallBack()->Display(theAISIO);
     #endif
     aDisplayed = true;
-    aContext->Deactivate(anAISIO);
+    aContext->Deactivate(theAISIO);
     #ifdef TINSPECTOR
-    if (getCallBack()) getCallBack()->Deactivate(anAISIO);
+    if (getCallBack()) getCallBack()->Deactivate(theAISIO);
     #endif
-    aContext->Load(anAISIO);
+    aContext->Load(theAISIO);
     #ifdef TINSPECTOR
-    if (getCallBack()) getCallBack()->Load(anAISIO);
+    if (getCallBack()) getCallBack()->Load(theAISIO);
     #endif
     if (toActivateInSelectionModes)
-      myWorkshop->selectionActivate()->activateOnDisplay(anAISIO, theUpdateViewer);
+      myWorkshop->selectionActivate()->activateOnDisplay(theAISIO, theUpdateViewer);
 
     if (theUpdateViewer)
       updateViewer();
@@ -826,6 +832,25 @@ bool XGUI_Displayer::eraseAIS(AISObjectPtr theAIS, const bool theUpdateViewer)
       aContext->Remove(anAISIO, false/*update viewer*/);
       #ifdef TINSPECTOR
       if (getCallBack()) getCallBack()->Remove(anAISIO);
+      #endif
+      aErased = true;
+    }
+  }
+  if (aErased && theUpdateViewer)
+    updateViewer();
+  return aErased;
+}
+
+//**************************************************************
+bool XGUI_Displayer::eraseAIS(Handle(AIS_InteractiveObject) theAISIO, const bool theUpdateViewer)
+{
+  bool aErased = false;
+  Handle(AIS_InteractiveContext) aContext = AISContext();
+  if (!aContext.IsNull()) {
+    if (!theAISIO.IsNull() && aContext->IsDisplayed(theAISIO)) {
+      aContext->Remove(theAISIO, false/*update viewer*/);
+      #ifdef TINSPECTOR
+      if (getCallBack()) getCallBack()->Remove(theAISIO);
       #endif
       aErased = true;
     }

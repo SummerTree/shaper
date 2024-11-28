@@ -211,7 +211,7 @@ PartSet_SketcherMgr::PartSet_SketcherMgr(PartSet_Module* theModule)
   myIsConstraintsShown[PartSet_Tools::Dimensional] = true;
   myIsConstraintsShown[PartSet_Tools::Expressions] = false;
 
-  mySketchPlane = new PartSet_PreviewSketchPlane();
+  mySketchPlane = new PartSet_PreviewSketchPlane(this);
 
   registerSelectionFilter(SF_SketchCirclePointFilter, new PartSet_CirclePointFilter(anIWorkshop));
   registerSelectionFilter(SF_SketchPlaneFilter, new ModuleBase_ShapeInPlaneFilter());
@@ -421,9 +421,8 @@ void PartSet_SketcherMgr::onMousePressed(ModuleBase_IViewWindow* theWnd, QMouseE
   if (isEditing) {
     // If the current widget is a selector, do nothing, it processes the mouse press
     ModuleBase_ModelWidget* anActiveWidget = getActiveWidget();
-    if(anActiveWidget && anActiveWidget->isViewerSelector()) {
+    if(anActiveWidget && anActiveWidget->isViewerSelector())
       return;
-    }
   }
 
   // Use only for sketch operations
@@ -465,6 +464,7 @@ void PartSet_SketcherMgr::onMousePressed(ModuleBase_IViewWindow* theWnd, QMouseE
         // commit previous operation
         if (!aFOperation->commit())
           aFOperation->abort();
+
       return;
     }
     // Init flyout point for radius rotation
@@ -545,13 +545,12 @@ void PartSet_SketcherMgr::onMouseReleased(ModuleBase_IViewWindow* theWnd, QMouse
   bool aWasDragging = myIsDragging;
   myIsDragging = false;
 
-  if (myModule->sketchReentranceMgr()->processMouseReleased(theWnd, theEvent)) {
+  if (myModule->sketchReentranceMgr()->processMouseReleased(theWnd, theEvent))
     return;
-  }
+
   // if mouse is pressed when it was over view and at release the mouse is out of view, do nothing
-  if (!myIsMouseOverViewProcessed) {
+  if (!myIsMouseOverViewProcessed)
     return;
-  }
 
   ModuleBase_OperationFeature* aOp =
     dynamic_cast<ModuleBase_OperationFeature*>(getCurrentOperation());
@@ -565,9 +564,45 @@ void PartSet_SketcherMgr::onMouseReleased(ModuleBase_IViewWindow* theWnd, QMouse
         myNoDragMoving = !myNoDragMoving;
       else
         myNoDragMoving = false;
+
       if (myNoDragMoving)
         return;
       else {
+        ModuleBase_OperationFeature* aOp =
+        dynamic_cast<ModuleBase_OperationFeature*>(getCurrentOperation());
+
+        bool isEditing = false;
+        if (aOp) {
+          isEditing = aOp->isEditOperation();
+          bool aStartNoDragOperation = !aViewer->canDragByMouse() && isEditing;
+          if (aStartNoDragOperation || myNoDragMoving) {
+            // Process edit operation without dragging
+            if (myCurrentSelection.size() > 0)
+              myNoDragMoving = !myNoDragMoving;
+            else
+              myNoDragMoving = false;
+            if (myNoDragMoving)
+              return;
+            else {
+              restoreSelection(myCurrentSelection);
+              myCurrentSelection.clear();
+            }
+          }
+          else {
+            if (isNestedSketchOperation(aOp)) {
+              // Only for sketcher operations
+              if (aWasDragging) {
+                if (myDragDone) {
+                  /// the previous selection is lost by mouse release in the viewer(Select method), but
+                  /// it is still stored in myCurrentSelection. So, it is possible to restore selection
+                  /// It is important for drag(edit with mouse) of sketch entities.
+                  restoreSelection(myCurrentSelection);
+                  myCurrentSelection.clear();
+                }
+              }
+            }
+          }
+        }
         restoreSelection(myCurrentSelection);
         myCurrentSelection.clear();
       }
@@ -590,6 +625,7 @@ void PartSet_SketcherMgr::onMouseReleased(ModuleBase_IViewWindow* theWnd, QMouse
 
   ModuleBase_ModelWidget* anActiveWidget = getActiveWidget();
   PartSet_MouseProcessor* aProcessor = dynamic_cast<PartSet_MouseProcessor*>(anActiveWidget);
+
   if (aProcessor) {
     ModuleBase_ISelection* aSelection = aWorkshop->selection();
     QList<ModuleBase_ViewerPrsPtr> aPreSelected = aSelection->getHighlighted();
@@ -603,6 +639,7 @@ void PartSet_SketcherMgr::onMouseReleased(ModuleBase_IViewWindow* theWnd, QMouse
     QString aOpId = aOp->id();
     if (aOpId == "Sketch")
       return;
+
     QPoint aPnt(theEvent->x(), theEvent->y());
     anActiveWidget = getActiveWidget();
     if ((aPnt == myMousePoint) && anActiveWidget) {
@@ -640,6 +677,7 @@ void PartSet_SketcherMgr::onMouseMoved(ModuleBase_IViewWindow* theWnd, QMouseEve
   XGUI_Displayer* aDisplayer = aConnector->workshop()->displayer();
 
   if (isNestedCreateOperation(getCurrentOperation(), activeSketch())) {
+
 #ifdef DRAGGING_DEBUG
     QTime t;
     t.start();
@@ -649,8 +687,9 @@ void PartSet_SketcherMgr::onMouseMoved(ModuleBase_IViewWindow* theWnd, QMouseEve
     // presentation. These widgets correct the feature attribute according to the mouse position
     ModuleBase_ModelWidget* anActiveWidget = myModule->activeWidget();
     PartSet_MouseProcessor* aProcessor = dynamic_cast<PartSet_MouseProcessor*>(anActiveWidget);
-    if (aProcessor)
+    if (aProcessor) {
       aProcessor->mouseMoved(theWnd, theEvent);
+    }
     if (!myIsMouseOverViewProcessed) {
       myIsMouseOverViewProcessed = true;
 
@@ -681,7 +720,6 @@ void PartSet_SketcherMgr::onMouseMoved(ModuleBase_IViewWindow* theWnd, QMouseEve
       return;
     if (isSketchOperation(aCurrentOperation))
       return; // No edit operation activated
-
 #ifdef DRAGGING_DEBUG
     QTime t;
     t.start();
@@ -689,12 +727,10 @@ void PartSet_SketcherMgr::onMouseMoved(ModuleBase_IViewWindow* theWnd, QMouseEve
 
     Handle(V3d_View) aView = theWnd->v3dView();
     Point aMousePnt;
-    get2dPoint(theWnd, theEvent, aMousePnt);
+    get2dPoint(theWnd, theEvent, aMousePnt, true /*theSnap*/);
 
-    std::shared_ptr<GeomAPI_Pnt2d> anOriginalPosition = std::shared_ptr<GeomAPI_Pnt2d>(
-      new GeomAPI_Pnt2d(myCurrentPoint.myCurX, myCurrentPoint.myCurY));
-    std::shared_ptr<GeomAPI_Pnt2d> aCurrentPosition = std::shared_ptr<GeomAPI_Pnt2d>(
-      new GeomAPI_Pnt2d(aMousePnt.myCurX, aMousePnt.myCurY));
+    auto anOriginalPosition = std::shared_ptr<GeomAPI_Pnt2d>(new GeomAPI_Pnt2d(myCurrentPoint.myCurX, myCurrentPoint.myCurY));
+    auto aCurrentPosition = std::shared_ptr<GeomAPI_Pnt2d>(new GeomAPI_Pnt2d(aMousePnt.myCurX, aMousePnt.myCurY));
 
     // 3. the flag to disable the update viewer should be set in order to avoid blinking in the
     // viewer happens by deselect/select the modified objects. The flag should be restored after
@@ -727,8 +763,7 @@ void PartSet_SketcherMgr::onMouseMoved(ModuleBase_IViewWindow* theWnd, QMouseEve
                 aPoint->attributeType() == GeomDataAPI_Point2DArray::typeId()) {
               bool isImmutable = aPoint->setImmutable(true);
 
-              std::shared_ptr<ModelAPI_ObjectMovedMessage> aMessage = std::shared_ptr
-                <ModelAPI_ObjectMovedMessage>(new ModelAPI_ObjectMovedMessage(this));
+              auto aMessage = std::shared_ptr<ModelAPI_ObjectMovedMessage>(new ModelAPI_ObjectMovedMessage(this));
               aMessage->setMovedAttribute(aPoint, anAttIt->second);
               aMessage->setOriginalPosition(anOriginalPosition);
               aMessage->setCurrentPosition(aCurrentPosition);
@@ -742,11 +777,9 @@ void PartSet_SketcherMgr::onMouseMoved(ModuleBase_IViewWindow* theWnd, QMouseEve
       }
       else {
         // Process selection by feature
-        std::shared_ptr<SketchPlugin_Feature> aSketchFeature =
-          std::dynamic_pointer_cast<SketchPlugin_Feature>(aFeature);
+        auto aSketchFeature = std::dynamic_pointer_cast<SketchPlugin_Feature>(aFeature);
         if (aSketchFeature) {
-          std::shared_ptr<ModelAPI_ObjectMovedMessage> aMessage = std::shared_ptr
-            <ModelAPI_ObjectMovedMessage>(new ModelAPI_ObjectMovedMessage(this));
+          auto aMessage = std::shared_ptr<ModelAPI_ObjectMovedMessage>(new ModelAPI_ObjectMovedMessage(this));
           aMessage->setMovedObject(aFeature);
           aMessage->setOriginalPosition(anOriginalPosition);
           aMessage->setCurrentPosition(aCurrentPosition);
@@ -755,6 +788,7 @@ void PartSet_SketcherMgr::onMouseMoved(ModuleBase_IViewWindow* theWnd, QMouseEve
         }
       }
     }
+
     // the modified state of the current operation should be updated if there are features, which
     // were changed here
     if (isModified) {
@@ -774,6 +808,7 @@ void PartSet_SketcherMgr::onMouseMoved(ModuleBase_IViewWindow* theWnd, QMouseEve
 #endif
 
     myDragDone = true;
+    get2dPoint(theWnd, theEvent, aMousePnt, true /*theSnap*/);
     myCurrentPoint = aMousePnt;
   }
 }
@@ -887,7 +922,7 @@ void PartSet_SketcherMgr::onEditValues()
           break;
         }
       }
-      
+
       double aNewValue = aData.toDouble();
       ConstraintPtr aConstraint = std::dynamic_pointer_cast<SketchPlugin_Constraint>(aConstrFeat);
       if(aNewValue < 0 || (aNewValue == 0 && !aConstraint->isZeroValueAllowed()))
@@ -962,13 +997,19 @@ void PartSet_SketcherMgr::onDeactivate(bool isNeedDeactivate, std::vector<Featur
 }
 
 void PartSet_SketcherMgr::get2dPoint(ModuleBase_IViewWindow* theWnd, QMouseEvent* theEvent,
-                                     Point& thePoint)
+                                     Point& thePoint, bool theSnap = true)
 {
-  Handle(V3d_View) aView = theWnd->v3dView();
-  gp_Pnt aPoint = PartSet_Tools::convertClickToPoint(theEvent->pos(), aView);
-  double aX, anY;
-  PartSet_Tools::convertTo2D(aPoint, myCurrentSketch, aView, aX, anY);
-  thePoint.setValue(aX, anY);
+
+  double aX = 0, aY = 0; // Coords at sketch plane.
+  bool success = PartSet_MouseProcessor::convertPointToLocal(workshop()->moduleConnector(), myCurrentSketch, theWnd, theEvent->pos(), aX, aY, theSnap, true, true);
+  if (!success)
+    return;
+
+  //Handle(V3d_View) aView = theWnd->v3dView();
+  //gp_Pnt aPoint = PartSet_Tools::convertClickToPoint(theEvent->pos(), aView);
+  //double aX, anY;
+  //PartSet_Tools::convertTo2D(aPoint, myCurrentSketch, aView, aX, anY);
+  thePoint.setValue(aX, aY);
 }
 
 void PartSet_SketcherMgr::launchEditing()
@@ -1204,16 +1245,9 @@ void PartSet_SketcherMgr::startSketch(ModuleBase_Operation* theOperation)
 
   // Display all sketcher sub-Objects
   myCurrentSketch = std::dynamic_pointer_cast<ModelAPI_CompositeFeature>(aFOperation->feature());
-  double aSizeOfView = 0;
-  std::shared_ptr<GeomAPI_Pnt> aCentralPoint;
-  // Reset size of view from previous launches
-  mySketchPlane->setSizeOfView(aSizeOfView, false, aCentralPoint);
-  if (aFOperation->isEditOperation() &&
-      mySketchPlane->getDefaultSizeOfView(myCurrentSketch, aSizeOfView, aCentralPoint)) {
-    mySketchPlane->setSizeOfView(aSizeOfView, true, aCentralPoint);
-  }
+  if (aFOperation->isEditOperation())
+    mySketchPlane->setAllUsingSketch(myCurrentSketch);
 
-  mySketchPlane->createSketchPlane(myCurrentSketch, myModule->workshop());
   XGUI_ModuleConnector* aConnector = dynamic_cast<XGUI_ModuleConnector*>(myModule->workshop());
 
   // Hide sketcher result
@@ -1347,7 +1381,7 @@ void PartSet_SketcherMgr::stopSketch(ModuleBase_Operation* theOperation)
     XGUI_Displayer* aDisplayer = aConnector->workshop()->displayer();
     // The sketch was aborted
     myCurrentSketch = CompositeFeaturePtr();
-    mySketchPlane->eraseSketchPlane(myModule->workshop());
+    mySketchPlane->hideAll();
 
     // Erase all sketcher objects
     QObjectPtrList aObjects = aDisplayer->displayedObjects();
@@ -1389,7 +1423,7 @@ void PartSet_SketcherMgr::stopSketch(ModuleBase_Operation* theOperation)
       myCurrentSketch->setDisplayed(true);
 
     myCurrentSketch = CompositeFeaturePtr();
-    mySketchPlane->eraseSketchPlane(myModule->workshop());
+    mySketchPlane->hideAll();
 
     Events_Loop::loop()->flush(aDispEvent);
   }

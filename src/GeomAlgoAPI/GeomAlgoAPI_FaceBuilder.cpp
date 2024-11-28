@@ -99,6 +99,22 @@ std::shared_ptr<GeomAPI_Face> GeomAlgoAPI_FaceBuilder::planarFace(
 }
 
 //==================================================================================================
+/*static*/ std::shared_ptr<GeomAPI_Face> GeomAlgoAPI_FaceBuilder::planarRectangularFace(
+  const gp_Ax3& theCS, double theWidth, double theHeight, double theOffsetX, double theOffsetY
+) {
+  const gp_Pln plane = gp_Pln(theCS);
+  BRepBuilderAPI_MakeFace faceBuilder(
+    plane,
+    theOffsetX - theWidth/2 , theOffsetX + theWidth/2,
+    theOffsetY - theHeight/2, theOffsetY + theHeight/2
+  );
+
+  std::shared_ptr<GeomAPI_Face> res(new GeomAPI_Face());
+  res->setImpl(new TopoDS_Face(faceBuilder.Face()));
+  return res;
+}
+
+//==================================================================================================
 std::shared_ptr<GeomAPI_Face> GeomAlgoAPI_FaceBuilder::planarFaceByThreeVertices(
     const std::shared_ptr<GeomAPI_Vertex> theVertex1,
     const std::shared_ptr<GeomAPI_Vertex> theVertex2,

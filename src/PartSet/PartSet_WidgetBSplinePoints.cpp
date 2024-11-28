@@ -119,7 +119,7 @@ PartSet_WidgetBSplinePoints::PartSet_WidgetBSplinePoints(QWidget* theParent,
 
   myScrollArea->setWidget(aContainer);
 
-  myWidgetValidator = new ModuleBase_WidgetValidator(this, myWorkshop);
+  myWidgetValidator.reset(new ModuleBase_WidgetValidator(this, myWorkshop));
   myExternalObjectMgr = new PartSet_ExternalObjectsMgr(theData->getProperty("use_external"),
                                          theData->getProperty("can_create_external"), true);
 }
@@ -555,10 +555,20 @@ void PartSet_WidgetBSplinePoints::mouseMoved(ModuleBase_IViewWindow* theWindow,
   if (myFinished || isEditingMode() || aModule->sketchReentranceMgr()->isInternalEditActive())
     return;
 
-  gp_Pnt aPoint = PartSet_Tools::convertClickToPoint(theEvent->pos(), theWindow->v3dView());
+  double aX = 0, aY = 0; // Coords at sketch plane.
+  bool success = convertPointToLocal(
+    myWorkshop,
+    mySketch,
+    theWindow,
+    theEvent->pos(),
+    aX, aY,
+    true,
+    true
+  );
 
-  double aX = 0, aY = 0;
-  PartSet_Tools::convertTo2D(aPoint, mySketch, theWindow->v3dView(), aX, aY);
+  if (!success)
+    return;
+
   if (myState != ModifiedInViewer)
     storeCurentValue();
   // we need to block the value state change

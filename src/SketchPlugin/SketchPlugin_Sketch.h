@@ -70,6 +70,84 @@ class SketchPlugin_Sketch : public ModelAPI_CompositeFeature//, public GeomAPI_I
     static const std::string MY_NORM_ID("Norm");
     return MY_NORM_ID;
   }
+
+  /// Size of a skectch, if it has just been created on a default plane.
+  inline static const std::string& DEFAULT_SIZE_ID()
+  {
+    static const std::string MY_DEFAULT_SIZE_ID_ID("DefaultSize");
+    return MY_DEFAULT_SIZE_ID_ID;
+  }
+
+  inline static const std::string& AXES_ENABLED_ID()
+  {
+    static const std::string MY_AXES_ENABLED_ID("AxesEnabled");
+    return MY_AXES_ENABLED_ID;
+  }
+
+  inline static const std::string& SUBSTRATE_ENABLED_ID()
+  {
+    static const std::string MY_SUBSTRATE_ENABLED_ID("SubstrateEnabled");
+    return MY_SUBSTRATE_ENABLED_ID;
+  }
+
+  inline static const std::string& CONSTRUCTION_GRID_TYPE_ID()
+  {
+    static const std::string MY_CONSTRUCTION_GRID_TYPE_ID("GridType");
+    return MY_CONSTRUCTION_GRID_TYPE_ID;
+  }
+
+  inline static const std::string& RECTANGULAR_CONSTRUCTION_GRID_STEP_X_ID()
+  {
+    static const std::string MY_RECTANGULAR_CONSTRUCTION_GRID_STEP_X_ID("RectangularGridStepX");
+    return MY_RECTANGULAR_CONSTRUCTION_GRID_STEP_X_ID;
+  }
+  inline static const std::string& RECTANGULAR_CONSTRUCTION_GRID_STEP_Y_ID()
+  {
+    static const std::string MY_RECTANGULAR_CONSTRUCTION_GRID_STEP_Y_ID("RectangularGridStepY");
+    return MY_RECTANGULAR_CONSTRUCTION_GRID_STEP_Y_ID;
+  }
+  inline static const std::string& RECTANGULAR_CONSTRUCTION_GRID_OFFSET_ANGLE_ID()
+  {
+    static const std::string MY_RECTANGULAR_CONSTRUCTION_GRID_OFFSET_ANGLE_ID("RectangularGridOffsetAngle");
+    return MY_RECTANGULAR_CONSTRUCTION_GRID_OFFSET_ANGLE_ID;
+  }
+  inline static const std::string& RECTANGULAR_CONSTRUCTION_GRID_OFFSET_X_ID()
+  {
+    static const std::string MY_RECTANGULAR_CONSTRUCTION_GRID_OFFSET_X_ID("RectangularGridOffsetX");
+    return MY_RECTANGULAR_CONSTRUCTION_GRID_OFFSET_X_ID;
+  }
+  inline static const std::string& RECTANGULAR_CONSTRUCTION_GRID_OFFSET_Y_ID()
+  {
+    static const std::string MY_RECTANGULAR_CONSTRUCTION_GRID_OFFSET_Y_ID("RectangularGridOffsetY");
+    return MY_RECTANGULAR_CONSTRUCTION_GRID_OFFSET_Y_ID;
+  }
+
+  inline static const std::string& CIRCULAR_CONSTRUCTION_GRID_STEP_R_ID()
+  {
+    static const std::string MY_CIRCULAR_CONSTRUCTION_GRID_STEP_R_ID("CircularGridStepR");
+    return MY_CIRCULAR_CONSTRUCTION_GRID_STEP_R_ID;
+  }
+  inline static const std::string& CIRCULAR_CONSTRUCTION_GRID_NUM_OF_ANG_SEGMENTS_ID()
+  {
+    static const std::string MY_CIRCULAR_CONSTRUCTION_GRID_NUM_OF_ANG_SEGMENTS_ID("CircularGridNumOfAnularSegments");
+    return MY_CIRCULAR_CONSTRUCTION_GRID_NUM_OF_ANG_SEGMENTS_ID;
+  }
+  inline static const std::string& CIRCULAR_CONSTRUCTION_GRID_OFFSET_ANGLE_ID()
+  {
+    static const std::string MY_CIRCULAR_CONSTRUCTION_GRID_OFFSET_ANGLE_ID("CircularGridOffsetAngle");
+    return MY_CIRCULAR_CONSTRUCTION_GRID_OFFSET_ANGLE_ID;
+  }
+  inline static const std::string& CIRCULAR_CONSTRUCTION_GRID_OFFSET_X_ID()
+  {
+    static const std::string MY_CIRCULAR_CONSTRUCTION_GRID_OFFSET_X_ID("CircularGridOffsetX");
+    return MY_CIRCULAR_CONSTRUCTION_GRID_OFFSET_X_ID;
+  }
+  inline static const std::string& CIRCULAR_CONSTRUCTION_GRID_OFFSET_Y_ID()
+  {
+    static const std::string MY_CIRCULAR_CONSTRUCTION_GRID_OFFSET_Y_ID("CircularGridOffsetY");
+    return MY_CIRCULAR_CONSTRUCTION_GRID_OFFSET_Y_ID;
+  }
+
   /// All features of this sketch (list of references)
   inline static const std::string& FEATURES_ID()
   {

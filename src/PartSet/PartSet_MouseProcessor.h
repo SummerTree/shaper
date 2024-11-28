@@ -30,12 +30,12 @@
 
 class ModuleBase_IViewWindow;
 class ModuleBase_ViewerPrs;
+class ModuleBase_IWorkshop;
+class ModelAPI_CompositeFeature;
 class QMouseEvent;
+class QPoint;
 
-/**
- * This is an interface to allow processing of mouse events. Implementation of necessary methods
-* should be done in a child.
-*/
+/** Interface for mouse events processing. */
 class PartSet_MouseProcessor
 {
 public:
@@ -64,6 +64,25 @@ public:
   virtual void setPreSelection(const std::shared_ptr<ModuleBase_ViewerPrs>& thePreSelected,
                                ModuleBase_IViewWindow* theWnd,
                                QMouseEvent* theEvent) {}
+
+  /// \brief Converts position of mouse cursor to local coordinates on sketch plane.
+  ///  Snaps on-sketch-plane-coordinates to closest construction grid node.
+  /// \param theEventPos is position of mouse cursor.
+  /// \param theX and \param theY are local coordinates on sketch plane.
+  /// \param theSnap theX and theY are snapped to construction grid if both theSnap == true and snapping is enabled.
+  /// \param theHighlight If point is snapped, hightlight grid point.
+  /// \param theAddOffset If true, serves as a remedy for odd crash during drawing of a line on a sketch.
+  /// \returns true on success.
+  static bool convertPointToLocal(
+    ModuleBase_IWorkshop* theWorkshop,
+    const std::shared_ptr<ModelAPI_CompositeFeature>& theSketch, // Passing by reference is intentionally.
+    ModuleBase_IViewWindow* theWindow,
+    const QPoint& theEventPos,
+    double& theX, double& theY,
+    bool theSnap = true,
+    bool theHighlight = false,
+    bool theAddOffset = false
+  );
 };
 
 #endif

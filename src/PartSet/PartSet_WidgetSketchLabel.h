@@ -21,7 +21,6 @@
 #define PartSet_WidgetSketchLabel_H
 
 #include "PartSet.h"
-
 #include "PartSet_Tools.h"
 
 #include <ModuleBase_WidgetValidated.h>
@@ -33,22 +32,36 @@
 #include <TopoDS_Shape.hxx>
 
 #include <QStackedWidget>
+#include <QDoubleSpinBox>
 #include <QMap>
 
 class PartSet_PreviewPlanes;
+class PartSet_PreviewSketchPlane;
 
-class QLabel;
 class XGUI_OperationMgr;
 class XGUI_Workshop;
 class QCheckBox;
-class QStackedWidget;
+class QComboBox;
+class QDialog;
+class QSpinBox;
+class QGroupBox;
+class QLabel;
 class QLineEdit;
 class QPushButton;
-class QDialog;
+class QStackedWidget;
+class QGridLayout;
+
+class PartSet_WidgetSketchLabel;
+class ModelAPI_CompositeFeature;
+
+
+class PartSet_WidgetSketchRectangularGrid;
+class PartSet_WidgetSketchCircularGrid;
+
 
 /**
 * \ingroup Modules
-* A model widget implementation for a label which provides specific behaviour 
+* A model widget implementation for a label which provides specific behaviour
 * for sketcher starting and launching operations
 */
 class PARTSET_EXPORT PartSet_WidgetSketchLabel : public ModuleBase_WidgetValidated
@@ -65,7 +78,15 @@ public:
                       const Config_WidgetAPI* theData,
                       const QMap<PartSet_Tools::ConstraintVisibleState, bool>& toShowConstraints);
 
-  virtual ~PartSet_WidgetSketchLabel();
+  virtual ~PartSet_WidgetSketchLabel() = default;
+
+  virtual void setFeature(
+    const FeaturePtr& theFeature,
+    const bool theToStoreValue = false,
+    const bool isUpdateFlushed = true
+  );
+
+  virtual bool isModified() const { return mySketchDataIsModified; }
 
   /// Set the given wrapped value to the current widget
   /// This value should be processed in the widget according to the needs
@@ -157,10 +178,7 @@ protected:
 
   /// Saves the internal parameters to the given feature
   /// \return True in success
-  virtual bool storeValueCustom()
-  {
-    return true;
-  }
+  virtual bool storeValueCustom();
 
   virtual bool restoreValueCustom();
 
@@ -213,24 +231,32 @@ protected:
   virtual bool eventFilter(QObject* theObj, QEvent* theEvent);
 
 private slots:
-  /// A slot called on set sketch plane view
+  /// Called on set sketch plane view
   void onSetPlaneView();
 
   /// Emits signal about check box state changed with information about ConstraintVisibleState
   /// \param theOn a flag show constraints or not
   void onShowConstraint(bool theOn);
 
-  /// A a slot called on "Change sketch plane" check box toggele
+  /// Called on "Change sketch plane" button is clicked.
   void onChangePlane();
 
-  /// A a slot called on "Show remaining DOFs" check box toggele
+  /// Called on "Show remaining DOFs" button is clicked.
   void onShowDOF();
 
-  ///  A a slot called on changing the panel visibility
+  ///  Called on changing the panel visibility
   void onShowPanel();
 
-  /// A slot which is called on "Visible" plane checkbox toggle
-  void onShowViewPlane(bool);
+  void onShowAxes(bool);
+  void onShowSubstrate(bool);
+
+  void onGridTypeChanged(int);
+  void onGridSnappingModeChanged(int);
+
+  /*! \brief Must be called after PartSet_PreviewSketchPlane is configured. */
+  void reconfigureSketchViewWidgets();
+
+  void saveSketchViewPreferenceToSkethData();
 
 private:
   /// Set sketch plane by shape
@@ -243,7 +269,7 @@ private:
 
   /**
   * Returns list of presentations which have displayed shapes with circular edges
-  * (circles, arcs) which are in pane of of the given sketch
+  * (circles, arcs) which are in plane of of the given sketch
   * \param theSketch - the sketch
   */
   QList<ModuleBase_ViewerPrsPtr> findCircularEdgesInPlane();
@@ -252,8 +278,22 @@ private:
   /// class to show/hide preview planes
   PartSet_PreviewPlanes* myPreviewPlanes;
 
+  bool mySketchDataIsModified;
+  QGroupBox* mySketchViewGroupBox;
+
   QCheckBox* myViewInverted;
-  QCheckBox* myViewVisible;
+  QCheckBox* myAxesVisibleCheckBox; // Local sketch axes.
+  QCheckBox* mySubstrateVisibleCheckBox;
+
+  QComboBox* myGridTypeComboBox;
+  QComboBox* myGridSnappingModeComboBox;
+
+  friend class PartSet_WidgetSketchGrid;
+  friend class PartSet_WidgetSketchRectangularGrid;
+  friend class PartSet_WidgetSketchCircularGrid;
+  PartSet_WidgetSketchRectangularGrid* myWidgetRectangularGrid;
+  PartSet_WidgetSketchCircularGrid*    myWidgetCircularGrid;
+
   QCheckBox* myRemoveExternal;
   QCheckBox* myShowPoints;
   QCheckBox* myAutoConstraints;
@@ -274,6 +314,136 @@ private:
   QDialog* mySizeMessage;
 
   GeomPlanePtr myTmpPlane;
+};
+
+
+class PARTSET_EXPORT PitchSpinBox : public QDoubleSpinBox
+{
+    Q_OBJECT
+public:
+  PitchSpinBox(QWidget* theParent);
+  ~PitchSpinBox() = default;
+
+  void setValue(double theVal);
+
+signals:
+  void valueSet(double theVal);
+
+private slots:
+  virtual void onTextChanged();
+  virtual void onEditingFinished();
+
+private:
+  double myPrevVal;
+};
+
+
+class PARTSET_EXPORT PartSet_WidgetSketchGrid : public QWidget
+{
+  Q_OBJECT
+public:
+/*! \param theSketchLabel must not be nullptr. */
+  PartSet_WidgetSketchGrid(QWidget* theParent, PartSet_WidgetSketchLabel* theSketchLabel);
+  virtual ~PartSet_WidgetSketchGrid() = default;
+
+  virtual void recongifure() = 0;
+
+protected slots:
+  virtual void onResetClicked() = 0;
+  virtual void onOffsetAngleChanged(double theOffset) = 0;
+  virtual void onOffsetXChanged(double theOffset) = 0;
+  virtual void onOffsetYChanged(double theOffset) = 0;
+
+protected:
+  /*! \returns Modulo of theValue in (-theIntervalWidth/2; theIntervalWidth/2]. */
+  static double clampValue(double theValue, double theIntervalWidth);
+
+  /*! \returns Reasonable increment for offset spinbox for given grid pitch. */
+  static double reasonableOffsetIncrement(double theStep);
+
+  /*! \returns Reasonable increment for pitch spinbox for given grid pitch. */
+  static double reasonablePitchIncrement(double theStep);
+
+  void retrieveSketchAndPlane();
+
+protected:
+  /** Num of digits in fractional part of translational values. */
+  static const int NUM_OF_DECIMAL_DIGITS_TRANS;
+
+  /** Num of digits in fractional part of rotational values. */
+  static const int NUM_OF_DECIMAL_DIGITS_ROTAT;
+
+  static const int SPIN_BOX_MIN_WIDTH;
+
+protected:
+  PartSet_WidgetSketchLabel* const mySketchLabel;
+  PartSet_PreviewSketchPlane* myPreviewPlane;
+
+  QGridLayout*    myLayout;
+
+  QPushButton*    myResetButton;
+
+  QDoubleSpinBox* myOffsetXSpinBox;
+  QDoubleSpinBox* myOffsetYSpinBox;
+  QDoubleSpinBox* myOffsetAngleSpinBox;
+
+  friend class PitchSpinBox;
+};
+
+
+class PARTSET_EXPORT PartSet_WidgetSketchRectangularGrid : public PartSet_WidgetSketchGrid
+{
+  Q_OBJECT
+public:
+  /*! \param theSketchLabel must not be nullptr. */
+  PartSet_WidgetSketchRectangularGrid(QWidget* theParent, PartSet_WidgetSketchLabel* theSketchLabel);
+  virtual ~PartSet_WidgetSketchRectangularGrid() = default;
+
+  /*! \brief Must be called after PartSet_PreviewSketchPlane is configured. */
+  virtual void recongifure();
+
+private slots:
+  void onStepXSet(double theStep);
+  void onStepYSet(double theStep);
+
+protected slots:
+  virtual void onResetClicked();
+  virtual void onOffsetAngleChanged(double theOffset);
+  virtual void onOffsetXChanged(double theOffset);
+  virtual void onOffsetYChanged(double theOffset);
+
+private:
+  PitchSpinBox* myStepXSpinBox;
+  PitchSpinBox* myStepYSpinBox;
+};
+
+
+class PARTSET_EXPORT PartSet_WidgetSketchCircularGrid : public PartSet_WidgetSketchGrid
+{
+  Q_OBJECT
+public:
+  /*! \param theSketchLabel must not be nullptr. */
+  PartSet_WidgetSketchCircularGrid(QWidget* theParent, PartSet_WidgetSketchLabel* theSketchLabel);
+  virtual ~PartSet_WidgetSketchCircularGrid() = default;
+
+  /*! \brief Must be called after PartSet_PreviewSketchPlane is configured. */
+  virtual void recongifure();
+
+private slots:
+  void onStepRChanged(double theStep);
+  void onNumOfAngularSegmentsChanged(int theNum);
+
+protected slots:
+  virtual void onResetClicked();
+  virtual void onOffsetAngleChanged(double theOffset);
+  virtual void onOffsetXChanged(double theOffset);
+  virtual void onOffsetYChanged(double theOffset);
+
+private:
+  void updateSegmentsToolTip();
+
+  PitchSpinBox* myStepRSpinBox;
+  QSpinBox*       myNASSpinBox;
 };
 
 #endif

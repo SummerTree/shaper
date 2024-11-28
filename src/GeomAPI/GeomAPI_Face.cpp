@@ -378,7 +378,7 @@ GeomPointPtr GeomAPI_Face::middlePoint() const
     return anInnerPoint;
 
   double aUMin, aUMax, aVMin, aVMax;
-  optimalBounds(aFace, aUMin, aUMax, aVMin, aVMax);
+  ::optimalBounds(aFace, aUMin, aUMax, aVMin, aVMax);
 
   Handle(Geom_Surface) aSurf = BRep_Tool::Surface(aFace);
   if (aSurf.IsNull())
@@ -389,6 +389,16 @@ GeomPointPtr GeomAPI_Face::middlePoint() const
   return anInnerPoint;
 }
 
+bool GeomAPI_Face::optimalBounds(double& theUMin, double& theUMax,
+                                 double& theVMin, double& theVMax) const
+{
+  const TopoDS_Face& aFace = impl<TopoDS_Face>();
+  if (aFace.IsNull())
+    return false;
+
+  ::optimalBounds(aFace, theUMin, theUMax, theVMin, theVMax);
+  return true;
+}
 
 // ==================     Auxiliary functions     ========================
 

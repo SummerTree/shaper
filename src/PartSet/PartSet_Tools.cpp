@@ -23,6 +23,9 @@
 
 #include <ModelAPI_Data.h>
 #include <ModelAPI_AttributeDouble.h>
+#include <ModelAPI_AttributeInteger.h>
+#include <ModelAPI_AttributeBoolean.h>
+#include <ModelAPI_AttributeString.h>
 #include <ModelAPI_AttributeRefList.h>
 #include <ModelAPI_Document.h>
 #include <ModelAPI_Session.h>
@@ -81,6 +84,8 @@
 
 #include <V3d_View.hxx>
 #include <gp_Pln.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Dir.hxx>
 #include <gp_Circ.hxx>
 #include <ProjLib.hxx>
 #include <ElSLib.hxx>
@@ -88,6 +93,7 @@
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <AIS_InteractiveObject.hxx>
@@ -331,6 +337,404 @@ void PartSet_Tools::nullifySketchPlane(CompositeFeaturePtr theSketch)
 
   aNormal->reset();
   anOrigin->reset();
+}
+
+std::pair<bool, gp_Ax3> PartSet_Tools::getWorldCSAt(const GeomAPI_Face& theFace, double U, double V)
+{
+  auto res = std::pair<bool, gp_Ax3>(false, gp_Ax3());
+  try {
+    const TopoDS_Face& face = theFace.impl<TopoDS_Face>();
+    if (face.IsNull())
+      return res;
+
+    const opencascade::handle<Geom_Surface> surface = BRep_Tool::Surface(face);
+    if (surface.IsNull())
+      return res;
+
+    gp_Pnt origin;
+    gp_Vec dirX;
+    gp_Vec dirY;
+    surface->D1(U, V, origin, dirX, dirY);
+    const gp_Vec normal = dirX.Crossed(dirY);
+
+    res.second = gp_Ax3(origin, gp_Dir(normal), gp_Dir(dirX));
+    res.first = true;
+    return res;
+  }
+  catch (...) {
+    return res;
+  }
+}
+
+std::pair<bool, gp_Pnt> PartSet_Tools::getWorldPointByUV(const GeomAPI_Face& theFace, double U, double V)
+{
+  auto res = std::pair<bool, gp_Pnt>(false, gp_Pnt());
+  try {
+    const TopoDS_Face& face = theFace.impl<TopoDS_Face>();
+    if (face.IsNull())
+      return res;
+
+    const opencascade::handle<Geom_Surface> surface = BRep_Tool::Surface(face);
+    if (surface.IsNull())
+      return res;
+
+    res.second = surface->Value(U, V);
+    res.first = true;
+    return res;
+  }
+  catch (...) {
+    return res;
+  }
+}
+
+std::pair<bool, Bnd_Box> PartSet_Tools::getBBoxAtCS(const GeomAPI_Shape& theShape, const gp_Ax3 theCS)
+{
+  auto res = std::pair<bool, Bnd_Box>(false, Bnd_Box());
+
+  { // Get BBox if theShape is GeomAPI_Pln, which has linear dependency of X and Y on U and V.
+    const auto face = theShape.face();
+    if (face) {
+      const auto plane = face->getPlane();
+      if (plane) {
+        try {
+          double UMax, UMin, VMax, VMin = 0;
+          face->optimalBounds(UMin, UMax, VMin, VMax);
+          std::pair<double, double> UVPairs[4];
+          UVPairs[0] = std::pair<double, double>(UMin, VMin);
+          UVPairs[1] = std::pair<double, double>(UMax, VMin);
+          UVPairs[2] = std::pair<double, double>(UMin, VMax);
+          UVPairs[3] = std::pair<double, double>(UMax, VMax);
+
+          gp_Pnt points[4];
+          bool success = true;
+          for (int idx = 0; idx < 4; idx++) {
+            std::tie(success, points[idx]) = getWorldPointByUV(*face, UVPairs[idx].first, UVPairs[idx].second);
+            if (!success)
+              return res;
+          }
+
+          gp_Trsf trsf;
+          trsf.SetTransformation(theCS);
+          for (int idx = 0; idx < 4; idx++) {
+            res.second.Add(points[idx].Transformed(trsf));
+          }
+          res.first = true;
+          return res;
+        }
+        catch(...) {
+          return res;
+        }
+      } // If Pln.
+    } // If Face.
+  } // If theShape is GeomAPI_Pln.
+
+  { // TODO Fill aligned (oriented) bounding box instead of tranforming unaligned one.
+    double Xmin, Ymin, Zmin, Xmax, Ymax, Zmax = 0;
+    const bool success = theShape.computeSize(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
+    if (!success)
+      return res;
+
+    res.second.Update(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
+
+    gp_Trsf trsf;
+    trsf.SetTransformation(theCS);
+    res.second = res.second.Transformed(trsf);
+
+    return res;
+  }
+
+  return res;
+}
+
+std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneDefaultSize(CompositeFeaturePtr theSketch)
+{
+  auto aSize = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    theSketch->data()->attribute(SketchPlugin_Sketch::DEFAULT_SIZE_ID())
+  );
+
+  if (!aSize) {
+    aSize = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
+      SketchPlugin_Sketch::DEFAULT_SIZE_ID(),
+      ModelAPI_AttributeDouble::typeId()
+    ));
+
+    aSize->setIsArgument(false);
+    aSize->setValue(0);
+  }
+
+  return aSize;
+}
+
+std::shared_ptr<ModelAPI_AttributeBoolean> PartSet_Tools::sketchPlaneAxesEnabled(CompositeFeaturePtr theSketch)
+{
+  auto isEnabled = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(
+    theSketch->data()->attribute(SketchPlugin_Sketch::AXES_ENABLED_ID())
+  );
+
+  if (!isEnabled) {
+    isEnabled = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(theSketch->data()->addAttribute(
+      SketchPlugin_Sketch::AXES_ENABLED_ID(),
+      ModelAPI_AttributeBoolean::typeId()
+    ));
+
+    isEnabled->setIsArgument(false);
+    isEnabled->setValue(true);
+  }
+
+  return isEnabled;
+}
+
+std::shared_ptr<ModelAPI_AttributeBoolean> PartSet_Tools::sketchPlaneSubstrateEnabled(CompositeFeaturePtr theSketch)
+{
+  auto isEnabled = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(
+    theSketch->data()->attribute(SketchPlugin_Sketch::SUBSTRATE_ENABLED_ID())
+  );
+
+  if (!isEnabled) {
+    isEnabled = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(theSketch->data()->addAttribute(
+      SketchPlugin_Sketch::SUBSTRATE_ENABLED_ID(),
+      ModelAPI_AttributeBoolean::typeId()
+    ));
+
+    isEnabled->setIsArgument(false);
+    isEnabled->setValue(true);
+  }
+
+  return isEnabled;
+}
+
+std::shared_ptr<ModelAPI_AttributeString> PartSet_Tools::sketchPlaneGridType(CompositeFeaturePtr theSketch)
+{
+  auto gridType = std::dynamic_pointer_cast<ModelAPI_AttributeString>(
+    theSketch->data()->attribute(SketchPlugin_Sketch::CONSTRUCTION_GRID_TYPE_ID())
+  );
+
+  if (!gridType) {
+    gridType = std::dynamic_pointer_cast<ModelAPI_AttributeString>(theSketch->data()->addAttribute(
+      SketchPlugin_Sketch::CONSTRUCTION_GRID_TYPE_ID(),
+      ModelAPI_AttributeString::typeId()
+    ));
+
+    gridType->setIsArgument(false);
+    gridType->setValue(PartSet_Tools::SketchPlaneGridType::toString(PartSet_Tools::SketchPlaneGridType::No));
+  }
+
+  return gridType;
+}
+
+std::string PartSet_Tools::SketchPlaneGridType::toString(Enum iType)
+{
+  if (iType >= SketchPlaneGridType::STRINGS.size())
+    return SketchPlaneGridType::STRINGS[0];
+
+  return SketchPlaneGridType::STRINGS[iType];
+}
+
+PartSet_Tools::SketchPlaneGridType::Enum PartSet_Tools::SketchPlaneGridType::fromString(const std::string& iTypeString)
+{
+  for (int i = 0; i < SketchPlaneGridType::STRINGS.size(); i++) {
+    if (SketchPlaneGridType::STRINGS[i] == iTypeString) {
+      return SketchPlaneGridType::Enum(i);
+    }
+  }
+  return SketchPlaneGridType::Enum::No;
+}
+
+const std::array<std::string, 3> PartSet_Tools::SketchPlaneGridType::STRINGS = {"", "Rectangular", "Circular"};
+
+void PartSet_Tools::setSketchPlaneGridType(CompositeFeaturePtr theSketch, PartSet_Tools::SketchPlaneGridType::Enum theType)
+{
+  PartSet_Tools::sketchPlaneGridType(theSketch)->setValue(PartSet_Tools::SketchPlaneGridType::toString(theType));
+}
+
+PartSet_Tools::SketchPlaneGridType::Enum PartSet_Tools::getSketchPlaneGridType(CompositeFeaturePtr theSketch)
+{
+  return PartSet_Tools::SketchPlaneGridType::fromString(PartSet_Tools::sketchPlaneGridType(theSketch)->value());
+}
+
+std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneRectangularGridStepX(CompositeFeaturePtr theSketch) {
+  auto aStep = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    theSketch->data()->attribute(SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_STEP_X_ID())
+  );
+
+  if (!aStep) {
+    aStep = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
+      SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_STEP_X_ID(),
+      ModelAPI_AttributeDouble::typeId()
+    ));
+
+    aStep->setIsArgument(false);
+    aStep->setValue(-1);
+  }
+
+  return aStep;
+}
+
+std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneRectangularGridStepY(CompositeFeaturePtr theSketch) {
+  auto aStep = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    theSketch->data()->attribute(SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_STEP_Y_ID())
+  );
+
+  if (!aStep) {
+    aStep = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
+      SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_STEP_Y_ID(),
+      ModelAPI_AttributeDouble::typeId()
+    ));
+
+    aStep->setIsArgument(false);
+    aStep->setValue(-1);
+  }
+
+  return aStep;
+}
+
+std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneRectangularGridOffsetAngle(CompositeFeaturePtr theSketch)
+{
+  auto aAngle = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    theSketch->data()->attribute(SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_OFFSET_ANGLE_ID())
+  );
+
+  if (!aAngle) {
+    aAngle = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
+      SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_OFFSET_ANGLE_ID(),
+      ModelAPI_AttributeDouble::typeId()
+    ));
+
+    aAngle->setIsArgument(false);
+    aAngle->setValue(0);
+  }
+
+  return aAngle;
+}
+
+std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneRectangularGridOffsetX(CompositeFeaturePtr theSketch) {
+  auto aShift = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    theSketch->data()->attribute(SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_OFFSET_X_ID())
+  );
+
+  if (!aShift) {
+    aShift = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
+      SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_OFFSET_X_ID(),
+      ModelAPI_AttributeDouble::typeId()
+    ));
+
+    aShift->setIsArgument(false);
+    aShift->setValue(0);
+  }
+
+  return aShift;
+}
+
+std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneRectangularGridOffsetY(CompositeFeaturePtr theSketch) {
+  auto aShift = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    theSketch->data()->attribute(SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_OFFSET_Y_ID())
+  );
+
+  if (!aShift) {
+    aShift = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
+      SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_OFFSET_Y_ID(),
+      ModelAPI_AttributeDouble::typeId()
+    ));
+
+    aShift->setIsArgument(false);
+    aShift->setValue(0);
+  }
+
+  return aShift;
+}
+
+
+std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneCircularGridStepR(CompositeFeaturePtr theSketch)
+{
+  auto aStep = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    theSketch->data()->attribute(SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_STEP_R_ID())
+  );
+
+  if (!aStep) {
+    aStep = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
+      SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_STEP_R_ID(),
+      ModelAPI_AttributeDouble::typeId()
+    ));
+
+    aStep->setIsArgument(false);
+    aStep->setValue(-1);
+  }
+
+  return aStep;
+}
+
+std::shared_ptr<ModelAPI_AttributeInteger> PartSet_Tools::sketchPlaneCircularGridNumOfAngSegments(CompositeFeaturePtr theSketch)
+{
+  auto num = std::dynamic_pointer_cast<ModelAPI_AttributeInteger>(
+    theSketch->data()->attribute(SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_NUM_OF_ANG_SEGMENTS_ID())
+  );
+
+  if (!num) {
+    num = std::dynamic_pointer_cast<ModelAPI_AttributeInteger>(theSketch->data()->addAttribute(
+      SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_NUM_OF_ANG_SEGMENTS_ID(),
+      ModelAPI_AttributeInteger::typeId()
+    ));
+
+    num->setIsArgument(false);
+    num->setValue(-1);
+  }
+
+  return num;
+}
+
+std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneCircularGridOffsetAngle(CompositeFeaturePtr theSketch)
+{
+  auto aAngle = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    theSketch->data()->attribute(SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_OFFSET_ANGLE_ID())
+  );
+
+  if (!aAngle) {
+    aAngle = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
+      SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_OFFSET_ANGLE_ID(),
+      ModelAPI_AttributeDouble::typeId()
+    ));
+
+    aAngle->setIsArgument(false);
+    aAngle->setValue(0);
+  }
+
+  return aAngle;
+}
+
+std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneCircularGridOffsetX(CompositeFeaturePtr theSketch) {
+  auto aShift = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    theSketch->data()->attribute(SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_OFFSET_X_ID())
+  );
+
+  if (!aShift) {
+    aShift = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
+      SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_OFFSET_X_ID(),
+      ModelAPI_AttributeDouble::typeId()
+    ));
+
+    aShift->setIsArgument(false);
+    aShift->setValue(0);
+  }
+
+  return aShift;
+}
+
+std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneCircularGridOffsetY(CompositeFeaturePtr theSketch) {
+  auto aShift = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    theSketch->data()->attribute(SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_OFFSET_Y_ID())
+  );
+
+  if (!aShift) {
+    aShift = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
+      SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_OFFSET_Y_ID(),
+      ModelAPI_AttributeDouble::typeId()
+    ));
+
+    aShift->setIsArgument(false);
+    aShift->setValue(0);
+  }
+
+  return aShift;
 }
 
 std::shared_ptr<GeomAPI_Pnt> PartSet_Tools::point3D(std::shared_ptr<GeomAPI_Pnt2d> thePoint2D,

@@ -434,8 +434,9 @@ private:
 
   /// Converts mouse position to 2d coordinates.
   /// Member myCurrentSketch has to be correctly defined
+  /// \param theSnap If true and snapping is enabled, snaps coordinates to the grid.
   void get2dPoint(ModuleBase_IViewWindow* theWnd, QMouseEvent* theEvent,
-                  Point& thePoint);
+                  Point& thePoint, bool theSnap = true);
 
   /// Show distance value editor if it is a distance operation and all attribute references
   /// are filled by preseletion
@@ -493,6 +494,8 @@ private:
 
   std::vector<int> colorOfObject(const ObjectPtr& theObject,
     const FeaturePtr& aFeature, bool isConstruction, bool isSuppressedConstraint) const;
+
+  friend class PartSet_PreviewSketchPlane;
 
 private:
   PartSet_Module* myModule;

@@ -48,7 +48,7 @@ class QKeyEvent;
 
 /**\class ModuleBase_ModelWidget
  * \ingroup GUI
- * \brief An abstract custom widget class. This class realization is assumed 
+ * \brief An abstract custom widget class. This class realization is assumed
  * to create some controls.
  * The controls values modification should send signal about values change.
  *
@@ -177,7 +177,7 @@ Q_OBJECT
   { return true; }
 
   /// Returns widget validator, by default it is NULL. To be created in a child if necessary
-  ModuleBase_WidgetValidator* widgetValidator() { return myWidgetValidator; }
+  ModuleBase_WidgetValidator* widgetValidator() { return myWidgetValidator.get(); }
 
   /// Restore value from attribute data to the widget's control.
   /// Emits signals before and after store
@@ -430,7 +430,7 @@ protected:
 
  protected:
     /// own validator, by default it is zero
-   ModuleBase_WidgetValidator* myWidgetValidator;
+  std::unique_ptr<ModuleBase_WidgetValidator> myWidgetValidator;
 
   /// The attribute name of the model feature
   std::string myAttributeID;

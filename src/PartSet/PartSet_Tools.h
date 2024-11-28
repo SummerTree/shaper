@@ -23,6 +23,8 @@
 #include "PartSet.h"
 
 #include <gp_Pnt.hxx>
+#include <gp_Ax3.hxx>
+#include <Bnd_Box.hxx>
 
 #include <QPoint>
 #include <QList>
@@ -38,6 +40,9 @@
 #include <TopoDS_Shape.hxx>
 
 #include <memory>
+#include <string>
+#include <array>
+#include <utility>
 
 class V3d_View;
 class ModuleBase_IViewWindow;
@@ -45,6 +50,7 @@ class ModuleBase_ViewerPrs;
 class ModuleBase_IWorkshop;
 class GeomDataAPI_Point2D;
 class GeomAPI_Shape;
+class GeomAPI_Face;
 class GeomAPI_Pln;
 class GeomAPI_Pnt2d;
 class GeomAPI_Pnt;
@@ -148,6 +154,79 @@ public:
   /// \param theSketch a sketch feature
   /// \return API object of geom plane
   static void nullifySketchPlane(CompositeFeaturePtr theSketch);
+
+  /*! \returns Basis of theFace' surface, defined in world CS, at point, which corresponds to point (U, V) in parametric space. */
+  static std::pair<bool, gp_Ax3> getWorldCSAt(const GeomAPI_Face& theFace, double U, double V);
+
+  /*! \returns Point, defined in world CS, which corresponds to point (U, V) in parametric space. */
+  static std::pair<bool, gp_Pnt> getWorldPointByUV(const GeomAPI_Face& theFace, double U, double V);
+
+  /*! \brief Fills bounding box, which is aligned according to theCS.
+  Returns the smallest possible box only for GeomAPI_Plns, for other shapes
+  returns unaligned transformed bounding box (so its dimensions are bigger than the smallest)!
+  \returns true on success. */
+  static std::pair<bool, Bnd_Box> getBBoxAtCS(const GeomAPI_Shape& theShape, const gp_Ax3 theCS);
+
+  /// @returns 0, if the plane was initialized on a feature. Result is never nullptr.
+  static std::shared_ptr<ModelAPI_AttributeDouble> sketchPlaneDefaultSize(CompositeFeaturePtr theSketch);
+
+  /// @returns never nullptr.
+  static std::shared_ptr<ModelAPI_AttributeBoolean> sketchPlaneAxesEnabled(CompositeFeaturePtr theSketch);
+
+  /// @returns never nullptr.
+  static std::shared_ptr<ModelAPI_AttributeBoolean> sketchPlaneSubstrateEnabled(CompositeFeaturePtr theSketch);
+
+  /// @returns empty string, if construction grid is disabled. Result is never nullptr.
+  static std::shared_ptr<ModelAPI_AttributeString> sketchPlaneGridType(CompositeFeaturePtr theSketch);
+
+  class SketchPlaneGridType {
+  public:
+    typedef enum {
+      No,
+      Rectangular,
+      Circular
+    } Enum;
+
+    static std::string toString(Enum iType);
+    static Enum fromString(const std::string& iTypeString);
+
+  private:
+    static const std::array<std::string, 3> STRINGS;
+  };
+
+  static void setSketchPlaneGridType(CompositeFeaturePtr theSketch, SketchPlaneGridType::Enum theType);
+  static SketchPlaneGridType::Enum getSketchPlaneGridType(CompositeFeaturePtr theSketch);
+
+  /// @returns never nullptr.
+  static std::shared_ptr<ModelAPI_AttributeDouble> sketchPlaneRectangularGridStepX(CompositeFeaturePtr theSketch);
+
+  /// @returns never nullptr.
+  static std::shared_ptr<ModelAPI_AttributeDouble> sketchPlaneRectangularGridStepY(CompositeFeaturePtr theSketch);
+
+  /// @returns never nullptr.
+  static std::shared_ptr<ModelAPI_AttributeDouble> sketchPlaneRectangularGridOffsetAngle(CompositeFeaturePtr theSketch);
+
+  /// @returns never nullptr.
+  static std::shared_ptr<ModelAPI_AttributeDouble> sketchPlaneRectangularGridOffsetX(CompositeFeaturePtr theSketch);
+
+  /// @returns never nullptr.
+  static std::shared_ptr<ModelAPI_AttributeDouble> sketchPlaneRectangularGridOffsetY(CompositeFeaturePtr theSketch);
+
+  /// @returns never nullptr.
+  static std::shared_ptr<ModelAPI_AttributeDouble> sketchPlaneCircularGridStepR(CompositeFeaturePtr theSketch);
+
+  /// @returns never nullptr.
+  static std::shared_ptr<ModelAPI_AttributeInteger> sketchPlaneCircularGridNumOfAngSegments(CompositeFeaturePtr theSketch);
+
+  /// @returns never nullptr.
+  static std::shared_ptr<ModelAPI_AttributeDouble> sketchPlaneCircularGridOffsetAngle(CompositeFeaturePtr theSketch);
+
+  /// @returns never nullptr.
+  static std::shared_ptr<ModelAPI_AttributeDouble> sketchPlaneCircularGridOffsetX(CompositeFeaturePtr theSketch);
+
+  /// @returns never nullptr.
+  static std::shared_ptr<ModelAPI_AttributeDouble> sketchPlaneCircularGridOffsetY(CompositeFeaturePtr theSketch);
+
 
   /// Create a point 3D on a basis of point 2D and sketch feature
   /// \param thePoint2D a point on a sketch

@@ -71,8 +71,14 @@ public:
   /// Returns torus if the face is based on the toroidal surface
   GEOMAPI_EXPORT std::shared_ptr<GeomAPI_Torus> getTorus() const;
 
-  /// Return inner point in the face
+  /// Returns inner point in the face
   GEOMAPI_EXPORT virtual std::shared_ptr<GeomAPI_Pnt> middlePoint() const;
+
+  /// Returns bounding box in UV-space.
+  GEOMAPI_EXPORT virtual bool optimalBounds(
+    double& theUMin, double& theUMax,
+    double& theVMin, double& theVMax
+  ) const;
 };
 
 //! Pointer on attribute object
