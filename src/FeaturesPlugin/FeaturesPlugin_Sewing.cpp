@@ -71,7 +71,7 @@ void FeaturesPlugin_Sewing::execute()
 
   if (!isSewn(aShapes, aResult) && !isAlwaysCreateResult)
   {
-    static const std::string anError = "Error: No faces were sewn.";
+    anError = "Error: No faces were sewn.";
     setError(anError);
     return;
   }
