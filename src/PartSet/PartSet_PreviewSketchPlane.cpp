@@ -504,7 +504,11 @@ bool PartSet_PreviewSketchPlane::reconfigureGridUsingSketch(std::shared_ptr<Mode
 
   if (theSketch) {
     if (myGridType == PartSet_Tools::SketchPlaneGridType::No)
+    {
+      // Ensure the Grid is set, BEFORE we can deactivate it.
+      aV3DViewer->ActivateGrid(Aspect_GridType::Aspect_GT_Rectangular, myGridDrawMode);
       aV3DViewer->DeactivateGrid();
+    }
     else {
       Aspect_GridType type = myGridType == PartSet_Tools::SketchPlaneGridType::Rectangular ?
         Aspect_GridType::Aspect_GT_Rectangular : Aspect_GridType::Aspect_GT_Circular;
