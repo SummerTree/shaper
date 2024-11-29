@@ -997,7 +997,7 @@ void PartSet_SketcherMgr::onDeactivate(bool isNeedDeactivate, std::vector<Featur
 }
 
 void PartSet_SketcherMgr::get2dPoint(ModuleBase_IViewWindow* theWnd, QMouseEvent* theEvent,
-                                     Point& thePoint, bool theSnap = true)
+                                     Point& thePoint, bool theSnap)
 {
 
   double aX = 0, aY = 0; // Coords at sketch plane.
