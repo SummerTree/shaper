@@ -506,8 +506,8 @@ bool PartSet_PreviewSketchPlane::reconfigureGridUsingSketch(std::shared_ptr<Mode
     if (myGridType == PartSet_Tools::SketchPlaneGridType::No)
     {
       // Ensure the Grid is set, BEFORE we can deactivate it.
-      aV3DViewer->ActivateGrid(Aspect_GridType::Aspect_GT_Rectangular, myGridDrawMode);
-      aV3DViewer->DeactivateGrid();
+      if (aV3DViewer->IsGridActive())
+        aV3DViewer->DeactivateGrid();
     }
     else {
       Aspect_GridType type = myGridType == PartSet_Tools::SketchPlaneGridType::Rectangular ?
@@ -565,7 +565,10 @@ bool PartSet_PreviewSketchPlane::setGridType(PartSet_Tools::SketchPlaneGridType:
   reconfigureGrid();
 
   if (myGridType == PartSet_Tools::SketchPlaneGridType::No)
-    aV3DViewer->DeactivateGrid();
+  {
+    if (aV3DViewer->IsGridActive())
+      aV3DViewer->DeactivateGrid();
+  }
   else {
     Aspect_GridType type = myGridType == PartSet_Tools::SketchPlaneGridType::Rectangular ?
       Aspect_GridType::Aspect_GT_Rectangular : Aspect_GridType::Aspect_GT_Circular;
@@ -747,7 +750,8 @@ void PartSet_PreviewSketchPlane::setInvalid()
     ModuleBase_IViewer* aViewer = mySketcherMgr->workshop()->salomeViewer();
     const auto aV3DViewer = getV3DViewer();
     if (aV3DViewer) {
-      aV3DViewer->DeactivateGrid();
+      if (aV3DViewer->IsGridActive())
+        aV3DViewer->DeactivateGrid();
       myGridType = PartSet_Tools::SketchPlaneGridType::No;
     }
     else {
