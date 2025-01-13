@@ -452,16 +452,6 @@ std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneDefaultSize(
     theSketch->data()->attribute(SketchPlugin_Sketch::DEFAULT_SIZE_ID())
   );
 
-  if (!aSize) {
-    aSize = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
-      SketchPlugin_Sketch::DEFAULT_SIZE_ID(),
-      ModelAPI_AttributeDouble::typeId()
-    ));
-
-    aSize->setIsArgument(false);
-    aSize->setValue(0);
-  }
-
   return aSize;
 }
 
@@ -470,16 +460,6 @@ std::shared_ptr<ModelAPI_AttributeBoolean> PartSet_Tools::sketchPlaneAxesEnabled
   auto isEnabled = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(
     theSketch->data()->attribute(SketchPlugin_Sketch::AXES_ENABLED_ID())
   );
-
-  if (!isEnabled) {
-    isEnabled = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(theSketch->data()->addAttribute(
-      SketchPlugin_Sketch::AXES_ENABLED_ID(),
-      ModelAPI_AttributeBoolean::typeId()
-    ));
-
-    isEnabled->setIsArgument(false);
-    isEnabled->setValue(true);
-  }
 
   return isEnabled;
 }
@@ -490,16 +470,6 @@ std::shared_ptr<ModelAPI_AttributeBoolean> PartSet_Tools::sketchPlaneSubstrateEn
     theSketch->data()->attribute(SketchPlugin_Sketch::SUBSTRATE_ENABLED_ID())
   );
 
-  if (!isEnabled) {
-    isEnabled = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(theSketch->data()->addAttribute(
-      SketchPlugin_Sketch::SUBSTRATE_ENABLED_ID(),
-      ModelAPI_AttributeBoolean::typeId()
-    ));
-
-    isEnabled->setIsArgument(false);
-    isEnabled->setValue(true);
-  }
-
   return isEnabled;
 }
 
@@ -508,16 +478,6 @@ std::shared_ptr<ModelAPI_AttributeString> PartSet_Tools::sketchPlaneGridType(Com
   auto gridType = std::dynamic_pointer_cast<ModelAPI_AttributeString>(
     theSketch->data()->attribute(SketchPlugin_Sketch::CONSTRUCTION_GRID_TYPE_ID())
   );
-
-  if (!gridType) {
-    gridType = std::dynamic_pointer_cast<ModelAPI_AttributeString>(theSketch->data()->addAttribute(
-      SketchPlugin_Sketch::CONSTRUCTION_GRID_TYPE_ID(),
-      ModelAPI_AttributeString::typeId()
-    ));
-
-    gridType->setIsArgument(false);
-    gridType->setValue(PartSet_Tools::SketchPlaneGridType::toString(PartSet_Tools::SketchPlaneGridType::No));
-  }
 
   return gridType;
 }
@@ -557,16 +517,6 @@ std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneRectangularG
     theSketch->data()->attribute(SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_STEP_X_ID())
   );
 
-  if (!aStep) {
-    aStep = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
-      SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_STEP_X_ID(),
-      ModelAPI_AttributeDouble::typeId()
-    ));
-
-    aStep->setIsArgument(false);
-    aStep->setValue(-1);
-  }
-
   return aStep;
 }
 
@@ -574,16 +524,6 @@ std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneRectangularG
   auto aStep = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
     theSketch->data()->attribute(SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_STEP_Y_ID())
   );
-
-  if (!aStep) {
-    aStep = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
-      SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_STEP_Y_ID(),
-      ModelAPI_AttributeDouble::typeId()
-    ));
-
-    aStep->setIsArgument(false);
-    aStep->setValue(-1);
-  }
 
   return aStep;
 }
@@ -594,16 +534,6 @@ std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneRectangularG
     theSketch->data()->attribute(SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_OFFSET_ANGLE_ID())
   );
 
-  if (!aAngle) {
-    aAngle = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
-      SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_OFFSET_ANGLE_ID(),
-      ModelAPI_AttributeDouble::typeId()
-    ));
-
-    aAngle->setIsArgument(false);
-    aAngle->setValue(0);
-  }
-
   return aAngle;
 }
 
@@ -612,16 +542,6 @@ std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneRectangularG
     theSketch->data()->attribute(SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_OFFSET_X_ID())
   );
 
-  if (!aShift) {
-    aShift = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
-      SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_OFFSET_X_ID(),
-      ModelAPI_AttributeDouble::typeId()
-    ));
-
-    aShift->setIsArgument(false);
-    aShift->setValue(0);
-  }
-
   return aShift;
 }
 
@@ -629,16 +549,6 @@ std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneRectangularG
   auto aShift = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
     theSketch->data()->attribute(SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_OFFSET_Y_ID())
   );
-
-  if (!aShift) {
-    aShift = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
-      SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_OFFSET_Y_ID(),
-      ModelAPI_AttributeDouble::typeId()
-    ));
-
-    aShift->setIsArgument(false);
-    aShift->setValue(0);
-  }
 
   return aShift;
 }
@@ -650,16 +560,6 @@ std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneCircularGrid
     theSketch->data()->attribute(SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_STEP_R_ID())
   );
 
-  if (!aStep) {
-    aStep = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
-      SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_STEP_R_ID(),
-      ModelAPI_AttributeDouble::typeId()
-    ));
-
-    aStep->setIsArgument(false);
-    aStep->setValue(-1);
-  }
-
   return aStep;
 }
 
@@ -668,16 +568,6 @@ std::shared_ptr<ModelAPI_AttributeInteger> PartSet_Tools::sketchPlaneCircularGri
   auto num = std::dynamic_pointer_cast<ModelAPI_AttributeInteger>(
     theSketch->data()->attribute(SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_NUM_OF_ANG_SEGMENTS_ID())
   );
-
-  if (!num) {
-    num = std::dynamic_pointer_cast<ModelAPI_AttributeInteger>(theSketch->data()->addAttribute(
-      SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_NUM_OF_ANG_SEGMENTS_ID(),
-      ModelAPI_AttributeInteger::typeId()
-    ));
-
-    num->setIsArgument(false);
-    num->setValue(-1);
-  }
 
   return num;
 }
@@ -688,16 +578,6 @@ std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneCircularGrid
     theSketch->data()->attribute(SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_OFFSET_ANGLE_ID())
   );
 
-  if (!aAngle) {
-    aAngle = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
-      SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_OFFSET_ANGLE_ID(),
-      ModelAPI_AttributeDouble::typeId()
-    ));
-
-    aAngle->setIsArgument(false);
-    aAngle->setValue(0);
-  }
-
   return aAngle;
 }
 
@@ -706,16 +586,6 @@ std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneCircularGrid
     theSketch->data()->attribute(SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_OFFSET_X_ID())
   );
 
-  if (!aShift) {
-    aShift = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
-      SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_OFFSET_X_ID(),
-      ModelAPI_AttributeDouble::typeId()
-    ));
-
-    aShift->setIsArgument(false);
-    aShift->setValue(0);
-  }
-
   return aShift;
 }
 
@@ -723,16 +593,6 @@ std::shared_ptr<ModelAPI_AttributeDouble> PartSet_Tools::sketchPlaneCircularGrid
   auto aShift = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
     theSketch->data()->attribute(SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_OFFSET_Y_ID())
   );
-
-  if (!aShift) {
-    aShift = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(theSketch->data()->addAttribute(
-      SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_OFFSET_Y_ID(),
-      ModelAPI_AttributeDouble::typeId()
-    ));
-
-    aShift->setIsArgument(false);
-    aShift->setValue(0);
-  }
 
   return aShift;
 }
