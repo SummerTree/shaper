@@ -32,6 +32,9 @@
 #include <GeomDataAPI_Point2D.h>
 #include <GeomAlgoAPI_PointBuilder.h>
 
+#include <ModelAPI_AttributeBoolean.h>
+#include <ModelAPI_AttributeDouble.h>
+#include <ModelAPI_AttributeInteger.h>
 #include <ModelAPI_AttributeRefList.h>
 #include <ModelAPI_AttributeString.h>
 #include <ModelAPI_Data.h>
@@ -79,6 +82,120 @@ void SketchPlugin_Sketch::initAttributes()
   data()->addAttribute(SketchPlugin_Sketch::SOLVER_DOF(), ModelAPI_AttributeString::typeId());
   ModelAPI_Session::get()->validators()->registerNotObligatory(
     getKind(), SketchPlugin_Sketch::SOLVER_DOF());
+  
+  // Add all attributes for the grid display
+  AttributeDoublePtr aDefSize = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    data()->addAttribute(SketchPlugin_Sketch::DEFAULT_SIZE_ID(), ModelAPI_AttributeDouble::typeId()));
+  if (aDefSize)
+  {
+    aDefSize->setIsArgument(false);
+    if (!aDefSize->isInitialized())
+      aDefSize->setValue(200.0);
+  }
+  AttributeBooleanPtr anAxesEnabled = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(
+    data()->addAttribute(SketchPlugin_Sketch::AXES_ENABLED_ID(), ModelAPI_AttributeBoolean::typeId()));
+  if (anAxesEnabled)
+  {
+    anAxesEnabled->setIsArgument(false);
+    if (!anAxesEnabled->isInitialized())
+      anAxesEnabled->setValue(false);
+  }
+  AttributeBooleanPtr aSubstrateEnabled = std::dynamic_pointer_cast<ModelAPI_AttributeBoolean>(
+    data()->addAttribute(SketchPlugin_Sketch::SUBSTRATE_ENABLED_ID(), ModelAPI_AttributeBoolean::typeId()));
+  if (aSubstrateEnabled)
+  {
+    aSubstrateEnabled->setIsArgument(false);
+    if (!aSubstrateEnabled->isInitialized())
+      aSubstrateEnabled->setValue(false);
+  }
+  AttributeStringPtr aGridType = std::dynamic_pointer_cast<ModelAPI_AttributeString>(
+    data()->addAttribute(SketchPlugin_Sketch::CONSTRUCTION_GRID_TYPE_ID(), ModelAPI_AttributeString::typeId()));
+  if (aGridType)
+  {
+    aGridType->setIsArgument(false);
+    if (!aGridType->isInitialized())
+      aGridType->setValue("");
+  }
+  AttributeDoublePtr aStepX = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    data()->addAttribute(SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_STEP_X_ID(), ModelAPI_AttributeDouble::typeId()));
+  if (aStepX)
+  {
+    aStepX->setIsArgument(false);
+    if (!aStepX->isInitialized())
+      aStepX->setValue(1.0);
+  }
+  AttributeDoublePtr aStepY = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    data()->addAttribute(SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_STEP_Y_ID(), ModelAPI_AttributeDouble::typeId()));
+  if (aStepY)
+  {
+    aStepY->setIsArgument(false);
+    if (!aStepY->isInitialized())
+      aStepY->setValue(1.0);
+  }
+  AttributeDoublePtr aRectOffAngle = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    data()->addAttribute(SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_OFFSET_ANGLE_ID(), ModelAPI_AttributeDouble::typeId()));
+  if (aRectOffAngle)
+  {
+    aRectOffAngle->setIsArgument(false);
+    if (!aRectOffAngle->isInitialized())
+      aRectOffAngle->setValue(0.0);
+  }
+  AttributeDoublePtr aRectOffX = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    data()->addAttribute(SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_OFFSET_X_ID(), ModelAPI_AttributeDouble::typeId()));
+  if (aRectOffX)
+  {
+    aRectOffX->setIsArgument(false);
+    if (!aRectOffX->isInitialized())
+      aRectOffX->setValue(0.0);
+  }
+  AttributeDoublePtr aRectOffY = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    data()->addAttribute(SketchPlugin_Sketch::RECTANGULAR_CONSTRUCTION_GRID_OFFSET_Y_ID(), ModelAPI_AttributeDouble::typeId()));
+  if (aRectOffY)
+  {
+    aRectOffY->setIsArgument(false);
+    if (!aRectOffY->isInitialized())
+      aRectOffY->setValue(0.0);
+  }
+  AttributeDoublePtr aStepR = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    data()->addAttribute(SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_STEP_R_ID(), ModelAPI_AttributeDouble::typeId()));
+  if (aStepR)
+  {
+    aStepR->setIsArgument(false);
+    if (!aStepR->isInitialized())
+      aStepR->setValue(1.0);
+  }
+  AttributeIntegerPtr aNumOfAngSeg = std::dynamic_pointer_cast<ModelAPI_AttributeInteger>(
+    data()->addAttribute(SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_NUM_OF_ANG_SEGMENTS_ID(), ModelAPI_AttributeInteger::typeId()));
+  if (aNumOfAngSeg)
+  {
+    aNumOfAngSeg->setIsArgument(false);
+    if (!aNumOfAngSeg->isInitialized())
+      aNumOfAngSeg->setValue(18);
+  }
+  AttributeDoublePtr aCircOffAngle = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    data()->addAttribute(SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_OFFSET_ANGLE_ID(), ModelAPI_AttributeDouble::typeId()));
+  if (aCircOffAngle)
+  {
+    aCircOffAngle->setIsArgument(false);
+    if (!aCircOffAngle->isInitialized())
+      aCircOffAngle->setValue(0.0);
+  }
+  AttributeDoublePtr aCircOffX = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    data()->addAttribute(SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_OFFSET_X_ID(), ModelAPI_AttributeDouble::typeId()));
+  if (aCircOffX)
+  {
+    aCircOffX->setIsArgument(false);
+    if (!aCircOffX->isInitialized())
+      aCircOffX->setValue(0.0);
+  }
+  AttributeDoublePtr aCircOffY = std::dynamic_pointer_cast<ModelAPI_AttributeDouble>(
+    data()->addAttribute(SketchPlugin_Sketch::CIRCULAR_CONSTRUCTION_GRID_OFFSET_Y_ID(), ModelAPI_AttributeDouble::typeId()));
+  if (aCircOffY)
+  {
+    aCircOffY->setIsArgument(false);
+    if (!aCircOffY->isInitialized())
+      aCircOffY->setValue(0.0);
+  }
 }
 
 void SketchPlugin_Sketch::execute()
