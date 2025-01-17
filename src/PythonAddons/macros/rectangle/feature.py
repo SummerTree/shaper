@@ -135,7 +135,7 @@ class SketchPlugin_Rectangle(model.Feature):
 
     def execute(self):
         # Retrieve list of already created lines
-        aLinesList = self.reflist(self.LINES_LIST_ID())        
+        aLinesList = self.reflist(self.LINES_LIST_ID())
         if aLinesList.size() == 1:
             # Create remaining rectangle contour lines
             for i in range (1, 4):
@@ -269,6 +269,7 @@ class SketchPlugin_Rectangle(model.Feature):
               self.__updateLines()
             else:
               self.__updateLinesWithOnlyGenerativePoint()
+
         elif theID == self.AUXILIARY_ID():
             # Change aux attribute of contour lines
             anAuxiliary = self.data().boolean(self.AUXILIARY_ID()).value()
@@ -276,18 +277,30 @@ class SketchPlugin_Rectangle(model.Feature):
             for i in range (0, min(aLinesList.size(), 4)):
                 aLine = ModelAPI.objectToFeature(aLinesList.object(i))
                 aLine.data().boolean("Auxiliary").setValue(anAuxiliary)
+
         elif theID == self.RECTANGLE_TYPE_ID():
             # TODO Find a way to distinguish "attribute changed" events on hover and on click.
             # Now, if both generative points are selected, but the rectangle is not applied,
             # and then rectangle type is changed, the unapplied rectangle is erased. 
             # It should be applied instead.
-            aLinesList = self.reflist(self.LINES_LIST_ID()).clear()
-            aCenterSketchPointAttr = self.refattr(self.CENTER_REF_ID())
-            aCenterSketchPointAttr.reset()
+
+            # Prevent calls to attributeChanged()
+            wasBlocked = self.data().blockSendAttributeUpdated(True)
+
+            aLinesList = self.reflist(self.LINES_LIST_ID())
+            if aLinesList.size() < 4:
+                for i in range (0, aLinesList.size()):
+                    aLine = ModelAPI.objectToFeature(aLinesList.object(i))
+                    self.document().removeFeature(aLine)
+            aLinesList.clear()
+
+            self.refattr(self.CENTER_REF_ID()).reset()
             self.attribute(self.START_ID()).reset()
             self.attribute(self.END_ID()).reset()
             self.attribute(self.CENTER_ID()).reset()
             self.attribute(self.CORNER_ID()).reset()
+
+            self.data().blockSendAttributeUpdated(wasBlocked, True)
 
 
     def __getPoint2DAttrOfSketchPoint(self, theSketchPointRefAttr):
