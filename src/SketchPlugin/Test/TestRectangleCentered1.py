@@ -120,9 +120,9 @@ aSession.finishOperation()
 # Check the lines of rectangle are parallel to the axes
 #=========================================================================
 aNbSubs = aSketchFeature.numberOfSubs()
-assert (aNbSubs >= 5) # The first feature on the sketch is center SketchPoint.
+assert (aNbSubs >= 5) # The last feature on the sketch is center SketchPoint.
 aNbLines = 0
-for i in range (1, 5):
+for i in range (0, 5):
     aFeature = objectToFeature(aSketchFeature.subFeature(i))
     if aFeature.getKind() == "SketchLine":
         aLastLine = aFeature
@@ -142,16 +142,16 @@ aSession.finishOperation()
 # Check the opposites lines of rectangle are parallel, and neighboring
 # ones are perpendicular
 #=========================================================================
-aLine0 = objectToFeature(aSketchFeature.subFeature(1))
+aLine0 = objectToFeature(aSketchFeature.subFeature(0))
 assert (aLine0.getKind() == "SketchLine")
 
-aLine1 = objectToFeature(aSketchFeature.subFeature(2))
+aLine1 = objectToFeature(aSketchFeature.subFeature(1))
 assert (aLine1.getKind() == "SketchLine")
 
-aLine2 = objectToFeature(aSketchFeature.subFeature(3))
+aLine2 = objectToFeature(aSketchFeature.subFeature(2))
 assert (aLine2.getKind() == "SketchLine")
 
-aLine3 = objectToFeature(aSketchFeature.subFeature(4))
+aLine3 = objectToFeature(aSketchFeature.subFeature(3))
 assert (aLine3.getKind() == "SketchLine")
 
 assert (areCounterDirectedAndOfEqualLength(aLine0, aLine2))

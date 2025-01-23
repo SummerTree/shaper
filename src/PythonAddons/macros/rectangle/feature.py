@@ -170,7 +170,7 @@ class SketchPlugin_Rectangle(model.Feature):
                 # Add coincidences between diagonals' endpoints and rectangle vertices
                 aPoints = [aDiag1.attribute("StartPoint"), aDiag2.attribute("StartPoint"),
                            aDiag1.attribute("EndPoint"), aDiag2.attribute("EndPoint")]
-                
+
                 for i in range (0, len(aPoints)):
                     aCoincidence = self.__sketch.addFeature("SketchConstraintCoincidence")
                     aCoincidence.refattr("ConstraintEntityA").setAttr(aStartPoints[i])
@@ -181,19 +181,38 @@ class SketchPlugin_Rectangle(model.Feature):
                 aDiag1.execute()
                 aDiag2.execute()
 
-                # coincidences between center point and diagonals
-                attr = self.__getPoint2DAttrOfSketchPoint(self.refattr(self.CENTER_REF_ID()))
+                # Create central SketchPoint
+                aCenterSketchPointAttr = self.refattr(self.CENTER_REF_ID())
+                aCenter = self.__getPoint2D(self.attribute(self.CENTER_ID()), aCenterSketchPointAttr)
+                attr = self.__getPoint2DAttrOfSketchPoint(aCenterSketchPointAttr)
+
+                # Create SketchPoint
+                aCenterSketchPoint = self.__sketch.addFeature("SketchPoint")
+                aCenterSketchPoint.data().boolean("Auxiliary").setValue(True)
+                aCenterSketchPointCoords = GeomDataAPI.geomDataAPI_Point2D(aCenterSketchPoint.attribute("PointCoordinates"))
+                aCenterSketchPointCoords.setValue(aCenter.x(), aCenter.y())
+
                 if attr is not None:
-                    for line in [aDiag1.lastResult(), aDiag2.lastResult()]:
-                        aCoincidence = self.__sketch.addFeature("SketchConstraintCoincidence")
-                        aCoincidence.refattr("ConstraintEntityA").setAttr(attr)
-                        aCoincidence.refattr("ConstraintEntityB").setObject(line)
+                    # Add coincidence constraint between selected point and created one
+                    aCoincidence = self.__sketch.addFeature("SketchConstraintCoincidence")
+                    aCoincidence.refattr("ConstraintEntityA").setAttr(attr)
+                    aCoincidence.refattr("ConstraintEntityB").setObject(aCenterSketchPoint)
+
+                # Set or replace selected point with created one
+                aCenterSketchPointAttr.setObject(aCenterSketchPoint)
+                attr = self.__getPoint2DAttrOfSketchPoint(aCenterSketchPointAttr)
+
+                # coincidences between center point and diagonals
+                for line in [aDiag1.lastResult(), aDiag2.lastResult()]:
+                    aCoincidence = self.__sketch.addFeature("SketchConstraintCoincidence")
+                    aCoincidence.refattr("ConstraintEntityA").setAttr(attr)
+                    aCoincidence.refattr("ConstraintEntityB").setObject(line)
 
         # Add perpendicular constraints to the contour lines, which already have result
         for i in range (0, 3):
             if self.__isPERP[i]:
                 continue
-            
+
             aLine_A = ModelAPI.objectToFeature(aLinesList.object(i))
             aLineResult_A = aLine_A.lastResult()
             if aLineResult_A is None:
@@ -221,34 +240,14 @@ class SketchPlugin_Rectangle(model.Feature):
                     self.__sketch = ModelAPI.featureToCompositeFeature(aFeature)
                     break
 
-            if theID == self.CENTER_ID():
-                aCenter = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.CENTER_ID())) # shared_ptr to Point2D
+            if theID == self.CENTER_REF_ID():
+                # Init CENTER_ID from CENTER_REF_ID
+                # Otherwise, not all obligatory attributes are initialized when calling from script
+                # (from GUI they are syncronized automatically)
                 aCenterSketchPointAttr = self.refattr(self.CENTER_REF_ID())
-                if (not aCenterSketchPointAttr.isInitialized()):
-                    # Create SketchPoint. In .execute() it will be constrained to keep center.
-                    aCenterSketchPoint = self.__sketch.addFeature("SketchPoint")
-                    aCenterSketchPoint.data().boolean("Auxiliary").setValue(True)
-                    aCenterSketchPointCoords = GeomDataAPI.geomDataAPI_Point2D(aCenterSketchPoint.attribute("PointCoordinates")) # shared_ptr to Point2D                    
-                    aCenterSketchPointCoords.setValue(aCenter.x(), aCenter.y())
-                    aCenterSketchPointAttr.setObject(aCenterSketchPoint)
-                else:
-                    # Maintain consistency between center SketchPoint and center Point2D.
-                    aCenterSketchPointCoordsAttr = self.__getPoint2DAttrOfSketchPoint(aCenterSketchPointAttr)
-                    if (aCenterSketchPointCoordsAttr == None):
-                        Warning("Faulty logic")
-                    else:
-                        aCenterSketchPointCoords = GeomDataAPI.geomDataAPI_Point2D(aCenterSketchPointCoordsAttr) # shared_ptr to Point2D
-                        aCenterSketchPointCoords.setValue(aCenter.x(), aCenter.y())
-            elif theID == self.CENTER_REF_ID():
-                aCenterSketchPointAttr = self.refattr(self.CENTER_REF_ID())
-                aCenterSketchPointCoordsAttr = self.__getPoint2DAttrOfSketchPoint(aCenterSketchPointAttr) # shared_ptr to Point2D
-                if (aCenterSketchPointCoordsAttr == None):
-                    Warning("Faulty logic. Attempt to set rectangle's attribute " + self.CENTER_REF_ID() + " not with refattr to SketchPoint.")
-                    return
-                
-                # Maintain consistency between center SketchPoint and center Point2D.
-                aCenterSketchPointCoords = GeomDataAPI.geomDataAPI_Point2D(aCenterSketchPointCoordsAttr) # shared_ptr to Point2D
-                aCenter = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.CENTER_ID())) # shared_ptr to Point2D
+                aCenterSketchPointCoordsAttr = self.__getPoint2DAttrOfSketchPoint(aCenterSketchPointAttr)
+                aCenterSketchPointCoords = GeomDataAPI.geomDataAPI_Point2D(aCenterSketchPointCoordsAttr)
+                aCenter = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.CENTER_ID()))
                 aCenter.setValue(aCenterSketchPointCoords.x(), aCenterSketchPointCoords.y())
 
             aLinesList = self.reflist(self.LINES_LIST_ID())
@@ -258,7 +257,7 @@ class SketchPlugin_Rectangle(model.Feature):
                 # do not create the full set of contour lines to not clutter
                 # UI with icons of constraints near the mouse pointer.
                 aLine = self.__sketch.addFeature("SketchLine")
-                aLinesList.append(aLine)                    
+                aLinesList.append(aLine)
 
             aStartPoint = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.START_ID()))
             aEndPoint = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.END_ID()))
@@ -273,7 +272,7 @@ class SketchPlugin_Rectangle(model.Feature):
         elif theID == self.AUXILIARY_ID():
             # Change aux attribute of contour lines
             anAuxiliary = self.data().boolean(self.AUXILIARY_ID()).value()
-            aLinesList = self.reflist(self.LINES_LIST_ID())            
+            aLinesList = self.reflist(self.LINES_LIST_ID())
             for i in range (0, min(aLinesList.size(), 4)):
                 aLine = ModelAPI.objectToFeature(aLinesList.object(i))
                 aLine.data().boolean("Auxiliary").setValue(anAuxiliary)
@@ -281,7 +280,7 @@ class SketchPlugin_Rectangle(model.Feature):
         elif theID == self.RECTANGLE_TYPE_ID():
             # TODO Find a way to distinguish "attribute changed" events on hover and on click.
             # Now, if both generative points are selected, but the rectangle is not applied,
-            # and then rectangle type is changed, the unapplied rectangle is erased. 
+            # and then rectangle type is changed, the unapplied rectangle is erased.
             # It should be applied instead.
 
             # Prevent calls to attributeChanged()
@@ -335,7 +334,7 @@ class SketchPlugin_Rectangle(model.Feature):
             aStartPoint = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.START_ID()))
             aEndPoint = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.END_ID()))
             aX = [aStartPoint.x(), aStartPoint.x(), aEndPoint.x(), aEndPoint.x()]
-            aY = [aStartPoint.y(), aEndPoint.y(), aEndPoint.y(), aStartPoint.y()]        
+            aY = [aStartPoint.y(), aEndPoint.y(), aEndPoint.y(), aStartPoint.y()]
 
         # Retrieve list of already created lines
         aLinesList = self.reflist(self.LINES_LIST_ID())
@@ -372,21 +371,14 @@ class SketchPlugin_Rectangle(model.Feature):
 
 
     def __updateLinesWithOnlyGenerativePoint(self):
-        # Retrieve list of already created lines
-        aLinesList = self.reflist(self.LINES_LIST_ID())
-        aNbLines = aLinesList.size()
+        if self.string(self.RECTANGLE_TYPE_ID()).value() == self.RECTANGLE_BY_CORNERS_ID():
+            aStartPoint = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.START_ID()))
+            if aStartPoint.isInitialized:
+                # Retrieve list of already created lines
+                aLinesList = self.reflist(self.LINES_LIST_ID())
 
-        aStartPoint = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.START_ID()))
-        if aStartPoint.isInitialized:
-            aX = aStartPoint.x()
-            aY = aStartPoint.y()
-        else:
-            aCenter = self.__getPoint2D(self.attribute(self.CENTER_ID()), self.refattr(self.CENTER_REF_ID()))
-            aX = aCenter.x()
-            aY = aCenter.y()
-
-        # Update coordinates of rectangle lines
-        for i in range (0, aNbLines):
-            aLine = ModelAPI.objectToFeature(aLinesList.object(i))
-            aLineStart = GeomDataAPI.geomDataAPI_Point2D(aLine.attribute("EndPoint"))
-            aLineStart.setValue(aX, aY)
+                # Update coordinates of "EndPoint" of the first line
+                if aLinesList.size() > 0:
+                    aLine = ModelAPI.objectToFeature(aLinesList.object(0))
+                    aLineStart = GeomDataAPI.geomDataAPI_Point2D(aLine.attribute("EndPoint"))
+                    aLineStart.setValue(aStartPoint.x(), aStartPoint.y())
