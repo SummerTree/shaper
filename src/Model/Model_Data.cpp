@@ -112,11 +112,14 @@ void Model_Data::setLabel(TDF_Label theLab)
 std::wstring Model_Data::name()
 {
   Handle(TDataStd_Name) aName;
-  if (shapeLab().FindAttribute(TDataStd_Name::GetID(), aName)) {
+  if(isValid())
+  {
+    if (shapeLab().FindAttribute(TDataStd_Name::GetID(), aName)) {
 #ifdef DEBUG_NAMES
-    myObject->myName = Locale::Convert::toWString(aName->Get().ToExtString());
+      myObject->myName = Locale::Convert::toWString(aName->Get().ToExtString());
 #endif
-    return Locale::Convert::toWString(aName->Get().ToExtString());
+      return Locale::Convert::toWString(aName->Get().ToExtString());
+    }
   }
   return L"";  // not defined
 }
