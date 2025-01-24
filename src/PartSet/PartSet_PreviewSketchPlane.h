@@ -152,6 +152,9 @@ public:
   std::pair<std::pair<double, double>, double> getCircularGridOffsets() const;
   int getCircularGridDimOfNodeSpace() const { return myCircularGridDimOfNodeSpace; }
 
+  void setUseSizeOfView(const bool isUseSizeOfView) { myIsUseSizeOfView = isUseSizeOfView; }
+  bool isUseSizeOfView() const { return myIsUseSizeOfView; }
+
 private:
   void configureTrihedron();
   void initSubstrate(std::shared_ptr<GeomAPI_Face> theFace);
@@ -187,6 +190,7 @@ private:
   gp_Ax3 mySketchCS;
   std::pair<double, double> mySketchDimensions; // Width and height of sketch bounding box, aligned with sketch axes.
   double mySketchDefaultSize;
+  bool myIsUseSizeOfView = false; //! state if the size is custom or from preferences
 
   bool myShowTrihedron;
   opencascade::handle<AIS_PlaneTrihedron> myTrihedron; // Visualization of sketch axes and origin.

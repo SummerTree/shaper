@@ -204,6 +204,27 @@ void PartSet_PreviewSketchPlane::setCSAndSize(const gp_Ax3& theCS, double theSiz
 
 bool PartSet_PreviewSketchPlane::setAllUsingSketch(std::shared_ptr<ModelAPI_CompositeFeature> theSketch)
 {
+  auto makeSketchFace = [&](const std::shared_ptr<GeomAPI_Shape> sketchShape) -> std::shared_ptr<GeomAPI_Face> {
+    // Chek if a user explicitely set the size of the view.
+    if (isUseSizeOfView() && (mySketchDefaultSize > Precision::Confusion())) {
+      const std::shared_ptr<GeomAPI_Face> aFace(new GeomAPI_Face(sketchShape));
+      const std::shared_ptr<GeomAPI_Pln> aPlane = aFace->getPlane();
+      if (aPlane.get()) {
+        double anA, aB, aC, aD;
+        aPlane->coefficients(anA, aB, aC, aD);
+        const std::shared_ptr<GeomAPI_Dir> aNormDir(new GeomAPI_Dir(anA, aB, aC));
+        std::shared_ptr<GeomAPI_XYZ> aCoords = aNormDir->xyz();
+        const std::shared_ptr<GeomAPI_XYZ> aZero(new GeomAPI_XYZ(0, 0, 0));
+        aCoords = aCoords->multiplied(-aD * aCoords->distance(aZero));
+        const std::shared_ptr<GeomAPI_Pnt> anOrigPnt(new GeomAPI_Pnt(aCoords));
+        return GeomAlgoAPI_FaceBuilder::squareFace(anOrigPnt, aNormDir, mySketchDefaultSize);
+      }
+    }
+
+    // Use selected shape as is
+    return sketchShape->face();;
+  };
+
   SketchAccessoryDbg("setAllUsingSketch(theSketch)");
 
   if (!theSketch || !PartSet_Tools::sketchPlane(theSketch)) {
@@ -234,7 +255,9 @@ bool PartSet_PreviewSketchPlane::setAllUsingSketch(std::shared_ptr<ModelAPI_Comp
         setInvalid();
         return false;
       }
-      const std::shared_ptr<GeomAPI_Face> sketchFace = sketchShape->face();
+
+      mySketchDefaultSize = PartSet_Tools::sketchPlaneDefaultSize(theSketch)->value();
+      const std::shared_ptr<GeomAPI_Face> sketchFace = makeSketchFace(sketchShape);
       if (!sketchFace) {
         SketchAccessoryDbg("invalid sketch - shape is not face.");
         setInvalid();
@@ -267,8 +290,6 @@ bool PartSet_PreviewSketchPlane::setAllUsingSketch(std::shared_ptr<ModelAPI_Comp
 
         mySketchCS = sketchFaceCS.second;
       }
-
-      mySketchDefaultSize = PartSet_Tools::sketchPlaneDefaultSize(theSketch)->value();
 
       { // Calculate sketch dimensions.
         // The only purpose of converting from UV to X'Y' during calculation of sketch dimensions

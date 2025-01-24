@@ -219,7 +219,7 @@ PartSet_WidgetSketchLabel::PartSet_WidgetSketchLabel(QWidget* theParent,
     }
 
     { // Sketch substrate-plane visibility.
-      mySubstrateVisibleCheckBox = new QCheckBox(tr("Substrate"), mySketchViewGroupBox);
+      mySubstrateVisibleCheckBox = new QCheckBox(tr("Show Plane"), mySketchViewGroupBox);
       mySubstrateVisibleCheckBox->setChecked(sketch ? PartSet_Tools::sketchPlaneSubstrateEnabled(sketch)->value() : false);
 
       aViewLayout->addWidget(mySubstrateVisibleCheckBox, 0, 2);
@@ -477,13 +477,14 @@ void PartSet_WidgetSketchLabel::updateByPlaneSelected(const ModuleBase_ViewerPrs
 
   bool isValidSizeInput = true;
   double aSizeOfView = mySizeOfView->text().toDouble(&isValidSizeInput);
-  if (aSizeOfView <= 0 || !isValidSizeInput)
+  if (aSizeOfView < Precision::Confusion() || !isValidSizeInput)
     aSizeOfView = PartSet_PreviewSketchPlane::defaultSketchSize();
 
   PartSet_Module* aModule = dynamic_cast<PartSet_Module*>(myWorkshop->module());
   if (aModule) {
     CompositeFeaturePtr sketch = std::dynamic_pointer_cast<ModelAPI_CompositeFeature>(myFeature);
     PartSet_Tools::sketchPlaneDefaultSize(sketch)->setValue(aSizeOfView);
+    aModule->sketchMgr()->previewSketchPlane()->setUseSizeOfView(isValidSizeInput);
     aModule->sketchMgr()->previewSketchPlane()->setAllUsingSketch(sketch);
   }
   reconfigureSketchViewWidgets();

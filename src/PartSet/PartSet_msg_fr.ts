@@ -162,8 +162,8 @@ Erreur : %1</translation>
         <translation>Axes</translation>
     </message>
     <message>
-        <source>Substrate</source>
-        <translation>Substrat</translation>
+        <source>Show Plane</source>
+        <translation>Afficher le plan</translation>
     </message>
     <message>
         <source>Set plane view</source>
