@@ -183,6 +183,7 @@ SET(TEST_NAMES_PARA
   TestProjectionWithoutReference.py
   TestRectangle1.py
   TestRectangleCentered1.py
+  TestRectangleCenteredModeSwitch.py
   TestRemainingDoF.py
   TestRemoveBSpline.py
   TestRemoveBSplinePeriodic.py
