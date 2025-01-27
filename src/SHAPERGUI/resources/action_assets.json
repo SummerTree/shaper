@@ -1114,6 +1114,14 @@
                             }
                         }
                     },
+                    "AddParameter": {
+                        "langDependentAssets": {
+                            "en": {
+                                "name": "Add Parameter",
+                                "tooltip": "Add a new parameter"
+                            }
+                        }
+                    },
                     "Part": {
                         "iconPath": "%SHAPER_ROOT_DIR%/share/salome/resources/shaper/icons/XGUI/part_ico.png",
                         "langDependentAssets": {

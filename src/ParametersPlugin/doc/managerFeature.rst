@@ -31,15 +31,18 @@ To edit a parameter, double-click on parameter in object browser.
 - **Add** button adds a new empty string in the end of table. Default  **Name** is *<NoName>*, **Expression** is   *<NoValue>* 
 - **Insert** button adds a new empty string before the selected parameter;
 - **Delete** button removes the selected parameter from the table;   
-- **Import** button import parameters from .txt files. Parameters must be written in file in separate lines like example: **Name** **Expression** #**Comment**
-Sample.txt:
-''Longueur 36. # Longueur de la pièce''
-''Largeur 24 #Largeur de la pièce''
-''Hauteur Longueur * Largeur''
+- **Import** button import parameters from .txt files. Parameters must be written in file in separate lines like example:
+
+  |  **Name** **Expression** # **Comment**
+  |  Sample.txt
+  |  ''Length 36. # Length of the part''
+  |  ''Width 24 # Width of the part''
+  |  ''Height Length * Width''
+
 - **Modify parameter position** button moves the selected parameter
-  
-    | |param_up| one string higher in the table,
-    | |param_down| one string lower in the table.
+
+  |  |param_up| one line up in the table,
+  |  |param_down| one line down in the table.
 
 **TUI Command**:
 

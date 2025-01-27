@@ -95,17 +95,17 @@ class Config_Prop
   }
 
   /// Get name of section
-  std::string section() const
+  const std::string& section() const
   {
     return mySection;
   }
   /// Get name of property
-  std::string name() const
+  const std::string& name() const
   {
     return myName;
   }
   /// Get title of property
-  std::string title() const
+  const std::string& title() const
   {
     return myTitle;
   }
@@ -125,14 +125,14 @@ class Config_Prop
     myType = theType;
   }
   /// Get property's value in string format
-  std::string value() const
+  const std::string& value() const
   {
     return myValue;
   }
   /// Set property's value in string format
   CONFIG_EXPORT void setValue(const std::string& theValue);
   /// Get default value of property
-  std::string defaultValue() const
+  const std::string& defaultValue() const
   {
     return myDefaultValue;
   }
@@ -145,14 +145,14 @@ class Config_Prop
   }
 
   /// Returns minimal value
-  std::string min() const { return myMin; }
+  const std::string& min() const { return myMin; }
 
   void setMin(const std::string& theMin) {
     myMin = theMin;
   }
 
   /// Returns maximal value
-  std::string max() const { return myMax; }
+  const std::string& max() const { return myMax; }
 
   void setMax(const std::string& theMax) {
     myMax = theMax;

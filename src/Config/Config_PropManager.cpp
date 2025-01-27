@@ -137,7 +137,7 @@ std::string Config_PropManager::string(const std::string& theSection, const std:
       return aProp->value();
   }
   std::string aMsg = "Property " + theSection + ":" + theName + " is not registered";
-  throw aMsg.c_str();
+  throw aMsg;
 }
 
 std::vector<int> Config_PropManager::color(const std::string& theSection,

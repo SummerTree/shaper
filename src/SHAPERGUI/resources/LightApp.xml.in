@@ -147,6 +147,7 @@
     <parameter name="Part/LinearCopy" value=""/>
     <parameter name="Part/Parameter" value=""/>
     <parameter name="Part/ParametersMgr" value=""/>
+    <parameter name="Part/AddParameter" value="Ctrl+A"/>
     <parameter name="Part/Part" value=""/>
     <parameter name="Part/Placement" value=""/>
     <parameter name="Part/Remove" value=""/>
