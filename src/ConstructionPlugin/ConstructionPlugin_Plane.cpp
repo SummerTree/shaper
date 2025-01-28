@@ -204,7 +204,7 @@ std::shared_ptr<GeomAPI_Shape> ConstructionPlugin_Plane::createByGeneralEquation
     double aSize = Config_PropManager::real(SKETCH_TAB_NAME, "planes_size");
     if (aSize <= 1.e-7)
       aSize = 200;  // Set default value
-    aSize *= 4.;
+
     aPlaneFace = GeomAlgoAPI_FaceBuilder::squareFace(aPlane, aSize);
   }
   return aPlaneFace;
