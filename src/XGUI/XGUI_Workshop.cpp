@@ -2375,7 +2375,7 @@ void XGUI_Workshop::moveObjects(const bool theSplit)
   if (!XGUI_Tools::canRemoveOrRename(desktop(), aFeatures))
     return;
 
-  QString anActionId = theSplit ? "MOVE_CMD" : "MOVE_SPLIT_CMD";
+  QString anActionId = theSplit ? "MOVE_SPLIT_CMD" : "MOVE_CMD";
   QString aDescription = contextMenuMgr()->action(anActionId)->text();
   aMgr->startOperation(aDescription.toStdString());
 
