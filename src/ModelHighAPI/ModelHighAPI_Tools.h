@@ -197,7 +197,8 @@ MODELHIGHAPI_EXPORT
 bool checkPyDump(const std::string& theFilenameNaming,
                  const std::string& theFilenameGeo,
                  const std::string& theFilenameWeak,
-                 const checkDumpType theCheckType = CHECK_NAMING_AND_GEOMETRICAL);
+                 const checkDumpType theCheckType = CHECK_NAMING_AND_GEOMETRICAL,
+                 const bool theCheckPlane = true);
 
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------

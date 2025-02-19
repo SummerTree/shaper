@@ -27,4 +27,8 @@ if __name__ == "__main__":
   model.testNbSubShapes(aPartFeature, GeomAPI_Shape.VERTEX, [176])
   model.testResultsVolumes(aPartFeature, [55179.3113664])
 
-  assert(model.checkPythonDump(model.ModelHighAPI.CHECK_NAMING))
+  # With the commit for [bos #44274], the plane size uses now correctly the preference value.
+  # This old HDF stores old wrong plane size values
+  # So this check prevents test to fail during check YOZ, XOZ, XOY plane's sizes, we simply ignore them
+  checkPlanes = False
+  assert(model.checkPythonDump(model.ModelHighAPI.CHECK_NAMING, checkPlanes))

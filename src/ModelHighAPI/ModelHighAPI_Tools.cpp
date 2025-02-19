@@ -433,7 +433,8 @@ std::string strByValueType(const ModelAPI_AttributeTables::ValueType theType)
 /// stores the features information, recursively stores sub-documents features
 std::string storeFeatures(const std::wstring& theDocName, DocumentPtr theDoc,
   std::map<std::wstring, std::map<std::wstring, ModelHighAPI_FeatureStore> >& theStore,
-  const bool theCompare) // if false => store
+  const bool theCompare, // if false => store
+  const bool theCheckPlane) 
 {
   std::map<std::wstring, std::map<std::wstring, ModelHighAPI_FeatureStore> >::iterator aDocFind;
   if (theCompare) {
@@ -458,6 +459,15 @@ std::string storeFeatures(const std::wstring& theDocName, DocumentPtr theDoc,
       std::string aStr = aFeature->getKind().substr(0, 16);
       if (aStr == "SketchConstraint")
         continue; // no need to dump and check constraints
+
+      // With the commit for [bos #44274], the plane size uses now correctly the preference value.
+      // But some old HDFs stores old wrong plane size values
+      // So this check prevents tests to fail during check plane sizes, we simply ignore them
+      if(!theCheckPlane && aStr == "Plane")
+      {
+        continue;
+      }
+
     }
     if (theCompare) {
       std::map<std::wstring, ModelHighAPI_FeatureStore>::iterator
@@ -488,7 +498,7 @@ std::string storeFeatures(const std::wstring& theDocName, DocumentPtr theDoc,
           DocumentPtr aDoc = std::dynamic_pointer_cast<ModelAPI_ResultPart>(*aRes)->partDoc();
           if (aDoc.get()) {
             std::string anError =
-                storeFeatures((*aRes)->data()->name(), aDoc, theStore, theCompare);
+                storeFeatures((*aRes)->data()->name(), aDoc, theStore, theCompare, theCheckPlane);
             if (!anError.empty())
               return anError;
           }
@@ -550,7 +560,8 @@ static bool dumpToPython(SessionPtr theSession,
 static bool checkDump(SessionPtr theSession,
                       const char* theFilename,
                       Storage& theStorage,
-                      const std::string& theErrorMsgContext)
+                      const std::string& theErrorMsgContext,
+                      const bool theCheckPlane)
 {
 
   // close all before importation of the script
@@ -566,7 +577,7 @@ static bool checkDump(SessionPtr theSession,
   // compare with the stored data
   std::string anError =
     storeFeatures(Locale::Convert::toWString(theSession->moduleDocument()->kind()),
-    theSession->moduleDocument(), theStorage, true);
+    theSession->moduleDocument(), theStorage, true, theCheckPlane);
   if (!anError.empty()) {
     std::cout << anError << std::endl;
     Events_InfoMessage anErrorMsg(theErrorMsgContext, anError);
@@ -585,7 +596,8 @@ bool checkPyDump(
   const std::string& theFilenameGeo,
   const std::string& theFilenameWeak,
 #endif
-  const checkDumpType theCheckType)
+  const checkDumpType theCheckType,
+  const bool theCheckPlane)
 {
   static const std::string anErrorByNaming("checkPythonDump by naming");
   static const std::string anErrorByGeometry("checkPythonDump by geometry");
@@ -612,7 +624,7 @@ bool checkPyDump(
   std::map<std::wstring, std::map<std::wstring, ModelHighAPI_FeatureStore> > aStore;
   std::string anError =
     storeFeatures(Locale::Convert::toWString(aSession->moduleDocument()->kind()),
-    aSession->moduleDocument(), aStore, false);
+    aSession->moduleDocument(), aStore, false, theCheckPlane);
   if (!anError.empty()) {
     Events_InfoMessage anErrorMsg(std::string("checkPythonDump"), anError);
     anErrorMsg.send();
@@ -622,14 +634,14 @@ bool checkPyDump(
   bool isOk = true;
   if (theCheckType & CHECK_NAMING) {
     // check dump with the selection by names
-    isOk = checkDump(aSession, aFileForNamingDump.c_str(), aStore, anErrorByNaming);
+    isOk = checkDump(aSession, aFileForNamingDump.c_str(), aStore, anErrorByNaming, theCheckPlane);
   }
   if (theCheckType & CHECK_GEOMETRICAL) {
     // check dump with the selection by geometry
-    isOk = isOk && checkDump(aSession, aFileForGeometryDump.c_str(), aStore, anErrorByGeometry);
+    isOk = isOk && checkDump(aSession, aFileForGeometryDump.c_str(), aStore, anErrorByGeometry, theCheckPlane);
   }
   if (theCheckType & CHECK_WEAK) {
-    isOk = isOk && checkDump(aSession, aFileForWeakDump.c_str(), aStore, anErrorByWeak);
+    isOk = isOk && checkDump(aSession, aFileForWeakDump.c_str(), aStore, anErrorByWeak, theCheckPlane);
   }
 
   return isOk;

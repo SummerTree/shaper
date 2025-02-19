@@ -28,5 +28,10 @@ if __name__ == "__main__":
   model.testResultsVolumes(aPartFeature, [1311.87963636394], 6)
   model.testResultsAreas(aPartFeature, [3765.24411189])
 
-from ModelHighAPI import CHECK_NAMING
-assert(model.checkPythonDump(CHECK_NAMING))
+  from ModelHighAPI import CHECK_NAMING
+
+  # With the commit for [bos #44274], the plane size uses now correctly the preference value.
+  # This old HDF stores old wrong plane size values
+  # So this check prevents test to fail during check YOZ, XOZ, XOY plane's sizes, we simply ignore them
+  checkPlanes = False
+  assert(model.checkPythonDump(CHECK_NAMING, checkPlanes))

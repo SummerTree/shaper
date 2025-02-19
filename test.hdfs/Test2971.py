@@ -29,5 +29,6 @@ if __name__ == "__main__":
       model.testNbSubShapes(part, GeomAPI_Shape.EDGE, [475])
       model.testNbSubShapes(part, GeomAPI_Shape.VERTEX, [950])
       model.testResultsVolumes(part, [6487764903.02328777])
-
-  assert(model.checkPythonDump(model.ModelHighAPI.CHECK_NAMING))
+  
+  checkPlanes = False
+  assert(model.checkPythonDump(model.ModelHighAPI.CHECK_NAMING, checkPlanes))

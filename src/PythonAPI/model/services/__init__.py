@@ -68,12 +68,12 @@ def removeTmpFile(theFilename):
 # Verify the Python dump with generating the auxiliary filenames
 from ModelHighAPI import CHECK_NAMING_AND_GEOMETRICAL
 from ModelHighAPI import checkPyDump
-def checkPythonDump(theDumpMode = CHECK_NAMING_AND_GEOMETRICAL):
+def checkPythonDump(theDumpMode = CHECK_NAMING_AND_GEOMETRICAL, theCheckPlane = True):
   aPrefix = getTmpFileName("check_dump_", '')
   aNaming = aPrefix + ".py"
   aGeo  = aPrefix + "_geo.py"
   aWeak = aPrefix + "_weak.py"
-  isOk = checkPyDump(aNaming, aGeo, aWeak, theDumpMode)
+  isOk = checkPyDump(aNaming, aGeo, aWeak, theDumpMode, theCheckPlane)
   removeTmpFile(aPrefix)
   removeTmpFile(aNaming)
   removeTmpFile(aGeo)
