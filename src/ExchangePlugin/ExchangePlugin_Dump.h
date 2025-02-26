@@ -84,6 +84,13 @@ public:
     return MY_EXPORT_VARIABLES_ID;
   }
 
+  /// attribute name for multifile dump
+  inline static const std::string& MULTIFILE_ID()
+  {
+    static const std::string MY_MULTIFILE_ID("is_multifile");
+    return MY_MULTIFILE_ID;
+  }
+
   /// Default constructor
   EXCHANGEPLUGIN_EXPORT ExchangePlugin_Dump();
   /// Default destructor

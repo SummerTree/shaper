@@ -150,6 +150,10 @@ public:
   MODELHIGHAPI_EXPORT
   static void setInstance(ModelHighAPI_Dumper* theDumper);
 
+  /// Sets multifile flag value
+  MODELHIGHAPI_EXPORT
+  void setIsMultiDump(const bool theValue);
+
   /// Returns instance of a dumper
   MODELHIGHAPI_EXPORT
   static ModelHighAPI_Dumper* getInstance();
@@ -421,6 +425,9 @@ private:
   /// Dump postponed entities
   void dumpPostponed(bool theDumpFolders = false);
 
+  //Dump global variables for multifile dump
+  void dumpGlobalForMultiFile(const FeaturePtr& theEntity);
+
 private:
   struct EntityName {
     std::string myCurrentName; ///< default name of current feature
@@ -470,6 +477,7 @@ private:
   bool myDumpPostponedInProgress; ///< processing postponed is in progress
 
   std::string myDumpDir;
+  bool myIsMultifile;
 
 protected:
   /// list of entities, used by other features but not dumped yet

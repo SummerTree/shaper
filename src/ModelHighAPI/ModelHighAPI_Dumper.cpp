@@ -438,6 +438,11 @@ static int possibleSelectionsByPoint(const GeomPointPtr& thePoint,
   return aNbPossibleSelections;
 }
 
+void ModelHighAPI_Dumper::setIsMultiDump(const bool theValue)
+{
+  myIsMultifile = theValue;
+}
+
 void ModelHighAPI_Dumper::DumpStorageGeom::write(const AttributeSelectionPtr& theAttrSelect)
 {
   GeomShapePtr aShape;
@@ -515,7 +520,8 @@ ModelHighAPI_Dumper* ModelHighAPI_Dumper::mySelf = 0;
 
 ModelHighAPI_Dumper::ModelHighAPI_Dumper()
   : myDumpStorage(new DumpStorageBuffer),
-    myDumpPostponedInProgress(false)
+    myDumpPostponedInProgress(false),
+    myIsMultifile(false)
 {
 }
 
@@ -709,6 +715,18 @@ bool ModelHighAPI_Dumper::process(const std::shared_ptr<ModelAPI_Document>& theD
   return isOk;
 }
 
+void ModelHighAPI_Dumper::dumpGlobalForMultiFile(const FeaturePtr& theFeature)
+{
+  if(myIsMultifile && theFeature->lastResult() && !theFeature->lastResult()->isConcealed())
+  {
+    std::shared_ptr<ModelAPI_Result> aResult = theFeature->lastResult();
+    if (std::dynamic_pointer_cast<ModelAPI_ResultBody>(aResult))
+    {
+      *this << "global "<< theFeature->data()->name() << std::endl;
+    }
+  }
+}
+
 bool ModelHighAPI_Dumper::process(const std::shared_ptr<ModelAPI_Document>& theDoc)
 {
   bool isOk = true;
@@ -737,7 +755,13 @@ bool ModelHighAPI_Dumper::process(const std::shared_ptr<ModelAPI_Document>& theD
       else {
         FeaturePtr aFeature = std::dynamic_pointer_cast<ModelAPI_Feature>(*anObjIt);
         if (aFeature) // dump common feature
+        {
+          if(myIsMultifile)
+          {
+            dumpGlobalForMultiFile(aFeature);
+          }
           dumpFeature(aFeature);
+        }
       }
     }
   }
@@ -753,7 +777,13 @@ bool ModelHighAPI_Dumper::process(const std::shared_ptr<ModelAPI_CompositeFeatur
   ++gCompositeStackDepth;
   // dump composite itself
   if (!isDumped(EntityPtr(theComposite)) || isForce)
+  {
+    if(myIsMultifile)
+    {
+      dumpGlobalForMultiFile(theComposite);
+    }
     dumpFeature(FeaturePtr(theComposite), isForce);
+  }
 
   // sub-part is processed independently, because it provides separate document
   if (theComposite->getKind() == PartSetPlugin_Part::ID()) {
@@ -827,7 +857,13 @@ bool ModelHighAPI_Dumper::processSubs(
     if (aCompFeat) // iteratively process composite features
       isOk = process(aCompFeat) && isOk;
     else
+    {
+      if(myIsMultifile)
+      {
+        dumpGlobalForMultiFile(theComposite);
+      }
       dumpFeature(aFeature, true);
+    }
   }
 
   bool isDumpSetName = !myEntitiesStack.empty() &&
@@ -878,7 +914,13 @@ void ModelHighAPI_Dumper::dumpPostponed(bool theDumpFolders)
     else {
       FeaturePtr aFeature = std::dynamic_pointer_cast<ModelAPI_Feature>(*anIt);
       if (aFeature)
+      {
+        if(myIsMultifile)
+        {
+          dumpGlobalForMultiFile(aFeature);
+        }
         dumpFeature(aFeature, true);
+      }
     }
   }
   myDumpPostponedInProgress = false;

@@ -71,12 +71,14 @@ void ExchangePlugin_Dump::initAttributes()
   data()->addAttribute(EXPORT_VARIABLES_ID(), ModelAPI_AttributeBoolean::typeId());
 
   data()->addAttribute(DUMP_DIR_ID(), ModelAPI_AttributeString::typeId());
+  data()->addAttribute(MULTIFILE_ID(), ModelAPI_AttributeBoolean::typeId());
 
   // default values
   boolean(TOPOLOGICAL_NAMING_DUMP_ID())->setValue(THE_DUMP_NAMING);
   boolean(GEOMETRIC_DUMP_ID())->setValue(THE_DUMP_GEO);
   boolean(WEAK_NAMING_DUMP_ID())->setValue(THE_DUMP_WEAK);
   boolean(EXPORT_VARIABLES_ID())->setValue(false);
+  boolean(MULTIFILE_ID())->setValue(false);
 
   ModelAPI_Session::get()->validators()->registerNotObligatory(getKind(), DUMP_DIR_ID());
 }
@@ -139,6 +141,7 @@ void ExchangePlugin_Dump::dump(const std::string& theFileName)
   if (!aDumper)
     setError("An error occurred while dumping to " + theFileName);
 
+  aDumper->setIsMultiDump(boolean(MULTIFILE_ID())->value());
   static const int THE_TYPES_SIZE = 3;
   bool aTypes[THE_TYPES_SIZE] = {
     boolean(TOPOLOGICAL_NAMING_DUMP_ID())->value(),

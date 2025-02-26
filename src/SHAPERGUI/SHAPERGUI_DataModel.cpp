@@ -208,6 +208,10 @@ bool SHAPERGUI_DataModel::dumpPython(const QString& thePath, CAM_Study* theStudy
     if (aAttr.get())
       aAttr->setValue(".py");
 
+    AttributeBooleanPtr aAttrBool = aFeature->boolean(ExchangePlugin_Dump::MULTIFILE_ID());
+    if(aAttrBool.get())
+      aAttrBool->setValue(isMultiFile);
+
 #ifdef HAVE_SALOME
     aFeature->boolean(ExchangePlugin_Dump::EXPORT_VARIABLES_ID())->setValue(true);
 #endif
