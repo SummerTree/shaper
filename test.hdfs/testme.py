@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
   with open(testlogfile, 'r') as inputFile:
     s = inputFile.read()
-    #print("logfile: ", s)
+    print("logfile: ", s)
     if s.find("FAIL") > 0:
       isOk = False
       error = s

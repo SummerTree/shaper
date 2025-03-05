@@ -182,6 +182,14 @@
         <source>Text color</source>
         <translation>Couleur du texte</translation>
     </message>
+    <message>
+        <source>Backup done in folder: %1</source>
+        <translation>Sauvegarde effectuée dans le dossier: %1</translation>
+    </message>
+    <message>
+        <source>Failed to backup active study!</source>
+        <translation>Échec de la sauvegarde de l&apos;étude active!</translation>
+    </message>
 </context>
 <context>
     <name>SHAPERGUI_ToolbarItemsDlg</name>

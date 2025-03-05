@@ -369,6 +369,14 @@ Q_OBJECT
 
   void showHelpPage(const QString& thePage) const;
 
+  void setBackupState(bool theDoBackup=true);
+
+  bool backupState() const    { return myDoBackup; }
+
+  void setWaitForBackup(bool theDoWait=true);
+
+  bool waitForBackup() const  { return myWaitForBackup; }
+
 signals:
   /// Emitted when selection happens in Salome viewer
   void salomeViewerSelection();
@@ -614,6 +622,8 @@ private:
   Config_DataModelReader* myDataModelXMLReader; ///< XML reader of data model
   XGUI_InspectionPanel* myInspectionPanel; ///< container of feature attributes widgets
   QTemporaryDir myTmpDir; ///< a direcory for uncompressed files
+  bool myDoBackup; ///< whether the current save was initiated by automatic backup
+  bool myWaitForBackup; ///< whether to do a backup after current operation finishes
 };
 
 #endif

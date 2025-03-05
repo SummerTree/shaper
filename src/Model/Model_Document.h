@@ -73,7 +73,7 @@ class Model_Document : public ModelAPI_Document
   //! \param theResults the result full file names that were stored by "save"
   //! \returns true if file was stored successfully
   MODEL_EXPORT virtual bool save(
-    const char* theDirName, const char* theFileName, std::list<std::string>& theResults);
+    const char* theDirName, const char* theFileName, std::list<std::string>& theResults, bool doBackup=false);
 
   //! Export the list of features to the file
   //! \param theFilename path to save the file

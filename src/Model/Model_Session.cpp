@@ -52,6 +52,7 @@
 
 #include <TopoDS_Shape.hxx>
 
+
 static Model_Session* myImpl = new Model_Session();
 
 // to redirect all calls to the root document
@@ -65,9 +66,9 @@ bool Model_Session::load(const char* theFileName)
   return aRes;
 }
 
-bool Model_Session::save(const char* theFileName, std::list<std::string>& theResults)
+bool Model_Session::save(const char* theFileName, std::list<std::string>& theResults, bool doBackup=false)
 {
-  return ROOT_DOC->save(theFileName, "root", theResults);
+  return ROOT_DOC->save(theFileName, "root", theResults, doBackup);
 }
 
 void Model_Session::closeAll()

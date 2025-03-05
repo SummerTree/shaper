@@ -30,6 +30,7 @@
 
 #include <QList>
 #include <QMap>
+#include <future>
 
 class XGUI_Workshop;
 class SHAPERGUI_OCCSelector;
@@ -190,7 +191,10 @@ Q_OBJECT
 
   virtual void updateInfoPanel();
 
- public slots:
+signals:
+  void backupDone(QString aName, int aResult);
+
+public slots:
   /// \brief The method is redefined to connect to the study viewer before the data
   /// model is filled by opened file. This file open will flush redisplay signals for,
   /// objects which should be visualized
@@ -225,6 +229,12 @@ Q_OBJECT
   /// Save application functionality with additional processing of aborting the current operation
   void onSaveAsDocByShaper();
 
+  /// Backup document functionality with additional file validation
+  void onBackupDoc();
+
+  /// Document has been backed-up
+  void onBackupDone(QString aName, int aResult);
+
   /// Obtains the current application and updates its actions
   void onUpdateCommandStatus();
 
@@ -240,6 +250,9 @@ Q_OBJECT
 
   /// Abort all operations
   virtual bool abortAllOperations();
+
+  /// The automatic backup thread function
+  int backupDoc();
 
 private slots:
   void onWhatIs(bool isToggled);
@@ -277,6 +290,9 @@ private slots:
   void addActionsToInfoGroup(QtxInfoPanel* theInfoPanel, const QString& theGroup, const QSet<QString>& theActions);
 
   void hideInternalWindows();
+
+  // Check, whether we are waiting for a backup => if yes, do it now
+  void checkForWaitingBackup();
 
   /// List of registered nested actions
   QStringList myNestedActionsList;
@@ -319,6 +335,12 @@ private slots:
   Handle(Graphic3d_AspectMarker3d) myHighlightPointAspect;
 
   double myAxisArrowRate;
+
+  /// Automatic backup
+  QTimer*          myBackupTimer;      // The timer which triggers the automatic backup
+  std::future<int> myBackupResult;     // The result (succes/failure) of the backup
+  QString          myBackupError;      // The backup error message in case of a failure
+  QString          myLastBackupFolder; // The folder of the last backup
 };
 
 #endif

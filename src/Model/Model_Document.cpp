@@ -485,7 +485,9 @@ static bool saveDocument(Handle(Model_Application) theApp,
 }
 
 bool Model_Document::save(
-  const char* theDirName, const char* theFileName, std::list<std::string>& theResults)
+  const char* theDirName, const char* theFileName,
+  std::list<std::string>& theResults,
+  bool doBackup/*=false*/)
 {
   // if the history line is not in the end, move it to the end before save, otherwise
   // problems with results restore and (the most important) naming problems will appear

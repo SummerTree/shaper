@@ -18,6 +18,7 @@
 //
 
 #include "SHAPERGUI.h"
+#include "SHAPERGUI_CheckBackup.h"
 #include "SHAPERGUI_DataModel.h"
 #include "SHAPERGUI_OCCSelector.h"
 #include "SHAPERGUI_NestedButton.h"
@@ -34,6 +35,7 @@
 #include <XGUI_FacesPanel.h>
 #include <XGUI_SelectionActivate.h>
 #include <XGUI_InspectionPanel.h>
+#include <XGUI_Tools.h>
 #include <XGUI_ViewerProxy.h>
 
 #include <ModuleBase_Operation.h>
@@ -78,9 +80,22 @@
 #include <QTimer>
 #include <QMenu>
 #include <QToolBar>
+#include <QFileInfo>
+#include <QDir>
+#include <QMessageBox>
+
+#include <chrono>
+#include <future>
+#include <thread>
 
 #include <ModelAPI_Session.h>
 #include <Events_MessageBool.h>
+
+//---------------------------------------------------------
+// Use a short 1 min interval for auto backup for debugging
+// Uncomment the following line for debugging.
+//#define DBG_BACKUP_INTERVAL   1
+//---------------------------------------------------------
 
 #if OCC_VERSION_HEX < 0x070400
   #define SALOME_PATCH_FOR_CTRL_WHEEL
@@ -140,7 +155,6 @@ private:
 
 
 
-
 //******************************************************
 SHAPERGUI::SHAPERGUI()
     : LightApp_Module("SHAPER"),
@@ -155,6 +169,12 @@ SHAPERGUI::SHAPERGUI()
   myProxyViewer = new SHAPERGUI_SalomeViewer(this);
 
   ModuleBase_Preferences::setResourceMgr(application()->resourceMgr());
+
+  // initialize backup timer
+  myBackupTimer = new QTimer( this );
+  myBackupTimer->setSingleShot( true );
+  connect( myBackupTimer, SIGNAL( timeout() ), this, SLOT( onBackupDoc() ) );
+  connect( this, SIGNAL( backupDone(QString,int) ), this, SLOT( onBackupDone(QString,int) ));
 
   // It will be called in XGUI_Workshop::startApplication
   // ModuleBase_Preferences::loadCustomProps();
@@ -405,6 +425,21 @@ bool SHAPERGUI::activateModule(SUIT_Study* theStudy)
           this, SLOT(onSaveDocByShaper()));
   connect(getApp()->action(LightApp_Application::FileSaveAsId), SIGNAL(triggered(bool)),
           this, SLOT(onSaveAsDocByShaper()));
+
+  SUIT_ResourceMgr* aResMgr = application()->resourceMgr();
+  if ( aResMgr && application()->activeStudy() ) {
+    bool useBackup = aResMgr->booleanValue( ModuleBase_Preferences::GENERAL_SECTION, "use_auto_backup", true );
+    if (useBackup) {
+      int backupInterval = aResMgr->integerValue( ModuleBase_Preferences::GENERAL_SECTION, "backup_interval", 5 );
+      if ( backupInterval > 0 ){
+#ifdef DBG_BACKUP_INTERVAL
+        backupInterval = DBG_BACKUP_INTERVAL; // MBS: use shorter interval for debugging
+#endif
+        myBackupTimer->start( backupInterval*60000 );
+      }
+    }
+  }
+
   updateInfoPanel();
 
   //connect(myWorkshop->operationMgr(), SIGNAL(operationResumed(ModuleBase_Operation*)),
@@ -453,10 +488,11 @@ bool SHAPERGUI::deactivateModule(SUIT_Study* theStudy)
   saveToolbarsConfig();
   myWorkshop->deactivateModule();
 
+  myBackupTimer->stop();
+
   myIsInspectionVisible = myInspectionPanel->isVisible();
   myIsFacesPanelVisible = myWorkshop->facesPanel()->isVisible();
   hideInternalWindows();
-
 
   // the active operation should be stopped for the next activation.
   // There should not be active operation and visualized preview.
@@ -532,6 +568,28 @@ void SHAPERGUI::logShaperGUIEvent()
                                            "activated" );
 }
 
+
+//******************************************************
+class WaitBackupResetter {
+public:
+  WaitBackupResetter(XGUI_Workshop *theWshop)
+    :myWorkshop(theWshop)
+  {
+  }
+  WaitBackupResetter() = delete;
+  ~WaitBackupResetter()
+  {
+    if (myWorkshop)
+    {
+      myWorkshop->setWaitForBackup(false);
+      myWorkshop = nullptr;
+    }
+  }
+private:
+  XGUI_Workshop *myWorkshop;
+};
+
+
 //******************************************************
 static void onOperationGeneric( ModuleBase_Operation* theOperation,
                                 const QString moduleName,
@@ -556,12 +614,35 @@ static void onOperationGeneric( ModuleBase_Operation* theOperation,
 void SHAPERGUI::onOperationCommitted(ModuleBase_Operation* theOperation)
 {
   onOperationGeneric(theOperation, moduleName(), "committed");
+
+  checkForWaitingBackup();
 }
 
 //******************************************************
 void SHAPERGUI::onOperationAborted(ModuleBase_Operation* theOperation)
 {
   onOperationGeneric(theOperation, moduleName(), "aborted");
+
+  checkForWaitingBackup();
+}
+
+//******************************************************
+void SHAPERGUI::checkForWaitingBackup()
+{
+  if (myWorkshop && myWorkshop->waitForBackup()) 
+  {
+    XGUI_OperationMgr *operMgr = myWorkshop->operationMgr();
+    if (operMgr && operMgr->hasOperation())
+    {
+      // If the user is still running an operation, e.g. we left the line creation
+      // during sketch creation, do not yet create the backup
+      std::cout << "---> There are still active operations!" << std::endl;
+      return;
+    }
+    // There are no more active operations => we can now do the backup
+    WaitBackupResetter _resetter(myWorkshop);
+    onBackupDoc();
+  }
 }
 
 //******************************************************
@@ -664,6 +745,228 @@ void SHAPERGUI::onSaveAsDocByShaper()
     return;
 
   getApp()->onSaveAsDoc();
+}
+
+ 
+//******************************************************
+void SHAPERGUI::onBackupDoc()
+{
+  // We cannot save the study while we are still in an ongoing operation
+  // => so test for this case first and delay the backup to the time when operation finishes
+  if (myWorkshop && myWorkshop->operationMgr()) 
+  {
+    if (myWorkshop->operationMgr()->hasOperation())
+    {
+      // If the user is running an operation, only do the backup
+      // after the operation has finished (committed or cancelled).
+      myWorkshop->setWaitForBackup();
+      return;
+    }
+    // Run the backup in a separate thread!!
+    myBackupResult = std::async(std::launch::async, [this]{return this->backupDoc();});
+  }
+}
+
+class LockBackupState {
+public:
+  LockBackupState(XGUI_Workshop *wshop) : myWorkshop(wshop)
+  {
+    if (myWorkshop) myWorkshop->setBackupState();
+  }
+  ~LockBackupState()
+  {
+    if (myWorkshop) myWorkshop->setBackupState(false);
+    myWorkshop = nullptr;
+  }
+  XGUI_Workshop *myWorkshop;
+};
+
+//******************************************************
+int SHAPERGUI::backupDoc()
+{
+  if (myWorkshop->backupState()) {
+    // This should never happen as I restart the backup timer only when a backup has finished
+    myBackupError = tr("Another backup is still running");
+    return 32;
+  }
+
+  int aResult = 0;
+  bool isOk = false;
+  SUIT_Study* study = application()->activeStudy();
+  if ( !study ) {
+    myBackupError = tr("There is no active study");
+    return 33;
+  }
+
+  LockBackupState lockBackup(myWorkshop);
+
+  QString aFolder{};
+  try
+  {
+    QString aName = study->studyName();
+    if ( aName.isEmpty() ) {
+      myBackupError = tr("Study name is empty");
+      return 34;
+    }
+
+    const QChar aSep = QDir::separator();
+    SUIT_ResourceMgr* aResMgr = application()->resourceMgr();
+    if ( aResMgr && application()->activeStudy() ) {
+      aFolder = aResMgr->path( ModuleBase_Preferences::GENERAL_SECTION, "backup_folder", "" );
+    }
+    if (aFolder.isEmpty()) {
+#ifdef HAVE_SALOME
+      aFolder = XGUI_Tools::getTmpDirByEnv("SALOME_TMP_DIR").c_str();
+#else
+      aFolder = XGUI_Tools::getTmpDirByEnv("").c_str();
+#endif
+    }
+    if (aFolder.endsWith(aSep))
+      aFolder = aFolder.remove(aFolder.length()-1,1);
+
+    QDateTime now = QDateTime::currentDateTime();
+    aFolder += aSep + now.toString("yyyyMMdd_hhmmss");
+
+    QDir aDir(aFolder);
+    if (!aDir.exists()) {
+      aDir.mkpath(aFolder);
+      aDir.mkdir(aFolder);
+      if (!aDir.exists()) {
+        myBackupError = tr("Cannot create backup folder");
+        return 35;
+      }
+    }
+
+    if (study->isSaved()) {
+      // Retrieve the filename only from the fullpath
+      QFileInfo fi(aName);
+      aName = fi.completeBaseName();
+    }
+    QString aFullName = aFolder + aSep + aName + QString(".hdf");
+
+    // Save the study into a single HDF file
+    isOk = study->saveDocumentAs( aFullName, true );
+    if (!isOk){
+      myBackupError = tr("Cannot backup study document");
+      return 36;
+    }
+
+    // Now, dump the python script
+    LightApp_Study *lightStudy = dynamic_cast<LightApp_Study*>(study);
+    if (!lightStudy) {
+      myBackupError = tr("Study is not dumpable");
+      return 37;
+    }
+
+    aFullName = aFolder + aSep + aName + QString(".py");
+    isOk = lightStudy->dump(aFullName, true, false, false);
+    if (!isOk){
+      myBackupError = tr("Cannot backup python script");
+      return 38;
+    }
+
+    // Finally start another salome process and reload the saved document & script for verification
+    SHAPERGUI_CheckBackup checkBackup(aFolder, aName);
+    QString testBackup("check_validity.py");
+    QStringList dirs;
+    dirs << QString(std::getenv("SHAPER_ROOT_DIR"))
+        << QString("bin")
+        << QString("salome")
+        << testBackup;
+    QString testScript = dirs.join( QDir::separator() );
+    aResult = checkBackup.run(testScript);
+  }
+  catch (std::exception &ex)
+  {
+    myBackupError = tr("std::exception caught");
+    aResult = 39;
+  }
+  catch (...)
+  {
+    myBackupError = tr("unknown exception caught");
+    aResult = 40;
+  }
+
+  emit backupDone(aFolder, aResult);
+  return aResult;
+}
+
+//******************************************************
+void SHAPERGUI::onBackupDone(QString aFolder, int aResult)
+{
+  int aErrCode = myBackupResult.get();
+  bool isOk = (aResult == 0);
+  if (isOk)
+  {
+    putInfo(tr("Backup done in folder: %1").arg(aFolder), 5000 );
+  }
+  else
+  {
+    QString aMsg = tr("Failed to backup active study!\nError Code: %1").arg(aResult);
+    QMessageBox::warning(application()->desktop(), tr("Automatic Backup"), aMsg);
+  }
+
+  int aBackupStorage{-1};
+  SUIT_ResourceMgr* aResMgr = application()->resourceMgr();
+  if ( aResMgr )
+  {
+    aBackupStorage = aResMgr->integerValue( ModuleBase_Preferences::GENERAL_SECTION, "auto_backup_storage", -1);
+  }
+  if (aBackupStorage == 0/*StoreLastBackupOnly*/)
+  {
+    // Only keep the latest successful backup => delete the previous one, if it exists
+    if (isOk && !myLastBackupFolder.isEmpty())
+    {
+      // Delete the previous backup folder
+      // To avoid deleting accidently an incorrect folder, check for
+      // the correct content. A backup folder should have 3-5 files:
+      //  * <FileName>.hdf       - the study itself
+      //  * <FileName>.py        - the python dump
+      //  * <FileName>_test.log  - the output of the "test_backup.py" script
+      //  * <FileName>_valid.log - the output of the "check_validity.py" script
+      QDir dir(myLastBackupFolder);
+      QStringList files = dir.entryList(QDir::Files|QDir::Dirs|QDir::NoDotAndDotDot);
+      // I am afraid of accidently removing an entire folder tree, therefore check
+      // if "dir" contains really the latest backups and nothing more
+      if (!files.isEmpty() && files.length() <= 4)
+      {
+        QString baseName = files.constFirst();
+        baseName = baseName.left(baseName.lastIndexOf('.'));
+        if (!baseName.isEmpty() && files.filter(baseName).length() == files.length())
+        {
+          const bool success = dir.removeRecursively();
+          if (!success)
+          {
+            QString aMsg = tr("The previous backup folder could not be removed!");
+            QMessageBox::warning(application()->desktop(), tr("Automatic Backup"), aMsg);
+          }
+        }
+      }
+      else
+      {
+        QString aMsg = tr("The previous backup folder was not deleted,\nas there are more files in it than it is expected!");
+        QMessageBox::warning(application()->desktop(), tr("Automatic Backup"), aMsg);
+      }
+    }
+    myLastBackupFolder = aFolder;
+  }
+
+  // Start the timer again
+  if ( aResMgr && application()->activeStudy() )
+  {
+    bool useBackup = aResMgr->booleanValue( ModuleBase_Preferences::GENERAL_SECTION, "use_auto_backup", true );
+    if (useBackup)
+    {
+      int backupInterval = aResMgr->integerValue( ModuleBase_Preferences::GENERAL_SECTION, "backup_interval", 5 );
+      if ( backupInterval > 0 )
+      {
+#ifdef DBG_BACKUP_INTERVAL
+        backupInterval = DBG_BACKUP_INTERVAL; // MBS: use shorter interval for debugging
+#endif
+        myBackupTimer->start( backupInterval*60000 );
+      }
+    }
+  }
 }
 
 //******************************************************
@@ -1137,11 +1440,32 @@ void SHAPERGUI::preferencesChanged(const QString& theSection, const QString& the
       }
     }
   }
-  else if (theSection == ModuleBase_Preferences::GENERAL_SECTION && theParam == "create_init_part") {
-    bool aCreate = ModuleBase_Preferences::resourceMgr()->booleanValue(
-      ModuleBase_Preferences::GENERAL_SECTION, "create_init_part", true);
-    Events_MessageBool aCreateMsg(Events_Loop::eventByName(EVENT_CREATE_PART_ON_START), aCreate);
-    aCreateMsg.send();
+  else if (theSection == ModuleBase_Preferences::GENERAL_SECTION) {
+    if (theParam == "create_init_part") {
+      bool aCreate = ModuleBase_Preferences::resourceMgr()->booleanValue(
+        ModuleBase_Preferences::GENERAL_SECTION, "create_init_part", true);
+      Events_MessageBool aCreateMsg(Events_Loop::eventByName(EVENT_CREATE_PART_ON_START), aCreate);
+      aCreateMsg.send();
+    }
+    else if (theParam == "use_auto_backup") {
+      bool useBackup = ModuleBase_Preferences::resourceMgr()->booleanValue(
+        ModuleBase_Preferences::GENERAL_SECTION, "use_auto_backup", true);
+      if (useBackup) {
+        int backupInterval = aResMgr->integerValue( ModuleBase_Preferences::GENERAL_SECTION, "backup_interval", 5 );
+        if ( backupInterval > 0 ){
+#ifdef DBG_BACKUP_INTERVAL
+          backupInterval = DBG_BACKUP_INTERVAL; // MBS: use shorter interval for debugging
+#endif
+          myBackupTimer->start( backupInterval*60000 );
+        }
+        else {
+          myBackupTimer->stop();
+        }
+      }
+      else {
+        myBackupTimer->stop();
+      }
+    }
   }
   else if (theSection == ModuleBase_Preferences::VIEWER_SECTION &&
            theParam.startsWith("group_names_"))

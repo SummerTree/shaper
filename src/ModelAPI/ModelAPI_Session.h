@@ -59,7 +59,7 @@ protected:
   //! \param theFileName full name of the file to store
   //! \param theResults the result full file names that were stored by "save"
   //! \returns true if file was stored successfully
-  virtual bool save(const char* theFileName, std::list<std::string>& theResults) = 0;
+  virtual bool save(const char* theFileName, std::list<std::string>& theResults, bool isBackup=false) = 0;
 
   //! Closes all documents
   virtual void closeAll() = 0;
