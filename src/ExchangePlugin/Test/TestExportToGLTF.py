@@ -26,7 +26,7 @@
 import os
 import json
 from tempfile import TemporaryDirectory
-from ModelAPI import *
+import salome
 
 
 #=========================================================================
@@ -87,43 +87,19 @@ def checkGlbFormat(theFileName):
 # glTF/glb-specific export test function
 #=========================================================================
 def testExportGLTF(theFile):
-    # Get the file extension in upper case
-    ext = os.path.splitext(theFile)[1].upper()
-    is_binary_fmt = (ext == ".GLB")
-    if is_binary_fmt:
-        type = "GLB"
-        format = "GLB"
-    else:
-        type = "GLTF"
-        format = "GLTF"
+    # Get the file extension
+    ext = os.path.splitext(theFile)[1]
+    is_binary_fmt = (ext == ".glb")
 
-    # Import a reference part
-    aSession.startOperation("Add part")
-    aPartFeature = aSession.moduleDocument().addFeature("Part")
-    aSession.finishOperation()
-    aPart = aSession.activeDocument()
-
-    aSession.startOperation("Import Box_1")
-    anImportFeature = aPart.addFeature("Import")
-    aShapePath = os.path.join(os.getenv("DATA_DIR"), "Shapes", "Brep", "box1.brep")
-    anImportFeature.string("file_path").setValue(aShapePath)
-    anImportFeature.string("ImportType").setValue("BREP")
-    aSession.finishOperation()
-
-    # Ensure that the file does not exist
+    # Ensure that the file to export does not exist
     removeFile(theFile)
+    if not is_binary_fmt:
+        # glTF format stores the shape in a separate binary file
+        bin_file = theFile.replace(".gltf", ".bin")
+        removeFile(bin_file)
 
-    # Export
-    aSession.startOperation("Export to glTF")
-    anExportFeature = aPart.addFeature("Export")
-    anExportFeature.string("file_format").setValue(format)
-    print("theFile=",theFile)
-    anExportFeature.string("file_path").setValue(theFile)
-    anExportFeature.string("ExportType").setValue(type)
-    aSelectionListAttr = anExportFeature.selectionList("selection_list")
-    aSelectionListAttr.setSelectionType("solids")
-    aSelectionListAttr.append(anImportFeature.firstResult(), anImportFeature.firstResult().shape())
-    aSession.finishOperation()
+    # Export the Part to glTF/glb
+    model.exportToFile(Part_1_doc, theFile, [Box_1.result()])
 
     # Check the specific output formats for validity
     if is_binary_fmt:
@@ -132,11 +108,25 @@ def testExportGLTF(theFile):
         checkGltfFormat(theFile)
 
 
+#=========================================================================
+# Main
+#=========================================================================
+# Initialize the SALOME session
+salome.salome_init()
 
-# Create a session
-aSession = ModelAPI_Session.get()
+from salome.shaper import model
+
+# Create a Part with a simple Box
+model.begin()
+partSet = model.moduleDocument()
+Part_1 = model.addPart(partSet)
+Part_1_doc = Part_1.document()
+Box_1 = model.addBox(Part_1_doc, 100, 100, 100)
+model.end()
 
 with TemporaryDirectory() as tmp_dir:
     # Export a shape into glTF/glb
     testExportGLTF(os.path.join(tmp_dir, "export.gltf"))
     testExportGLTF(os.path.join(tmp_dir, "export.glb"))
+
+    assert(model.checkPythonDump())
