@@ -234,7 +234,7 @@ void ModuleBase_Preferences::createGeneralTab(ModuleBase_IPrefMgr* thePref, int 
   thePref->setItemProperty( "max", 1440, delay );
   thePref->setItemProperty( "suffix", " min", delay );
 
-  int folderPref = thePref->addPreference(QObject::tr("Backup Folder"), group, SUIT_PreferenceMgr::File,
+  int folderPref = thePref->addPreference(QObject::tr("Backup Folder"), group, SUIT_PreferenceMgr::Directory,
                                           ModuleBase_Preferences::GENERAL_SECTION, "backup_folder");
   thePref->setItemProperty( "mode", Qtx::PT_Directory, folderPref );
 
