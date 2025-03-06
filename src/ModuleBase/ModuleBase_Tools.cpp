@@ -1452,8 +1452,12 @@ void setDisplaying(ResultPartPtr thePart, bool theDisplayFromScript)
       "part_visualization_study", -1);
 
     // if chosen "As stored in HDF" then don't change displaying
-    if (aDisplayingId == 0)
+    if (aDisplayingId == 0) {
+      // We need to reset the isDoingDisplay flag, so that results are displayed
+      // when loading a script.
+      isDoingDisplay = false;
       return;
+    }
   }
 
   setDisplayingByLoop(aDoc, aConstructionSize, ModelAPI_ResultConstruction::group(),
