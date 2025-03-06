@@ -145,6 +145,10 @@
                icon="icons/Features/chamfer.png" auto_preview="true" helpfile="chamferFeature.html">
         <source path="chamfer_widget.xml"/>
       </feature>
+      <feature id="RemoveExtraEdges" title="Remove Extra Edges" tooltip="Merge edges and faces that lie on the same geometry"
+               icon="icons/Features/remove_extra_edges.png" auto_preview="true" helpfile="removeExtraEdgesFeature.html">
+        <source path="remove_extra_edges_widget.xml"/>
+      </feature>
       <feature id="FusionFaces" title="Fuse Faces" tooltip="Performs fusion of connected faces"
                icon="icons/Features/fusion_faces.png" auto_preview="true" helpfile="fuseFeatureFaces.html">
         <source path="fusion_faces_widget.xml"/>

@@ -82,6 +82,7 @@ SET(PROJECT_HEADERS
     GeomAlgoAPI_Scale.h
     GeomAlgoAPI_Circ2dBuilder.h
     GeomAlgoAPI_UnifySameDomain.h
+    GeomAlgoAPI_RemoveExtraEdges.h
     GeomAlgoAPI_Fillet.h
     GeomAlgoAPI_Fillet1D.h
     GeomAlgoAPI_SortListOfShapes.h
@@ -165,6 +166,7 @@ SET(PROJECT_SOURCES
     GeomAlgoAPI_Scale.cpp
     GeomAlgoAPI_Circ2dBuilder.cpp
     GeomAlgoAPI_UnifySameDomain.cpp
+    GeomAlgoAPI_RemoveExtraEdges.cpp
     GeomAlgoAPI_Fillet.cpp
     GeomAlgoAPI_Fillet1D.cpp
     GeomAlgoAPI_SortListOfShapes.cpp
@@ -197,6 +199,8 @@ SET(PROJECT_LIBRARIES
     ${OpenCASCADE_DataExchange_LIBRARIES}
     ${OpenCASCADE_ModelingAlgorithms_LIBRARIES}
     ${OpenCASCADE_ApplicationFramework_LIBRARIES}
+    ${CommonGeomLib_BlockFix}
+    ${CommonGeomLib_GEOMAlgo}
 )
 
 ADD_DEFINITIONS(-DGEOMALGOAPI_EXPORTS ${OpenCASCADE_DEFINITIONS})
@@ -215,6 +219,7 @@ INCLUDE_DIRECTORIES(
   ../XAO
   ${PROJECT_SOURCE_DIR}/src/Locale
   ${OpenCASCADE_INCLUDE_DIR}
+  ${CommonGeomLib_INCLUDE_DIRS}
 )
 
 TARGET_LINK_LIBRARIES(GeomAlgoAPI ${PROJECT_LIBRARIES})

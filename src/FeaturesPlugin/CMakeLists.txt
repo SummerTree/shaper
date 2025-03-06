@@ -65,6 +65,7 @@ SET(PROJECT_HEADERS
     FeaturesPlugin_Fillet.h
     FeaturesPlugin_Fillet1D.h
     FeaturesPlugin_Measurement.h
+    FeaturesPlugin_RemoveExtraEdges.h
     FeaturesPlugin_FusionFaces.h
     FeaturesPlugin_RemoveResults.h
     FeaturesPlugin_Chamfer.h
@@ -129,6 +130,7 @@ SET(PROJECT_SOURCES
     FeaturesPlugin_Fillet.cpp
     FeaturesPlugin_Fillet1D.cpp
     FeaturesPlugin_Measurement.cpp
+    FeaturesPlugin_RemoveExtraEdges.cpp
     FeaturesPlugin_FusionFaces.cpp
     FeaturesPlugin_RemoveResults.cpp
     FeaturesPlugin_Chamfer.cpp
@@ -183,6 +185,7 @@ SET(XML_RESOURCES
   fillet_widget.xml
   fillet1d_widget.xml
   measurement_widget.xml
+  remove_extra_edges_widget.xml
   fusion_faces_widget.xml
   glue_faces_widget.xml
   chamfer_widget.xml

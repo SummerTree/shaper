@@ -117,6 +117,7 @@
     <parameter name="Features/Partition" value=""/>
     <parameter name="Features/Pipe" value=""/>
     <parameter name="Features/Recover" value=""/>
+    <parameter name="Features/RemoveExtraEdges" value=""/>
     <parameter name="Features/Remove_SubShapes" value=""/>
     <parameter name="Features/Revolution" value=""/>
     <parameter name="Features/RevolutionCut" value=""/>

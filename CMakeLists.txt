@@ -98,6 +98,13 @@ IF(HAVE_SALOME)
     MESSAGE(FATAL_ERROR "We absolutely need a Salome GUI, please define GUI_ROOT_DIR")
   ENDIF(EXISTS ${GUI_ROOT_DIR})
 
+  SET(CommonGeomLib_ROOT_DIR $ENV{CommonGeomLib_ROOT_DIR} CACHE PATH "Path to the CommonGeomLib tool")
+  IF(EXISTS ${CommonGeomLib_ROOT_DIR})
+    FIND_PACKAGE(SalomeCommonGeomLib REQUIRED)
+  ELSE(EXISTS ${CommonGeomLib_ROOT_DIR})
+    MESSAGE(FATAL_ERROR "We absolutely need the CommonGeomLib tool, please define CommonGeomLib_ROOT_DIR !")
+  ENDIF(EXISTS ${CommonGeomLib_ROOT_DIR})
+
   FIND_PACKAGE(SalomePythonInterp REQUIRED)
   FIND_PACKAGE(SalomePythonLibs REQUIRED)
   FIND_PACKAGE(SalomeOpenCASCADE REQUIRED)

@@ -54,6 +54,10 @@
       <translation>Fusionner des faces</translation>
     </message>
     <message>
+      <source>Remove Extra Edges</source>
+      <translation>Supprimer les arêtes inutiles</translation>
+    </message>
+    <message>
       <source>Intersection</source>
       <translation>Section</translation>
     </message>
@@ -1309,6 +1313,54 @@
     <message>
       <source>Error: Context is empty.</source>
       <translation>Erreur : le contexte est vide.</translation>
+    </message>
+  </context>
+
+  <!-- RemoveExtraEdges -->
+  <context>
+    <name>RemoveExtraEdges</name>
+    <message>
+      <source>Merge edges and faces that lie on the same geometry</source>
+      <translation>Fusionner les arêtes et les faces qui se trouvent sur la même géométrie</translation>
+    </message>
+    <message>
+      <source>Remove Extra Edges</source>
+      <translation>Supprimer les arêtes inutiles</translation>
+    </message>
+  </context>
+
+  <context>
+    <name>RemoveExtraEdges:base_shape</name>
+    <message>
+      <source>Shape:</source>
+      <translation>Forme:</translation>
+    </message>
+    <message>
+      <source>Attribute "%1" is not initialized.</source>
+      <translation>Sélectionnez une forme à modifier.</translation>
+    </message>
+    <message>
+      <source>Select a shape to modify.</source>
+      <translation>Sélectionnez une forme à modifier.</translation>
+    </message>
+  </context>
+  <context>
+    <name>RemoveExtraEdges:base_shape:GeomValidators_BodyShapes</name>
+    <message>
+      <source>Error: Context is empty.</source>
+      <translation>Erreur : le contexte est vide.</translation>
+    </message>
+  </context>
+
+  <context>
+    <name>RemoveExtraEdges:unite_faces</name>
+    <message>
+      <source>Merge faces that lie on a common surface</source>
+      <translation>Fusionner les faces, qui appartiennent à la même surface</translation>
+    </message>
+    <message>
+      <source>Unite faces</source>
+      <translation>Fusionner les faces</translation>
     </message>
   </context>
 

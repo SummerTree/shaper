@@ -36,6 +36,7 @@ Features plug-in provides a set of common topological operations. It implements 
    placementFeature.rst
    pointCoordinatesFeature.rst
    recoverFeature.rst
+   removeExtraEdgesFeature.rst
    removeSubShapesFeature.rst
    revolutionCutFeature.rst
    revolutionFeature.rst

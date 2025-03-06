@@ -55,6 +55,7 @@
   #include "FeaturesAPI_Symmetry.h"
   #include "FeaturesAPI_Translation.h"
   #include "FeaturesAPI_Union.h"
+  #include "FeaturesAPI_RemoveExtraEdges.h"
   #include "FeaturesAPI_FusionFaces.h"
   #include "FeaturesAPI_GlueFaces.h"
   #include "FeaturesAPI_RemoveResults.h"

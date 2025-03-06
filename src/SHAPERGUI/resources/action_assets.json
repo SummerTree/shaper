@@ -597,6 +597,19 @@
                             }
                         }
                     },
+                    "RemoveExtraEdges": {
+                        "iconPath": "%SHAPER_ROOT_DIR%/share/salome/resources/shaper/icons/Features/remove_extra_edges.png",
+                        "langDependentAssets": {
+                            "en": {
+                                "name": "Remove Extra Edges",
+                                "tooltip": "Allows to remove extra edges and merge edges and faces that lie on a common geometry"
+                            },
+                            "fr": {
+                                "name": "Supprimer les arêtes inutiles",
+                                "tooltip": "Permet de supprimer des arêtes inutiles et de fusionner des arêtes et des faces qui se trouvent sur une géométrie commune"
+                            }
+                        }
+                    },
                     "Remove_SubShapes": {
                         "iconPath": "%SHAPER_ROOT_DIR%/share/salome/resources/shaper/icons/Features/remove_subshapes.png",
                         "langDependentAssets": {

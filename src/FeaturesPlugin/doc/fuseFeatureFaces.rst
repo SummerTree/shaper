@@ -1,7 +1,10 @@
-.. |fusion_faces.icon|    image:: images/fusion_faces.png
+
+  .. _fuse_faces:
 
 Fuse Faces
 ==========
+
+.. |fusion_faces.icon|    image:: images/fusion_faces.png
 
 **Fuse Faces** feature eliminates the edges between adjacent same-domain faces lying on the same geometrical surface. This feature is useful for processing the results of **Fuse**, **Union** or **Partition** operations.
 

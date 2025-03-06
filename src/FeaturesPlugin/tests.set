@@ -103,6 +103,7 @@ SET(TEST_NAMES_PARA
                TestUnion.py
                TestUnionFaces.py
                TestUnion_ErrorMsg.py
+               TestRemoveExtraEdges.py
                TestRemoveSubShapes.py
                TestRemoveSubShapes2.py
                TestRemoveSubShapes3.py

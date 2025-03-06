@@ -63,6 +63,7 @@
 #include <FeaturesPlugin_Symmetry.h>
 #include <FeaturesPlugin_Translation.h>
 #include <FeaturesPlugin_Union.h>
+#include <FeaturesPlugin_RemoveExtraEdges.h>
 #include <FeaturesPlugin_FusionFaces.h>
 #include <FeaturesPlugin_RemoveResults.h>
 #include <FeaturesPlugin_Copy.h>
@@ -200,6 +201,8 @@ FeaturePtr FeaturesPlugin_Plugin::createFeature(std::string theFeatureID)
     return FeaturePtr(new FeaturesPlugin_RemoveSubShapes);
   } else if (theFeatureID == FeaturesPlugin_Union::ID()) {
     return FeaturePtr(new FeaturesPlugin_Union);
+  } else if (theFeatureID == FeaturesPlugin_RemoveExtraEdges::ID()) {
+    return FeaturePtr(new FeaturesPlugin_RemoveExtraEdges);
   } else if (theFeatureID == FeaturesPlugin_FusionFaces::ID()) {
     return FeaturePtr(new FeaturesPlugin_FusionFaces);
   } else if (theFeatureID == FeaturesPlugin_Symmetry::ID()) {

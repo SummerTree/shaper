@@ -91,6 +91,7 @@
 %shared_ptr(FeaturesAPI_Placement)
 %shared_ptr(FeaturesAPI_PointCloudOnFace)
 %shared_ptr(FeaturesAPI_Recover)
+%shared_ptr(FeaturesAPI_RemoveExtraEdges)
 %shared_ptr(FeaturesAPI_RemoveResults)
 %shared_ptr(FeaturesAPI_RemoveSubShapes)
 %shared_ptr(FeaturesAPI_Revolution)
@@ -242,6 +243,7 @@
 %include "FeaturesAPI_PointCloudOnFace.h"
 %include "FeaturesAPI_PointCoordinates.h"
 %include "FeaturesAPI_Recover.h"
+%include "FeaturesAPI_RemoveExtraEdges.h"
 %include "FeaturesAPI_RemoveResults.h"
 %include "FeaturesAPI_RemoveSubShapes.h"
 %include "FeaturesAPI_Revolution.h"

@@ -54,6 +54,7 @@ SET(PROJECT_HEADERS
   FeaturesAPI_Symmetry.h
   FeaturesAPI_Translation.h
   FeaturesAPI_Union.h
+  FeaturesAPI_RemoveExtraEdges.h
   FeaturesAPI_FusionFaces.h
   FeaturesAPI_Copy.h
   FeaturesAPI_ImportResult.h
@@ -99,6 +100,7 @@ SET(PROJECT_SOURCES
   FeaturesAPI_Symmetry.cpp
   FeaturesAPI_Translation.cpp
   FeaturesAPI_Union.cpp
+  FeaturesAPI_RemoveExtraEdges.cpp
   FeaturesAPI_FusionFaces.cpp
   FeaturesAPI_Copy.cpp
   FeaturesAPI_ImportResult.cpp
