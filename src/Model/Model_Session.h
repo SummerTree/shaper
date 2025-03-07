@@ -66,7 +66,7 @@ class Model_Session : public ModelAPI_Session, public Events_Listener
   //! \param theFileName full name of the file to store
   //! \param theResults the result full file names that were stored by "save"
   //! \returns true if file was stored successfully
-  MODEL_EXPORT virtual bool save(const char* theFileName, std::list<std::string>& theResults);
+  MODEL_EXPORT virtual bool save(const char* theFileName, std::list<std::string>& theResults, bool doBackup=false);
 
   //! Closes all documents
   MODEL_EXPORT virtual void closeAll();

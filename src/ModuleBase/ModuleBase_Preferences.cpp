@@ -220,6 +220,34 @@ void ModuleBase_Preferences::createGeneralTab(ModuleBase_IPrefMgr* thePref, int 
                                   "part_visualization_study");
   thePref->setItemProperty("strings", visuItemList, visuId);
   thePref->setItemProperty("indexes", visuIdList, visuId);
+
+  // Group related to automatic backup
+  group = thePref->addPreference(QObject::tr("Automatically backup a study"), generalTab,
+                                 SUIT_PreferenceMgr::Auto, QString(), QString());
+
+  thePref->addPreference(QObject::tr("Enable automatic backup"), group, SUIT_PreferenceMgr::Bool,
+                         ModuleBase_Preferences::GENERAL_SECTION, "use_auto_backup");
+
+  int delay = thePref->addPreference(QObject::tr("Backup Interval" ), group, SUIT_PreferenceMgr::IntSpin,
+                                     ModuleBase_Preferences::GENERAL_SECTION, "backup_interval" );
+  thePref->setItemProperty( "min", 5, delay );
+  thePref->setItemProperty( "max", 1440, delay );
+  thePref->setItemProperty( "suffix", " min", delay );
+
+  int folderPref = thePref->addPreference(QObject::tr("Backup Folder"), group, SUIT_PreferenceMgr::Directory,
+                                          ModuleBase_Preferences::GENERAL_SECTION, "backup_folder");
+  thePref->setItemProperty( "mode", Qtx::PT_Directory, folderPref );
+
+  visuItemList.clear();
+  visuItemList << QObject::tr("Store last backup only")
+               << QObject::tr("Store full backup history");
+  visuIdList.clear();
+  visuIdList << 0 << 1;
+  visuId = thePref->addPreference(QObject::tr("Backup Storage"), group, SUIT_PreferenceMgr::Selector,
+                                  ModuleBase_Preferences::GENERAL_SECTION,
+                                  "auto_backup_storage");
+  thePref->setItemProperty("strings", visuItemList, visuId);
+  thePref->setItemProperty("indexes", visuIdList, visuId);
 }
 
 void ModuleBase_Preferences::updateSketchTab(ModuleBase_IPrefMgr* thePref, int thePageId)

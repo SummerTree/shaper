@@ -215,7 +215,8 @@ XGUI_Workshop::XGUI_Workshop(XGUI_SalomeConnector* theConnector)
       myDisplayer(0),
       mySalomeConnector(theConnector),
       //myViewerSelMode(TopAbs_FACE),
-      myInspectionPanel(0)
+      myInspectionPanel(0),
+      myDoBackup(false)
 {
   mySelector = new XGUI_SelectionMgr(this);
   myModuleConnector = new XGUI_ModuleConnector(this);
@@ -699,6 +700,24 @@ void XGUI_Workshop::showHelpPage(const QString& thePage) const
       QDesktopServices::openUrl(aUrl);
 #endif
     }
+  }
+}
+
+
+//******************************************************
+void XGUI_Workshop::setBackupState(bool doBackup/*=true*/)
+{
+  myDoBackup = doBackup;
+}
+
+
+//******************************************************
+void XGUI_Workshop::setWaitForBackup(bool theDoWait/*=true*/)
+{
+  myWaitForBackup = theDoWait;
+  if (theDoWait)
+  {
+    std::cout << "..... waiting for operation to finish to start backup." << std::endl;
   }
 }
 
@@ -1199,7 +1218,7 @@ void XGUI_Workshop::onTrihedronVisibilityChanged(bool theState)
 //******************************************************
 bool XGUI_Workshop::onSave()
 {
-  if(!myOperationMgr->abortAllOperations(XGUI_OperationMgr::XGUI_InformationMessage))
+  if(!myDoBackup && !myOperationMgr->abortAllOperations(XGUI_OperationMgr::XGUI_InformationMessage))
     return false;
   if (myCurrentFile.isEmpty()) {
     return onSaveAs();

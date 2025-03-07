@@ -37,6 +37,7 @@
 #include <QDir>
 #include <QTextStream>
 
+
 #define DUMP_NAME "shaper_dump.py"
 
 
@@ -83,7 +84,7 @@ bool SHAPERGUI_DataModel::open(const QString& thePath, CAM_Study* theStudy, QStr
   return true;
 }
 
-bool SHAPERGUI_DataModel::save(QStringList& theFiles)
+bool SHAPERGUI_DataModel::save(QStringList& theFiles, bool isBackup/*=false*/)
 {
   // Publish to study before saving of the data model
   myModule->publishToStudy();
@@ -120,10 +121,10 @@ bool SHAPERGUI_DataModel::save(QStringList& theFiles)
   return true;
 }
 
-bool SHAPERGUI_DataModel::saveAs(const QString& thePath, CAM_Study* theStudy, QStringList& theFiles)
+bool SHAPERGUI_DataModel::saveAs(const QString& thePath, CAM_Study* theStudy, QStringList& theFiles, bool isBackup/*=false*/)
 {
   myStudyPath = thePath;
-  return save(theFiles);
+  return save(theFiles, isBackup);
 }
 
 bool SHAPERGUI_DataModel::close()
