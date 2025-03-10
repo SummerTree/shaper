@@ -66,7 +66,7 @@ bool Model_Session::load(const char* theFileName)
   return aRes;
 }
 
-bool Model_Session::save(const char* theFileName, std::list<std::string>& theResults, bool doBackup=false)
+bool Model_Session::save(const char* theFileName, std::list<std::string>& theResults, bool doBackup)
 {
   return ROOT_DOC->save(theFileName, "root", theResults, doBackup);
 }

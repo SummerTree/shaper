@@ -130,7 +130,7 @@ XGUI_EXPORT QString generateName(const std::shared_ptr<ModuleBase_ViewerPrs>& th
 
 /// Creates and returns the temporary directory (with random name) using the environment variable
 /// path to location of such directories,
-std::string getTmpDirByEnv( const char* thePathEnv);
+XGUI_EXPORT std::string getTmpDirByEnv( const char* thePathEnv);
 
 /// Removes files and directory where they are located
 void removeTemporaryFiles(const std::string& theDirectory,
