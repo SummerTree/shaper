@@ -198,21 +198,38 @@ def testResultsVolumes(theFeature, theExpectedResultsVolumes, theNbSignificantDi
     assert math.fabs(aResultVolume - anExpectedResultVolume) <= aTolerance * math.fabs(anExpectedResultVolume), "Volume of result[{}]: {:0.27f}. Expected: {:0.27f}. The first {} significant digits not equal.".format(anIndex, aResultVolume, anExpectedResultVolume, theNbSignificantDigits)
 
 
-def testResultsAreas(theFeature, theExpectedResultsVolumes, theNbSignificantDigits = 7):
+def testResultsAreas(theFeature, theExpectedResultsAreas, theNbSignificantDigits = 7):
   """ Tests results areas.
   :param theFeature: feature to test.
   :param theExpectedResultsAreas: list of results areas. Size of list should be equal to len(theFeature.results()).
   """
   aTolerance = 10**(-theNbSignificantDigits)
   aNbResults = len(theFeature.results())
-  aListSize = len(theExpectedResultsVolumes)
+  aListSize = len(theExpectedResultsAreas)
   assert (aNbResults == aListSize), "Number of results: {} not equal to list size: {}.".format(aNbResults, aListSize)
   for anIndex in range(0, aNbResults):
-    aResultVolume = GeomAlgoAPI_ShapeTools.area(theFeature.results()[anIndex].resultSubShapePair()[0].shape())
-    aResultVolumeStr = "{:0.27f}".format(aResultVolume).lstrip("0").lstrip(".").lstrip("0")
-    anExpectedResultVolume = theExpectedResultsVolumes[anIndex]
-    anExpectedResultVolumeStr = "{:0.27f}".format(anExpectedResultVolume).lstrip("0").lstrip(".").lstrip("0")
-    assert math.fabs(aResultVolume - anExpectedResultVolume) <= aTolerance * math.fabs(anExpectedResultVolume), "Area of result[{}]: {:0.27f}. Expected: {:0.27f}. The first {} significant digits not equal.".format(anIndex, aResultVolume, anExpectedResultVolume, theNbSignificantDigits)
+    aResultArea = GeomAlgoAPI_ShapeTools.area(theFeature.results()[anIndex].resultSubShapePair()[0].shape())
+    aResultAreaStr = "{:0.27f}".format(aResultArea).lstrip("0").lstrip(".").lstrip("0")
+    anExpectedResultArea = theExpectedResultsAreas[anIndex]
+    anExpectedResultAreaStr = "{:0.27f}".format(anExpectedResultArea).lstrip("0").lstrip(".").lstrip("0")
+    assert math.fabs(aResultArea - anExpectedResultArea) <= aTolerance * math.fabs(anExpectedResultArea), "Area of result[{}]: {:0.27f}. Expected: {:0.27f}. The first {} significant digits not equal.".format(anIndex, aResultArea, anExpectedResultArea, theNbSignificantDigits)
+
+
+def testResultsLengths(theFeature, theExpectedResultsLengths, theNbSignificantDigits = 7):
+  """ Tests results lengths.
+  :param theFeature: feature to test.
+  :param theExpectedResultsLengths: list of results lengths. Size of list should be equal to len(theFeature.results()).
+  """
+  aTolerance = 10**(-theNbSignificantDigits)
+  aNbResults = len(theFeature.results())
+  aListSize = len(theExpectedResultsLengths)
+  assert (aNbResults == aListSize), "Number of results: {} not equal to list size: {}.".format(aNbResults, aListSize)
+  for anIndex in range(0, aNbResults):
+    aResultLength = GeomAlgoAPI_ShapeTools.length(theFeature.results()[anIndex].resultSubShapePair()[0].shape())
+    aResultLengthStr = "{:0.27f}".format(aResultLength).lstrip("0").lstrip(".").lstrip("0")
+    anExpectedResultLength = theExpectedResultsLengths[anIndex]
+    anExpectedResultLengthStr = "{:0.27f}".format(anExpectedResultLength).lstrip("0").lstrip(".").lstrip("0")
+    assert math.fabs(aResultLength - anExpectedResultLength) <= aTolerance * math.fabs(anExpectedResultLength), "Length of result[{}]: {:0.27f}. Expected: {:0.27f}. The first {} significant digits not equal.".format(anIndex, aResultLength, anExpectedResultLength, theNbSignificantDigits)
 
 
 def testHaveNamingFaces(theFeature, theModel, thePartDoc) :
