@@ -216,7 +216,8 @@ XGUI_Workshop::XGUI_Workshop(XGUI_SalomeConnector* theConnector)
       mySalomeConnector(theConnector),
       //myViewerSelMode(TopAbs_FACE),
       myInspectionPanel(0),
-      myDoBackup(false)
+      myDoBackup(false),
+      myWaitForBackup(false)
 {
   mySelector = new XGUI_SelectionMgr(this);
   myModuleConnector = new XGUI_ModuleConnector(this);
@@ -715,10 +716,12 @@ void XGUI_Workshop::setBackupState(bool doBackup/*=true*/)
 void XGUI_Workshop::setWaitForBackup(bool theDoWait/*=true*/)
 {
   myWaitForBackup = theDoWait;
+#ifdef _DEBUG
   if (theDoWait)
   {
-    std::cout << "..... waiting for operation to finish to start backup." << std::endl;
+    std::cout << "AUTO_BACKUP: waiting for operation to finish to start backup." << std::endl;
   }
+#endif
 }
 
 

@@ -338,8 +338,9 @@ private slots:
 
   /// Automatic backup
   QTimer*          myBackupTimer;      // The timer which triggers the automatic backup
-  std::future<int> myBackupResult;     // The result (succes/failure) of the backup
+  std::future<int> myBackupResult;     // The result (success/failure) of the backup
   QString          myBackupError;      // The backup error message in case of a failure
+  QString          myBackupFolder;     // The root folder where the backups are saved
   QString          myLastBackupFolder; // The folder of the last backup
 };
 

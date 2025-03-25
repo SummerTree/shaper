@@ -428,7 +428,7 @@ bool SHAPERGUI::activateModule(SUIT_Study* theStudy)
 
   SUIT_ResourceMgr* aResMgr = application()->resourceMgr();
   if ( aResMgr && application()->activeStudy() ) {
-    bool useBackup = aResMgr->booleanValue( ModuleBase_Preferences::GENERAL_SECTION, "use_auto_backup", true );
+    bool useBackup = aResMgr->booleanValue( ModuleBase_Preferences::GENERAL_SECTION, "use_auto_backup", false );
     if (useBackup) {
       int backupInterval = aResMgr->integerValue( ModuleBase_Preferences::GENERAL_SECTION, "backup_interval", 5 );
       if ( backupInterval > 0 ){
@@ -636,7 +636,6 @@ void SHAPERGUI::checkForWaitingBackup()
     {
       // If the user is still running an operation, e.g. we left the line creation
       // during sketch creation, do not yet create the backup
-      std::cout << "---> There are still active operations!" << std::endl;
       return;
     }
     // There are no more active operations => we can now do the backup
@@ -811,16 +810,19 @@ int SHAPERGUI::backupDoc()
 
     const QChar aSep = QDir::separator();
     SUIT_ResourceMgr* aResMgr = application()->resourceMgr();
-    if ( aResMgr && application()->activeStudy() ) {
-      aFolder = aResMgr->path( ModuleBase_Preferences::GENERAL_SECTION, "backup_folder", "" );
-    }
-    if (aFolder.isEmpty()) {
+    if (myBackupFolder.isEmpty()) {
+      if ( aResMgr && application()->activeStudy() ) {
+        myBackupFolder = aResMgr->path( ModuleBase_Preferences::GENERAL_SECTION, "backup_folder", "" );
+      }
+      if (myBackupFolder.isEmpty()) {
 #ifdef HAVE_SALOME
-      aFolder = XGUI_Tools::getTmpDirByEnv("SALOME_TMP_DIR").c_str();
+        myBackupFolder = XGUI_Tools::getTmpDirByEnv("SALOME_TMP_DIR").c_str();
 #else
-      aFolder = XGUI_Tools::getTmpDirByEnv("").c_str();
+        myBackupFolder = XGUI_Tools::getTmpDirByEnv("").c_str();
 #endif
+      }
     }
+    aFolder = myBackupFolder;
     if (aFolder.endsWith(aSep))
       aFolder = aFolder.remove(aFolder.length()-1,1);
 
@@ -954,7 +956,7 @@ void SHAPERGUI::onBackupDone(QString aFolder, int aResult)
   // Start the timer again
   if ( aResMgr && application()->activeStudy() )
   {
-    bool useBackup = aResMgr->booleanValue( ModuleBase_Preferences::GENERAL_SECTION, "use_auto_backup", true );
+    bool useBackup = aResMgr->booleanValue( ModuleBase_Preferences::GENERAL_SECTION, "use_auto_backup", false );
     if (useBackup)
     {
       int backupInterval = aResMgr->integerValue( ModuleBase_Preferences::GENERAL_SECTION, "backup_interval", 5 );
@@ -963,7 +965,11 @@ void SHAPERGUI::onBackupDone(QString aFolder, int aResult)
 #ifdef DBG_BACKUP_INTERVAL
         backupInterval = DBG_BACKUP_INTERVAL; // MBS: use shorter interval for debugging
 #endif
-        myBackupTimer->start( backupInterval*60000 );
+        // Only reactivate the timer if we are still in the SHAPER module
+        if (isActiveModule())
+        {
+          myBackupTimer->start( backupInterval*60000 );
+        }
       }
     }
   }
@@ -1448,10 +1454,9 @@ void SHAPERGUI::preferencesChanged(const QString& theSection, const QString& the
       aCreateMsg.send();
     }
     else if (theParam == "use_auto_backup") {
-      bool useBackup = ModuleBase_Preferences::resourceMgr()->booleanValue(
-        ModuleBase_Preferences::GENERAL_SECTION, "use_auto_backup", true);
+      bool useBackup = ModuleBase_Preferences::resourceMgr()->booleanValue(ModuleBase_Preferences::GENERAL_SECTION, "use_auto_backup", false);
       if (useBackup) {
-        int backupInterval = aResMgr->integerValue( ModuleBase_Preferences::GENERAL_SECTION, "backup_interval", 5 );
+        int backupInterval = ModuleBase_Preferences::resourceMgr()->integerValue( ModuleBase_Preferences::GENERAL_SECTION, "backup_interval", 5 );
         if ( backupInterval > 0 ){
 #ifdef DBG_BACKUP_INTERVAL
           backupInterval = DBG_BACKUP_INTERVAL; // MBS: use shorter interval for debugging
@@ -1465,6 +1470,9 @@ void SHAPERGUI::preferencesChanged(const QString& theSection, const QString& the
       else {
         myBackupTimer->stop();
       }
+    }
+    else if (theParam == "backup_folder") {
+      myBackupFolder = ModuleBase_Preferences::resourceMgr()->stringValue(ModuleBase_Preferences::GENERAL_SECTION, "backup_folder");
     }
   }
   else if (theSection == ModuleBase_Preferences::VIEWER_SECTION &&
@@ -1847,6 +1855,10 @@ void SHAPERGUI::addActionsToInfoGroup(QtxInfoPanel* theInfoPanel,
 
 void SHAPERGUI::updateInfoPanel()
 {
+  // Do not update the info panel if the backup is in progress
+  if (myWorkshop->backupState())
+    return;
+
   LightApp_Application* aApp = dynamic_cast<LightApp_Application*>(application());
   QtxInfoPanel* aInfoPanel = aApp->infoPanel();
   aInfoPanel->clear();

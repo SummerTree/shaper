@@ -28,6 +28,10 @@
     <parameter name="part_visualization_study" value="0"/>
     <parameter name="part_visualization_script" value="1"/>
     <parameter name="create_init_part" value="true"/>
+    <parameter name="use_auto_backup" value="false"/>
+    <parameter name="backup_interval" value="5"/>
+    <parameter name="backup_folder" value=""/>
+    <parameter name="auto_backup_storage" value="0"/>
   </section>
   <section name="Sketch">
     <!-- Sketch preferences -->

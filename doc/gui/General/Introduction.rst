@@ -467,9 +467,8 @@ SHAPER preferences contains the following tabs:
 - :ref:`general_preferences`;
 - :ref:`visualization_preferences`;
 - :ref:`plugins_preferences`;
-- :ref:`shortcuts_preferences`;
-- :ref:`windows_preferences`.
 - :ref:`sketch_preferences`.
+- :ref:`windows_preferences`.
 - :ref:`viewer_preferences`.
 
 General tab is activated by default when **Preferences** dialog box is opened in the active SHAPER module.
@@ -510,6 +509,25 @@ This tab defines behavior of Parts and displayed objects on creation or opening 
   - "Last item in each folder" - show only the last result in each folder of the part: Constructions, Results, Groups, Fields;
   - "All items" - show all shapes from each folder(**default value**);
   - "No visualization" - do not display any shape.
+
+- **Enable automatic backup** flag. If it is enabled, the active SHAPER study will be periodically saved into a backup folder.
+  By default, this option is disabled.
+
+- **Backup Interval** defines the time interval in minutes between two consecutive backups. The minimum value is 5 minutes.
+
+- **Backup Folder** defines the root folder where the backups are stored.
+  Each backup is always stored in a subfolder named by the current date and time ("yyyymmdd_hhmmss").
+  If no backup folder is given, the backup root folder will be either a subfolder of the path pointed to by SALOME_TMP_DIR,
+  or a subfolder of the tmp folder if the SALOME_TMP_DIR environment variable is not defined.
+  In both cases, the name of the subfolder consists of random numbers only.
+
+  **Example** (create backup on March 26, 2025 at 09:26:54):
+
+  - folder defined (= $HOME/backup):      $HOME/backup/20250326_092654  
+  - SALOME_TMP_DIR defined (= $HOME/tmp): $HOME/tmp/<random_number>/20250326_092654  
+  - no folder defined:                    /tmp/<random_number>/20250326_092654
+
+- **Backup Storage** defines whether to store the last backup only, or whether to store the full backup history below the root folder.
 
 .. _visualization_preferences:
 
@@ -589,35 +607,6 @@ Plugins tab defines folders where plugins and resources are located.
 
    **Find directory** dialog box
 
-
-.. _shortcuts_preferences:
-
-Shortcuts tab
-^^^^^^^^^^^^^
-
-Shortcuts tab defines shortcut keys for different operations.
-
-.. figure:: /images/shortcuts_preferences.png
-   :align: center
-
-   **Preferences**: Shortcuts tab
-
-- **Add parameter in parameters manager dialog** defines shortcut keys for adding parameter in parameters manager dialog box.
-
-.. _windows_preferences:
-
-Windows tab
-^^^^^^^^^^^
-
-Windows tab contains definitions for the module windows management.
-
-.. figure:: /images/windows_preferences.png
-   :align: center
-
-   **Preferences**: Windows tab
-
-- **Use HideFaces panel in operation** if the checkbox is checked then HideFaces panel will be launched automatically on launching an operation where using of this panel is considered.
-
 .. _sketch_preferences:
 
 Sketch tab
@@ -644,6 +633,20 @@ Sketch tab defines properties of coordinate planes shown for selection of sketch
     - Horizontal/Vertical automatic constraints (this last constraint will be removed);
     - Pair of arcs connected smoothly, which centers are coincident (Tangency between arcs will be removed);
 - **Notify automatic constraint substitution/remove** defines a message box to be shown to the user, if the conflicting constraints situation is automatically resolved.
+
+.. _windows_preferences:
+
+Windows tab
+^^^^^^^^^^^
+
+Windows tab contains definitions for the module windows management.
+
+.. figure:: /images/windows_preferences.png
+   :align: center
+
+   **Preferences**: Windows tab
+
+- **Use HideFaces panel in operation** if the checkbox is checked then HideFaces panel will be launched automatically on launching an operation where using of this panel is considered.
 
 .. _viewer_preferences:
 

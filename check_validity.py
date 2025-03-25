@@ -85,6 +85,9 @@ def checkHDF(logFile, hdfFile):
     sg.activateModule("Shaper")
 
     errCode = validateSession(logFile)
+  except Exception as ex:
+    errCode = 129
+    logFile.write(f"Exception caught: {ex}\n")
   except:
     errCode = 129
 
@@ -103,8 +106,12 @@ def checkPyScript(logFile, pyFile):
     exec(compile(open(pyFile, 'rb').read(), pyFile, 'exec'))
 
     errCode = validateSession(logFile)
+  except Exception as ex:
+    errCode = 130
+    logFile.write(f"Exception caught: {ex}\n")
   except:
     errCode = 130
+    logFile.write(f"Unknownd exception caught\n")
 
   return errCode
 
@@ -144,9 +151,12 @@ def validateBackup(fullName):
           f.write("{} Test - PASSED\n\n".format(ext.upper()))
         else:
           f.write("{} Test - FAILED\n\n".format(ext.upper()))
+      except Exception as ex:
+        errCode = 132
+        f.write(f"Exception caught: {ex}\n")
       except:
         errCode = 132
-        f.write("Exception caught\n")
+        f.write("Unknown exception caught\n")
   except:
     errCode = 133
 

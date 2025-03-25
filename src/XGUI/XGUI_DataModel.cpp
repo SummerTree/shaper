@@ -279,6 +279,10 @@ void XGUI_DataModel::clear()
 //******************************************************
 void XGUI_DataModel::rebuildDataTree()
 {
+  // Do not rebuild the OB tree, while the backup is in progress
+  if (myWorkshop && myWorkshop->backupState())
+    return;
+
   beginResetModel();
   endResetModel();
 }

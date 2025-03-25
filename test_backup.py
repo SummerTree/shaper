@@ -30,7 +30,9 @@ def checkFileInSubprocess(logFile, title, args):
   try:
     logFile.write(f"starting {title} process:\n")
     logFile.write("  cmd_line = '{}'\n".format(" ".join(args)))
-    proc = subprocess.Popen(args)
+    my_env = os.environ.copy()
+    my_env["QT_QPA_PLATFORM"] = "offscreen" # run SALOME in headless mode (=without GUI)
+    proc = subprocess.Popen(args, env=my_env)
     try:
       logFile.write(f"  start communication with {title}\n")
       proc.communicate(timeout = 500)
@@ -67,7 +69,7 @@ def checkBackups(backupFolder, baseName, checkScript):
       hdfFile = os.path.join(backupFolder, baseName+".hdf")
       logFile.write(f"  hdfFile      = {hdfFile}\n")
 
-      args = ["runSalome.py", "--modules", "SHAPER,SHAPERSTUDY", "--batch", "--splash", "0", checkScript, "args:" + hdfFile]
+      args = ["runSalome.py", "--modules", "GEOM,SHAPER,SHAPERSTUDY,SMESH", "--batch", "--splash", "0", checkScript, "args:" + hdfFile]
       errCode = checkFileInSubprocess(logFile, "SALOME", args)
       logFile.write(f"errCode = {errCode}\n")
 
