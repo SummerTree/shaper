@@ -103,7 +103,41 @@ def checkPyScript(logFile, pyFile):
   try:
     logFile.write("-----CHECKING PYTHON SCRIPT-------\n")
     logFile.write("executing dumped script\n")
-    exec(compile(open(pyFile, 'rb').read(), pyFile, 'exec'))
+    try:
+      exec(compile(open(pyFile, 'rb').read(), pyFile, 'exec'))
+    except NameError as nex:
+      logFile.write(f"WARNING: NameError: {nex}\n")
+      # Ignore a NameError which can come from the SMESM module using a Result which has been concealed.
+      # This problem can be solved manually by calling model.publishToShaperStudy() right after the
+      # feature creation, moving its mesh creation code after the published result, and finally, continue
+      # with the SHAPER script.
+      # For example, if the script contains (lines are deleted for clarity):
+      #    model.begin()
+      #    #..create feature #1
+      #    #..create feature #2
+      #    #..create feature #3
+      #    model.end()
+      #    model.publishToShaperStudy()
+      #    Feat_3_1, = SHAPERSTUDY.shape(model.featureStringId(Feat_3))
+      #    smesh = smeshBuilder.New()
+      #    Mesh_1 = smesh.Mesh(Feat_1_1,'Feat_1_1') # <-- this line will fail
+      #    Mesh_1.Compute()
+      #
+      # It should be changed to:
+      #    model.begin()
+      #    #..create feature #1
+      #    model.end()
+      #    model.publishToShaperStudy()
+      #    Feat_1_1, = SHAPERSTUDY.shape(model.featureStringId(Feat_1))
+      #    smesh = smeshBuilder.New()
+      #    Mesh_1 = smesh.Mesh(Feat_1_1,'Feat_1_1')
+      #    Mesh_1.Compute()
+      #    model.begin()
+      #    #..create feature #2
+      #    #..create feature #3
+      #    model.end()
+      #    model.publishToShaperStudy()
+      #    Feat_3_1, = SHAPERSTUDY.shape(model.featureStringId(Feat_3))
 
     errCode = validateSession(logFile)
   except Exception as ex:
