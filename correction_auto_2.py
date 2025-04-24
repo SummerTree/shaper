@@ -891,16 +891,16 @@ def main_routine(cpplint_output_file):
 		if huchk:
 			if previous_newline:
 				print("Replace line : \n'%s'\n with line \n'%s'\n O/N ? :"%(previous_oldline, previous_newline))
-				reponse = input()
-				if reponse in ['O', 'o']:
+				response = input()
+				if response in ['O', 'o']:
 					replace_line_no(ficpath, ficline-1, previous_oldline, previous_newline)	
 					print("Replacement done.")
 				else :
 					print("Replacement aborted.")
 
 				print("Replace line : \n'%s'\n with line \n'%s'\n O/N ? :"%(oldline, newline))
-				reponse = input()
-				if reponse in ['O', 'o']:
+				response = input()
+				if response in ['O', 'o']:
 					replace_line_no(ficpath, ficline, oldline, newline)	
 				print("Replacement done.")
 			else :

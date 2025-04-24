@@ -25,7 +25,7 @@ The property panel is shown below.
 Input fields:
 
 - **Face** contains face selected in 3D OCC viewer or object browser. 
-- **Vertex** contains optionnal vertex selected in 3D OCC viewer or object browser. 
+- **Vertex** contains optional vertex selected in 3D OCC viewer or object browser. 
 - **Create normal** check-box allow the creation of the normal (result and feature). 
 
 **TUI Command**:

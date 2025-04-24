@@ -160,7 +160,7 @@ private:
   void updateRefFeatureConstraints(const std::shared_ptr<ModelAPI_Result>& theFeatureBaseResult,
                                    const std::list<AttributePtr>& theRefsToFeature);
 
-  /// Make the base object is splitted by the point attributes
+  /// Make the base object split by the point attributes
   /// \param theSplitFeature a result split feature
   /// \param theBeforeFeature a feature between start point and the 1st point of split feature
   /// \param theAfterFeature a feature between last point of split feature and the end point
@@ -176,7 +176,7 @@ private:
                  std::set<std::shared_ptr<ModelAPI_Feature>>& theCreatedFeatures,
                  std::set<std::pair<AttributePtr, AttributePtr>>& theModifiedAttributes);
 
-  /// Make the base object is splitted by the point attributes
+  /// Make the base object split by the point attributes
   /// \param theSplitFeature a result split feature
   /// \param theBeforeFeature a feature between start point and the 1st point of split feature
   /// \param theAfterFeature a feature between last point of split feature and the end point
@@ -190,7 +190,7 @@ private:
                 std::set<std::shared_ptr<ModelAPI_Feature>>& theCreatedFeatures,
                 std::set<std::pair<AttributePtr, AttributePtr>>& theModifiedAttributes);
 
-  /// Make the base object is splitted by the point attributes
+  /// Make the base object split by the point attributes
   /// \param theSplitFeature a result split feature
   /// \param theBeforeFeature a feature between start point and the 1st point of split feature
   /// \param theAfterFeature a feature between last point of split feature and the end point
@@ -204,7 +204,7 @@ private:
                 std::set<std::shared_ptr<ModelAPI_Feature>>& theCreatedFeatures,
                 std::set<std::pair<AttributePtr, AttributePtr>>& theModifiedAttributes);
 
-  /// Make the base object is splitted by the point attributes
+  /// Make the base object split by the point attributes
   /// \param theSplitFeature a result split feature
   /// \param theBeforeFeature a feature between start point and the 1st point of split feature
   /// \param theAfterFeature a feature between last point of split feature and the end point
@@ -257,7 +257,7 @@ private:
                                     const std::shared_ptr<ModelAPI_Feature>& theFeature);
 
   /// Returns first attribute coincident to the first/second point of selected shape
-  /// \param isFirstAttribute true for getting the first atribute, false otherwise
+  /// \param isFirstAttribute true for getting the first attribute, false otherwise
   /// \return an attribute or NULL
   std::shared_ptr<GeomDataAPI_Point2D> getPointAttribute(const bool isFirstAttribute);
 

@@ -48,7 +48,7 @@ void Model_AttributeStringArray::setSize(const int theSize)
     }
   } else { // reset the old array
     if (theSize) {
-      if (theSize != myArray->Length()) { // old data is not keept, a new array is created
+      if (theSize != myArray->Length()) { // old data is not kept, a new array is created
         Handle(TColStd_HArray1OfExtendedString) aNewArray =
           new TColStd_HArray1OfExtendedString(0, theSize - 1);
         myArray->ChangeArray(aNewArray);

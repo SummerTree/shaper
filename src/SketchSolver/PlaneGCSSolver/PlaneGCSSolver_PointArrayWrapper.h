@@ -35,12 +35,12 @@ public:
   const PointWrapperPtr& value(const int theIndex) const
   { return myPoints[theIndex]; }
 
-  /// \breif Size of array
+  /// \brief Size of array
   int size() const { return (int)myPoints.size(); }
 
   /// \brief Return array of points
   const std::vector<PointWrapperPtr>& array() const { return myPoints; }
-  /// \breif Set points
+  /// \brief Set points
   void setArray(const std::vector<PointWrapperPtr>& thePoints) { myPoints = thePoints; }
 
   /// \brief Return type of current entity

@@ -86,7 +86,7 @@ class MODULEBASE_EXPORT ModuleBase_WidgetValidator
   virtual void restoreAttributeValue(const std::shared_ptr<ModelAPI_Attribute>& theAttribute,
                                      const bool theValid);
 
-  /// Checks the current attibute in all attribute validators
+  /// Checks the current attribute in all attribute validators
   /// \param theAttribute an attribute to be validated
   /// \return true if all validators return that the attribute is valid
   bool isValidAttribute(const std::shared_ptr<ModelAPI_Attribute>& theAttribute) const;

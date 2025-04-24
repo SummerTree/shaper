@@ -131,7 +131,7 @@ bool BuildPlugin_ValidatorBaseForWire::isValid(const std::shared_ptr<ModelAPI_Fe
   }
 
   if (theFeature->getKind() == BuildPlugin_Wire::ID()) {
-    /// remove objects of sub-type if ojects of correct type is in List,  in some cases :
+    /// remove objects of sub-type if objects of correct type is in List,  in some cases :
     /// Wire builder: wires and edges selected
     std::set<int> aRemove;
     for (int anIndex = 0; anIndex < aSelectionList->size(); ++anIndex) {
@@ -236,7 +236,7 @@ bool BuildPlugin_ValidatorBaseForFace::isValid(const std::shared_ptr<ModelAPI_Fe
   }
 
   if (theFeature->getKind() == BuildPlugin_Face::ID()) {
-    /// remove objects of sub-type if ojects of correct type is in List,  in some cases :
+    /// remove objects of sub-type if objects of correct type is in List,  in some cases :
     /// - Face builder: edges, faces and wires selected
     ///                 --> remove edges and wires
     std::set<int> aRemove;
@@ -415,7 +415,7 @@ bool BuildPlugin_ValidatorBaseForSolids::isValid(
   }
 
   if (theFeature->getKind() == BuildPlugin_Solid::ID()) {
-    /// remove objects of sub-type if ojects of correct type is in List,  in some cases :
+    /// remove objects of sub-type if objects of correct type is in List,  in some cases :
     /// Solid builder: faces and shapes shells or solids seleted
     ///                --> remove faces
 

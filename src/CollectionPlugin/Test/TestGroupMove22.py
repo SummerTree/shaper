@@ -55,7 +55,7 @@ model.do()
 Part_1_doc.moveFeature(Group_1.feature(), ExtrusionCut_1.feature())
 model.end()
 
-# check that there is a hole appeared in two solids: +4 faces (1 splitted planar, 3 faces of cylinder, divided by seam)
+# check that there is a hole appeared in two solids: +4 faces (1 split planar, 3 faces of cylinder, divided by seam)
 assert(len(Group_1.feature().results())==1)
 model.testNbSubShapes(Group_1, GeomAPI_Shape.FACE, [17])
 

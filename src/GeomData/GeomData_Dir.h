@@ -54,7 +54,7 @@ class GeomData_Dir : public GeomDataAPI_Dir
   /// Returns the coordinates of this attribute
   GEOMDATA_EXPORT virtual std::shared_ptr<GeomAPI_XYZ> xyz();
 
-  /// Returns \c ture if the direction is initialized
+  /// Returns \c true if the direction is initialized
   GEOMDATA_EXPORT virtual bool isInitialized();
 
   /// Resets attribute to default state.

@@ -34,7 +34,7 @@ class GeomAlgoAPI_Tube : public GeomAlgoAPI_MakeShape
   /// Creates a tube.
   /// \param theRMin The inside radius
   /// \param theRMax The outside radius
-  /// \param theZ The heigth
+  /// \param theZ The height
   GEOMALGOAPI_EXPORT GeomAlgoAPI_Tube(const double theRMin,
                                       const double theRMax,
                                       const double theZ);

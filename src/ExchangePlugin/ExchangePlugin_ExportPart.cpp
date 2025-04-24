@@ -39,7 +39,7 @@
 static void collectFeatures(DocumentPtr theDocument,
                             AttributeSelectionListPtr theSelected,
                             std::list<FeaturePtr>& theExport);
-// Obtain all constuction elements of the document.
+// Obtain all construction elements of the document.
 static void collectConstructions(DocumentPtr theDocument, std::list<FeaturePtr>& theExport);
 // Check features could be exported. The following features cannot be exported:
 // * non-construction result (Part) when exporting the PartSet;

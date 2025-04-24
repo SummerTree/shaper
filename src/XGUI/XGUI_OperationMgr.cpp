@@ -452,7 +452,7 @@ bool XGUI_OperationMgr::canStartOperation(const QString& theId, bool& isCommitte
         aCanStart = abortAllOperations();
       }
       else if (canStopOperation(aCurrentOp)) {
-        // the started operation is granted in the parrent operation,
+        // the started operation is granted in the parent operation,
         // e.g. current - Line in Sketch, started Circle
         stopOperation(aCurrentOp, isCommitted);
       } else {
@@ -520,7 +520,7 @@ void XGUI_OperationMgr::onBeforeOperationStarted()
   if (!aCurrentOperation)
     return;
 
-  /// Set current feature and remeber old current feature
+  /// Set current feature and remember old current feature
   ModuleBase_OperationFeature* aFOperation =
     dynamic_cast<ModuleBase_OperationFeature*>(aCurrentOperation);
   if (aFOperation) {
@@ -528,7 +528,7 @@ void XGUI_OperationMgr::onBeforeOperationStarted()
     DocumentPtr aDoc = aMgr->activeDocument();
     // the parameter of current feature should be false, we should use all feature, not only
     // visible in order to correctly save the previous feature of the nested operation, where the
-    // features can be not visible in the tree. The problem case is Edit sketch entitity(line)
+    // features can be not visible in the tree. The problem case is Edit sketch entity(line)
     // in the Sketch, created in ExtrusionCut operation. The entity disappears by commit.
     // When sketch entity operation started, the sketch should be cashed here as the current.
     // Otherwise(the flag is true), the ExtrusionCut is cashed, when commit happens, the sketch
@@ -556,7 +556,7 @@ void XGUI_OperationMgr::onBeforeOperationStarted()
              ModuleBase_Tools::objectName(aDoc->currentFeature(false))).toStdString().c_str());
 #endif
       // this is the only place where flushes must be called after setCurrentFeature for the
-      // current moment: after this the opertion is not finished, so, the ObjectBrowser
+      // current moment: after this the operation is not finished, so, the ObjectBrowser
       // state may be corrupted (issue #1457)
       static Events_Loop* aLoop = Events_Loop::loop();
       static Events_ID aCreateEvent = aLoop->eventByName(EVENT_OBJECT_CREATED);

@@ -70,7 +70,7 @@ public:
   /// \param theEventPos is position of mouse cursor.
   /// \param theX and \param theY are local coordinates on sketch plane.
   /// \param theSnap theX and theY are snapped to construction grid if both theSnap == true and snapping is enabled.
-  /// \param theHighlight If point is snapped, hightlight grid point.
+  /// \param theHighlight If point is snapped, highlight grid point.
   /// \param theAddOffset If true, serves as a remedy for odd crash during drawing of a line on a sketch.
   /// \returns true on success.
   static bool convertPointToLocal(

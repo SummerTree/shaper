@@ -100,7 +100,7 @@ private:
   std::list<CoincidentEntities>::iterator findGroupOfCoincidence(const EntityWrapperPtr& theEntity);
 
   /// \brief Add entity to group of coincidences
-  /// \reutrn \c true if the entity is added, thus the coincidence is new
+  /// \return \c true if the entity is added, indicating the coincidence is new
   bool addToGroupOfCoincidence(CoincidentEntities& theGroup, const EntityWrapperPtr& theEntity);
 
 private:

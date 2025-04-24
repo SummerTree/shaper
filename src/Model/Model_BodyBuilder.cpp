@@ -67,7 +67,7 @@
 //#include <TCollection_AsciiString.hxx>
 //#define DEB_IMPORT 1
 
-/// reference to the shape in external document: sting list attribute identifier
+/// reference to the shape in external document: string list attribute identifier
 static const Standard_GUID kEXTERNAL_SHAPE_REF("9aa5dd14-6d34-4a8d-8786-05842fd7bbbd");
 
 static const int INVALID_TAG            = -1;
@@ -343,7 +343,7 @@ void Model_BodyBuilder::storeModified(const GeomShapePtr& theOldShape,
     TDF_Label anOriginalLabel;
     TopTools_ListOfShape anOldList;
     if (!isShapeInTree(aData->shapeLab(), anAccess2, aShapeOld, anOriginalLabel)) {
-      // check this could be a compund by the whole feature selection
+      // check this could be a compound by the whole feature selection
       if (aShapeOld.ShapeType() == TopAbs_COMPOUND)  {
         for(TopoDS_Iterator aCompIter(aShapeOld); aCompIter.More(); aCompIter.Next()) {
           if (isShapeInTree(aData->shapeLab(), anAccess2, aCompIter.Value(), anOriginalLabel)) {

@@ -65,7 +65,7 @@ public:
   MODEL_EXPORT virtual Value value(
     const int theRow, const int theColumn, const int theTable = 0);
 
-  /// Returns the value in the format of string (usefull for the python connection)
+  /// Returns the value in the format of string (useful for the python connection)
   MODEL_EXPORT virtual std::string valueStr(
     const int theRow, const int theColumn, const int theTable = 0);
 

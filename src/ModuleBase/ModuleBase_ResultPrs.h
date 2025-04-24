@@ -62,7 +62,7 @@ public:
   Standard_EXPORT virtual void HilightSelected(const Handle(PrsMgr_PresentationManager3d)& thePM,
                                                const SelectMgr_SequenceOfOwner& theOwners);
 
-  //! Method which hilight an owner belonging to
+  //! Method which highlight an owner belonging to
   //! this selectable object  ( for fast presentation draw )
   Standard_EXPORT virtual void HilightOwnerWithColor(
                                         const Handle(PrsMgr_PresentationManager3d)& thePM,
@@ -86,7 +86,7 @@ public:
   Standard_EXPORT virtual void SetColor (const Quantity_Color& theColor);
 
   /// Change presentation to have given shape hidden.
-  /// It suports FACE type of the shape to be hidden.
+  /// It supports FACE type of the shape to be hidden.
   /// If presentation type is greater than FACE, the SHELL with be shown with the FACE hidden
   /// It is possible to hide more than one FACE by calling the method with given FACES
   /// Visual state of the face is controlled by the second parameter

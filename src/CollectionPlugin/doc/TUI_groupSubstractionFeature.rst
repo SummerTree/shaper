@@ -1,7 +1,7 @@
 
   .. _tui_create_group_substraction:
 
-Create Group Substraction
+Create Group Subtraction
 =========================
 
 .. literalinclude:: examples/group_substraction.py

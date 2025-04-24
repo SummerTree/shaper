@@ -484,7 +484,7 @@
                         "iconPath": "%SHAPER_ROOT_DIR%/share/salome/resources/shaper/icons/Collection/group_substraction.png",
                         "langDependentAssets": {
                             "en": {
-                                "name": "Group Substraction",
+                                "name": "Group Subtraction",
                                 "tooltip": "Exclude elements existing tool groups"
                             },
                             "fr": {

@@ -95,7 +95,7 @@ def checkTranslation(theObjects, theNbObjects, theDeltaX, theDeltaY):
              aDiffX = aPoint2.x() - aPoint1.x() - theDeltaX
              aDiffY = aPoint2.y() - aPoint1.y() - theDeltaY
              assert(aDiffX**2 + aDiffY**2 < 1.e-15)
-    # Check the number of copies is as planed
+    # Check the number of copies is as planned
     assert(anInd == theNbObjects-1)
 
 

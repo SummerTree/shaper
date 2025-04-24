@@ -37,7 +37,7 @@
 static const std::string THE_NEW_PART_STR("New Part");
 static const std::string THE_PART_SET_STR("PartSet");
 
-// Update names of imported features/results concurent with existing objects.
+// Update names of imported features/results concurrent with existing objects.
 static void correntNonUniqueNames(DocumentPtr theDocument, std::list<FeaturePtr>& theImported);
 // Find the document according to its name or create the new one.
 static DocumentPtr findDocument(DocumentPtr thePartSetDoc, const std::string& thePartName);

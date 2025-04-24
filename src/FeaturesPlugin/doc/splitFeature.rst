@@ -20,7 +20,7 @@ The following property panel will be opened:
 
    **Split operation**
 
-- **Main Objects** contains a list of objects selected in the Object Browser or in the Viewer, which will be cut and splitted by tool objects.
+- **Main Objects** contains a list of objects selected in the Object Browser or in the Viewer, which will be cut and split by tool objects.
 - **Tool Objects** contains a list of objects selected in the Object Browser or in the Viewer, which will cut and split the main objects. Construction planes may be selected too.
 - **Fuzzy Parameter** defines the additional tolerance value used to eliminate tiny results.
 - **See preview** button shows a result of the operation.

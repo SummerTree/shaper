@@ -43,7 +43,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(SketcherPrs_HVDirection, SketcherPrs_SymbolPrs)
 
-  /// Returns true if the constraint feature arguments are correcly filled to build AIS presentation
+  /// Returns true if the constraint feature arguments are correctly filled to build AIS presentation
   /// \param theConstraint a constraint feature
   /// \param thePlane a coordinate plane of current sketch
   /// \return boolean result value
@@ -58,9 +58,9 @@ protected:
       return myIsHorisontal ? "horisontal_deactivate.png" : "vertical_deactivate.png";
   }
 
-  /// Redefine this function in order to add additiona lines of constraint base
+  /// Redefine this function in order to add additional lines of constraint base
   /// \param thePrs a presentation
-  /// \param theColor a color of additiona lines
+  /// \param theColor a color of additional lines
   virtual void drawLines(const Handle(Prs3d_Presentation)& thePrs, Quantity_Color theColor) const;
 
   /// Update myPntArray according to presentation positions

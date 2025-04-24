@@ -64,7 +64,7 @@ public:
                            /** Base objects */,
               orientationMethod, BuildPlugin_Filling::METHOD_ID(),
                                  ModelAPI_AttributeString,
-                                 /** Method to keep edge orientaion */,
+                                 /** Method to keep edge orientation */,
               minDegree, BuildPlugin_Filling::MINIMAL_DEGREE_ID(),
                          ModelAPI_AttributeInteger,
                          /** Minimal degree */,

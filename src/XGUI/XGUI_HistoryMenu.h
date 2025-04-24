@@ -45,7 +45,7 @@ class XGUI_EXPORT XGUI_HistoryMenu : public QMenu
   virtual ~XGUI_HistoryMenu();
 
  signals:
-  /// Signal. Emited then n-th action is selected in stack
+  /// Signal. Emitted then n-th action is selected in stack
   void actionSelected(int);
 
  public slots:

@@ -66,7 +66,7 @@ Q_OBJECT
 
   //! Selects the owners in the context.
   //! \param theSelectedOwners a container of owners
-  /// \param isUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param isUpdateViewer the parameter whether the viewer should be updated immediately
   void setSelectedOwners(const SelectMgr_IndexedMapOfOwner& theSelectedOwners,
                          bool isUpdateViewer);
 
@@ -90,7 +90,7 @@ Q_OBJECT
   std::list<FeaturePtr> getSelectedFeatures();
 
 signals:
-  //! Emited when selection in a one of viewers was changed
+  //! Emitted when selection in a one of the viewers was changed
   void selectionChanged();
 
  public slots:

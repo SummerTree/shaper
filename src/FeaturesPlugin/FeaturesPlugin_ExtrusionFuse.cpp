@@ -90,7 +90,7 @@ void FeaturesPlugin_ExtrusionFuse::executeFuseThroughAll()
     }
   }
 
-  // Perform FeaturesPlugin_CompositeBoolean::makeBoolean() with new (cutted) tools
+  // Perform FeaturesPlugin_CompositeBoolean::makeBoolean() with new (cut) tools
   ListOfShape aBooleanObjects;
   ListOfMakeShape aBooleanMakeShapes;
   if (!makeBoolean(aNewTools, aBooleanObjects, aBooleanMakeShapes)) {

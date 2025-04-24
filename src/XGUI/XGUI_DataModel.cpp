@@ -478,7 +478,7 @@ bool XGUI_DataModel::dropMimeData(const QMimeData *theData, Qt::DropAction theAc
       aDropAfter = *aFeature;
     }
   }
-  // move after the composite feature memebers, if they are invisible (sub elements of sketch)
+  // move after the composite feature members, if they are invisible (sub elements of sketch)
   CompositeFeaturePtr aComposite = std::dynamic_pointer_cast<ModelAPI_CompositeFeature>(aDropAfter);
   if (aComposite.get())
   {

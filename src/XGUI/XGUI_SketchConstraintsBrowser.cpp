@@ -430,7 +430,7 @@ bool XGUI_SketchConstraintsBrowser::UpdateTree(const std::vector<std::pair<Featu
       QTreeWidgetItem* aSubElem = new QTreeWidgetItem(anElem);
       aSubElem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
       aSubElem->setText(Col_Constraint, QString::fromStdWString((*aStart).Feature->name()));
-      aSubElem->setData(Col_Constraint, Qt::UserRole + 1, (*aStart).Feature->boolean("ConstraintState")->value()); // Store state of constraints true - activated, false - supressed
+      aSubElem->setData(Col_Constraint, Qt::UserRole + 1, (*aStart).Feature->boolean("ConstraintState")->value()); // Store state of constraints true - activated, false - suppressed
 
       QString aPrimitives;
       aPrimitives = GetName(aFeatStruct.Attributes[0]);

@@ -17,7 +17,7 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-# Cheching for selection of the whole feature (Sketch) in PartSet from the Part
+# Checking for selection of the whole feature (Sketch) in PartSet from the Part
 
 from salome.shaper import model
 

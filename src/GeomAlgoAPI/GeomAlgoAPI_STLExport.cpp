@@ -82,7 +82,7 @@ bool STLExport(const std::string& theFileName,
   }
   catch( Standard_Failure )
   {
-    theError = "Exception catched in STlExport";
+    theError = "Exception caught in STlExport";
   }
   return false;
 }

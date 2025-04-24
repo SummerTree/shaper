@@ -920,7 +920,7 @@ void Model_Update::updateArguments(FeaturePtr theFeature) {
       std::dynamic_pointer_cast<ModelAPI_AttributeSelectionList>(*aRefsIter);
     // #19071 : avoid sending of update event in cycle
     bool aWasBlocked = theFeature->data()->blockSendAttributeUpdated(true);
-    // list to keep the shared pointers while update is blocked (in messages raw poiters are used)
+    // list to keep the shared pointers while update is blocked (in messages raw pointers are used)
     std::list<AttributeSelectionPtr> anAttrList;
     for(int a = aSel->size() - 1; a >= 0; a--) {
       std::shared_ptr<ModelAPI_AttributeSelection> aSelAttr =
@@ -1025,7 +1025,7 @@ void Model_Update::updateStability(void* theSender)
 {
   static ModelAPI_ValidatorsFactory* aFactory = ModelAPI_Session::get()->validators();
   if (theSender) {
-    bool added = false; // object may be was crated
+    bool added = false; // object may have been created
     ModelAPI_Object* aSender = static_cast<ModelAPI_Object*>(theSender);
     if (aSender && aSender->document()) {
       FeaturePtr aFeatureSender =

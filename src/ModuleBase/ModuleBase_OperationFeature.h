@@ -194,14 +194,14 @@ Q_OBJECT
    /// The operation feature to be handled
   FeaturePtr myFeature;
 
-  /// a list of hidden objects, whic are diplayed by operation start
+  /// a list of hidden objects, which are displayed by operation start
   /// and should be hidden by operation stop
   std::set<ObjectPtr> myVisualizedObjects;
 
   /// Editing feature flag
   bool myIsEditing;
 
-  /// State used only if the operation should not be commited
+  /// State used only if the operation should not be committed
   bool myNeedToBeAborted;
 
   /// List of pre-selected object

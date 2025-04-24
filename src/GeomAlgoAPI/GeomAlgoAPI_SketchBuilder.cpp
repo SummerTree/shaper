@@ -151,7 +151,7 @@ bool isFirst(const TopoDS_Shape& theFirst, const TopoDS_Shape& theSecond,
   } else {
     isFirst = !theAreaToIndex.IsBound(theFirst);
   }
-  // if faces are identical by curves names (circle splitted by line in seam-point), use parameters
+  // if faces are identical by curves names (circle split by line in seam-point), use parameters
   if (aGeomCompare) {
     GProp_GProps aGProps;
     BRepGProp::SurfaceProperties(theFirst, aGProps);

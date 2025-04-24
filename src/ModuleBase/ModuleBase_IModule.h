@@ -190,7 +190,7 @@ class MODULEBASE_EXPORT ModuleBase_IModule : public QObject
   //! Returns True if there are available Redos and there is not an active operation
   virtual bool canRedo() const;
 
-  /// Returns true if the action can be applyed to the object
+  /// Returns true if the action can be applied to the object
   /// \param theObject a checked object
   /// \param theActionId an identifier of action, to be found in the menu manager like "DELETE_CMD"
   /// \return the a boolean result
@@ -295,9 +295,9 @@ class MODULEBASE_EXPORT ModuleBase_IModule : public QObject
   //                                   AISObjectPtr thePrs,
   //                                   GeomCustomPrsPtr theCustomPrs) { return false; };
 
-  /// Update the object presentable properties such as color, lines width and other
-  /// If the object is result with the color attribute value set, it is used,
-  /// otherwise the customize is applyed to the object's feature if it is a custom prs
+  /// Update the object presentable properties such as color, line width and other
+  /// If the object is a result with the color attribute value set, it is used,
+  /// otherwise the customization is applied to the object's feature if it is a custom prs
   /// \param theObject an object instance
   /// \param theFlag a flag of level of customization, which means that only part of sub-elements
   /// should be updated(e.g. only highlighted elements)
@@ -365,7 +365,7 @@ class MODULEBASE_EXPORT ModuleBase_IModule : public QObject
   virtual void grantedOperationIds(ModuleBase_Operation* theOperation, QStringList& theIds) const;
 
   /// Connects or disconnects to the value changed signal of the property panel widgets
-  /// \param theWidget a property contol widget
+  /// \param theWidget a property control widget
   /// \param isToConnect a boolean value whether connect or disconnect
   virtual void connectToPropertyPanel(ModuleBase_ModelWidget* theWidget, const bool isToConnect) {};
 
@@ -430,7 +430,7 @@ public slots:
   virtual void onBeforeObjectErase(ObjectPtr theObject, AISObjectPtr theAIS) {}
 
   /// Called on transformation in current viewer
-  /// \param theTrsfType type of tranformation
+  /// \param theTrsfType type of transformation
   virtual void onViewTransformed(int theTrsfType = 2) {}
 
 protected slots:

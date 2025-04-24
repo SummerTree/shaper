@@ -44,7 +44,7 @@ public:
   /// \param Model_Application is the class name that is covered by the OCCT Handle
   DEFINE_STANDARD_RTTIEXT(Model_Application, TDocStd_Application)
 
-  //! Retuns the application: one per process
+  //! Returns the application: one per process
   MODEL_EXPORT static Handle(Model_Application) getApplication();
   //! Returns the document by the identifier
   //! \returns false of document is not yet created/not loaded

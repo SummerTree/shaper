@@ -35,7 +35,7 @@ class GeomAPI_Wire;
 class GeomAPI_WireExplorer : public GeomAPI_Interface
 {
 public:
-  /// Default constructor. Creates an empty explorer, becomes usefull after Init.
+  /// Default constructor. Creates an empty explorer, becomes useful after Init.
   GEOMAPI_EXPORT GeomAPI_WireExplorer();
 
   /** \brief Constructs an iterator on a wire.

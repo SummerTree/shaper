@@ -92,7 +92,7 @@ The property panel is shown below.
    - **Y(t) equation** define the expression of Y with t variable.
    - **Z(t) equation** define the expression of Z with t variable.
 
-- **Min t** define the minimun of t.
+- **Min t** define the minimum of t.
 
 - **Max t** define the maximum of t.
 

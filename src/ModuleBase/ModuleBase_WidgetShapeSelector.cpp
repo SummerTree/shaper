@@ -137,7 +137,7 @@ bool ModuleBase_WidgetShapeSelector::setSelection(QList<ModuleBase_ViewerPrsPtr>
   if (!theToValidate || isValidInFilters(aValue)) {
     isDone = setSelectionCustom(aValue);
     // updateObject - to update/redisplay feature
-    // it is commented in order to perfom it outside the method
+    // it is commented in order to perform it outside the method
     //updateObject(myFeature);
     // to storeValue()
     //emit valuesChanged();

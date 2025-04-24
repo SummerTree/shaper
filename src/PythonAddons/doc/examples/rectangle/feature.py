@@ -115,7 +115,7 @@ class SketchPlugin_Rectangle(model.Feature):
                 aRefAttrB = aCoincidence.refattr("ConstraintEntityB")
                 aRefAttrA.setAttr(aPrevLine.attribute("EndPoint"))
                 aRefAttrB.setAttr(aLine.attribute("StartPoint"))
-            # Flags which show horizontal or vertical constraint is build for correponding line
+            # Flags which show horizontal or vertical constraint is build for corresponding line
             self.__isHV = [False, False, False, False]
             # Update coordinates of created lines
             self.updateLines()

@@ -93,7 +93,7 @@ protected:
   void redisplayWithResults(std::shared_ptr<ModelAPI_Feature> theFeature,
     const ModelAPI_ExecState theState, bool theUpdateState = true);
 
-  /// On operation start/end/abort the "Just" fileds must be cleared and processed in the right way
+  /// On operation start/end/abort the "Just" fields must be cleared and processed in the right way
   //! \param theFlushRedisplay a boolean value if the redisplay signal should be flushed
   void processFeatures(const bool theFlushRedisplay = true);
 

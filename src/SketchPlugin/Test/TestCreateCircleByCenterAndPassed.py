@@ -108,7 +108,7 @@ aSession.finishOperation()
 verifyLastCircle(aSketchFeature, -25., -25., 25.)
 #=========================================================================
 # Edit the Circle
-# 1. check that changing the center of a circle does not affect radius and vise versa
+# 1. check that changing the center of a circle does not affect radius and vice versa
 # 2. also check that int is acceptable as well as a real
 #=========================================================================
 aSession.startOperation()

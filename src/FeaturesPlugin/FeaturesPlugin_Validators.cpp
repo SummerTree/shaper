@@ -1209,7 +1209,7 @@ bool FeaturesPlugin_ValidatorThicknessSelection::isValid(const AttributePtr& the
       return aBaseShape->isShell() || aBaseShape->isFace();
     }
 
-    // shoud be a solid
+    // should be a solid
     return aBaseShape->isSolid();
   }
 

@@ -556,7 +556,7 @@ void ModuleBase_PreferencesDlg::onDefault()
   // it will be filled with an empty value. It concernerned to plugin
   // config items, like visualization color. The main xml do not contains
   // default values for them. So, it is important to reset the config
-  // properties after reseting the resources preferences.
+  // properties after resetting the resources preferences.
   ModuleBase_Preferences::resetResourcePreferences(myPreferences);
   // reset plugin's resources. It fills the config resources with the default
   // values, stores result in the resource manager and retrieve the preferences

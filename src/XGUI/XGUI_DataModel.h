@@ -139,7 +139,7 @@ public:
   /// Converts the dragged items information into mime data format (to be encoded in dropMimeData)
   virtual QMimeData* mimeData(const QModelIndexList &indexes) const override;
 
-  /// Performs a drag and drop of Part feature operation when it is droped.
+  /// Performs a drag and drop of Part feature operation when it is dropped.
   virtual bool dropMimeData(const QMimeData *theData, Qt::DropAction theAction,
                             int theRow, int theColumn, const QModelIndex &theParent) override;
 

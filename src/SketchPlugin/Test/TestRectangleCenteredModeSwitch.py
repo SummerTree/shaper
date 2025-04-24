@@ -106,7 +106,7 @@ for i in range (0, aNbSubs):
     aFeature = objectToFeature(aSketchFeature.subFeature(i))
     name = aFeature.name()
     error = aFeature.error()
-    # Without fixing 44019 this script failes here for i = 0 with error:
+    # Without fixing 44019 this script fails here for i = 0 with error:
     # "AssertionError: The feature SketchLine_1 is in error: Start point is not selected"
     assert(aValidators.validate(aFeature)), "The feature {0} is in error: {1}".format(name, error)
 

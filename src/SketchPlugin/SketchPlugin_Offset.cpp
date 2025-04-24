@@ -434,7 +434,7 @@ void SketchPlugin_Offset::addToSketch(const ListOfMakeShape& theOffsetAlgos)
   AttributeIntArrayPtr anOffsetToBaseMap = intArray(ENTITY_C());
 
   // compare the list of selected edges and the previously stored,
-  // and store maping between them
+  // and store mapping between them
   std::map<ObjectPtr, std::list<ObjectPtr> > aMapExistent;
   std::list<ObjectPtr> anObjectsToRemove;
   std::list<ObjectPtr> aSelectedList = aSelectedRefList->list();
@@ -465,7 +465,7 @@ void SketchPlugin_Offset::addToSketch(const ListOfMakeShape& theOffsetAlgos)
   std::set<GeomShapePtr, GeomAPI_Shape::ComparatorWithOri> aProcessedOffsets;
   for (std::list<ObjectPtr>::iterator aSIt = aSelectedList.begin();
        aSIt != aSelectedList.end(); ++aSIt) {
-    // find an offseted edge
+    // find an offset edge
     FeaturePtr aBaseFeature = ModelAPI_Feature::feature(*aSIt);
     GeomShapePtr aBaseShape = aBaseFeature->lastResult()->shape();
     ListOfShape aNewShapes;
@@ -481,7 +481,7 @@ void SketchPlugin_Offset::addToSketch(const ListOfMakeShape& theOffsetAlgos)
     // store base feature
     setRefListValue(aBaseRefList, aBaseListSize, *aSIt, aBaseListIndex);
 
-    // create or update an offseted feature
+    // create or update an offset feature
     const std::list<ObjectPtr>& anImages = aMapExistent[*aSIt];
     std::list<ObjectPtr>::const_iterator anImgIt = anImages.begin();
     for (ListOfShape::iterator aNewIt = aNewShapes.begin(); aNewIt != aNewShapes.end(); ++aNewIt) {
@@ -491,7 +491,7 @@ void SketchPlugin_Offset::addToSketch(const ListOfMakeShape& theOffsetAlgos)
       updateExistentOrCreateNew(*aNewIt, aNewFeature, anObjectsToRemove);
       aProcessedOffsets.insert(*aNewIt);
 
-      // store an offseted feature
+      // store an offset feature
       setRefListValue(anOffsetRefList, anOffsetListSize, aNewFeature, anOffsetListIndex);
 
       anOffsetBaseBackRefs.push_back(aBaseListIndex);
@@ -512,7 +512,7 @@ void SketchPlugin_Offset::addToSketch(const ListOfMakeShape& theOffsetAlgos)
         updateExistentOrCreateNew(aCurEdge, aNewFeature, anObjectsToRemove);
         aProcessedOffsets.insert(aCurEdge);
 
-        // store an offseted feature
+        // store an offset feature
         setRefListValue(anOffsetRefList, anOffsetListSize, aNewFeature, anOffsetListIndex);
 
         anOffsetBaseBackRefs.push_back(-1);

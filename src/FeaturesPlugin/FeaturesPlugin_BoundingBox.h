@@ -43,42 +43,42 @@ public:
     return MY_OBJECT_ID;
   }
 
-  /// Attribute name for x coodinate.
+  /// Attribute name for x coordinate.
   inline static const std::string& X_MIN_COORD_ID()
   {
     static const std::string MY_X_MIN_COORD_ID("xmincoordinate");
     return MY_X_MIN_COORD_ID;
   }
 
-  /// Attribute name for y coodinate.
+  /// Attribute name for y coordinate.
   inline static const std::string& Y_MIN_COORD_ID()
   {
     static const std::string MY_Y_MIN_COORD_ID("ymincoordinate");
     return MY_Y_MIN_COORD_ID;
   }
 
-  /// Attribute name for z coodinate.
+  /// Attribute name for z coordinate.
   inline static const std::string& Z_MIN_COORD_ID()
   {
     static const std::string MY_Z_MIN_COORD_ID("zmincoordinate");
     return MY_Z_MIN_COORD_ID;
   }
 
-  /// Attribute name for x max coodinate.
+  /// Attribute name for x max coordinate.
   inline static const std::string& X_MAX_COORD_ID()
   {
     static const std::string MY_X_MAX_COORD_ID("xmaxcoordinate");
     return MY_X_MAX_COORD_ID;
   }
 
-  /// Attribute name for y max coodinate.
+  /// Attribute name for y max coordinate.
   inline static const std::string& Y_MAX_COORD_ID()
   {
     static const std::string MY_Y_MAX_COORD_ID("ymaxcoordinate");
     return MY_Y_MAX_COORD_ID;
   }
 
-  /// Attribute name for z max coodinate.
+  /// Attribute name for z max coordinate.
   inline static const std::string& Z_MAX_COORD_ID()
   {
     static const std::string MY_Z_MAX_COORD_ID("zmaxcoordinate");
@@ -115,7 +115,7 @@ public:
   /// \param theID identifier of changed attribute
   FEATURESPLUGIN_EXPORT virtual void attributeChanged(const std::string& theID);
 
-  /// Return Attribut values of result.
+  /// Return Attribute values of result.
   FEATURESPLUGIN_EXPORT virtual AttributePtr attributResultValues();
 
   /// Use plugin manager for features creation

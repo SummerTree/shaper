@@ -17,8 +17,8 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-# This test is based on the issue 1799: after faces are splitted and group is moved
-# down, the group-faces also must be splitted, the AttributeSelectionList should contain
+# This test is based on the issue 1799: after faces are split and group is moved
+# down, the group-faces also must be split, the AttributeSelectionList should contain
 # 4 times more faces.
 # The biggest part of the code is python dump of the updated_for_1799.hdf file from this issue.
 
@@ -128,7 +128,7 @@ selectionList = Group_1.feature().selectionList("group_list")
 assert(selectionList.size() == 4)
 aFactory = ModelAPI_Session.get().validators()
 assert(aFactory.validate(Group_1.feature()))
-# move group to the end: it must be recomputed, faces are splitted
+# move group to the end: it must be recomputed, faces are split
 Part_1_doc.moveFeature(Group_1.feature(), Partition_2.feature())
 model.end()
 

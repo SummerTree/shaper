@@ -86,7 +86,7 @@ class ModelAPI_Attribute
   /// ID of the attribute in Data
   MODELAPI_EXPORT const std::string& id() const;
 
-  /// Resets attribute to deafult state.
+  /// Resets attribute to default state.
   MODELAPI_EXPORT virtual void reset();
 
  protected:

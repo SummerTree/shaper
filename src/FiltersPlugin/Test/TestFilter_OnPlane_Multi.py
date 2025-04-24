@@ -81,7 +81,7 @@ SketchConstraintCoincidence_19 = Sketch_2.setCoincident(SketchLine_15.result(), 
 SketchConstraintCoincidence_20 = Sketch_2.setCoincident(SketchLine_13.result(), SketchLine_10.startPoint())
 model.do()
 ExtrusionCut_1 = model.addExtrusionCut(Part_1_doc, [model.selection("FACE", "Sketch_2/Face-SketchLine_16r-SketchLine_15r-SketchLine_14r-SketchLine_13r-SketchLine_12r-SketchLine_11r-SketchLine_10r-SketchLine_9r-SketchLine_8r-SketchLine_7r-SketchLine_6r-SketchLine_5r")], model.selection(), 0, 10, [model.selection("SOLID", "Extrusion_1_1")])
-# two smae filters with two planes each
+# two same filters with two planes each
 Filters = model.filters(Part_1_doc, [
   model.addFilter(name = "OnPlane", args = [model.selection("FACE", "ExtrusionCut_1_1/Generated_Face&Sketch_2/SketchLine_16"), model.selection("FACE", "ExtrusionCut_1_1/Generated_Face&Sketch_2/SketchLine_6")]),
   model.addFilter(name = "OnPlane", args = [model.selection("FACE", "ExtrusionCut_1_1/Generated_Face&Sketch_2/SketchLine_15"), model.selection("FACE", "ExtrusionCut_1_1/Generated_Face&Sketch_2/SketchLine_13")])])

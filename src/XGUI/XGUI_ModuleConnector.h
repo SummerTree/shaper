@@ -131,7 +131,7 @@ Q_OBJECT
   //! Returns workshop
   XGUI_Workshop* workshop() const { return myWorkshop; }
 
-  //! The methods applys current defined selection modes to given AIS presentation.
+  //! The methods applies current defined selection modes to given AIS presentation.
   //! The AIS presentation has to be already displayed. After activation viewer has to be updated
   //! \param theAIS the object which has to be activated
   virtual void applyCurrentSelectionModes(const AISObjectPtr& theAIS);

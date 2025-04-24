@@ -352,7 +352,7 @@ void PartSet_SketcherReentrantMgr::onNoMoreWidgets(const std::string& thePreviou
     return;
 
   // we should avoid processing of the signal about no more widgets attributes and
-  // do this after the restart operaion is finished if it was called
+  // do this after the restart operation is finished if it was called
   // onNoMoreWidgets depends on myIsFlagsBlocked and fill myNoMoreWidgetsAttribute
   // if it should be called after restart
   if (myIsFlagsBlocked) {
@@ -495,7 +495,7 @@ bool PartSet_SketcherReentrantMgr::startInternalEdit(const std::string& thePrevi
   bool isDone = false;
   /// this is workaround for ModuleBase_WidgetEditor, used in SALOME mode. Sometimes key enter
   /// event comes two times, so we should not start another internal edit operation
-  /// the Apply button becomes disabled becase the second additional internal feature is created
+  /// the Apply button becomes disabled because the second additional internal feature is created
   if (myIsInternalEditOperation)
     return true;
 
@@ -611,7 +611,7 @@ void PartSet_SketcherReentrantMgr::restartOperation()
       resetFlags();
 
       // we should avoid processing of the signal about no more widgets attributes and
-      // do this after the restart operaion is finished if it was called
+      // do this after the restart operation is finished if it was called
       // onNoMoreWidgets depends on myIsFlagsBlocked and fill myNoMoreWidgetsAttribute
       // if it should be called after restart
       if (!myNoMoreWidgetsAttribute.empty()) {

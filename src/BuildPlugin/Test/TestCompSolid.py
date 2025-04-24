@@ -122,7 +122,7 @@ def createCompSolidStepByStep(theSelection, theExpectedType):
     return CompSolid
 
 # =============================================================================
-# Test 1. Build compsolid cointaining 2 solids
+# Test 1. Build compsolid containing 2 solids
 # =============================================================================
 boundaries1 = [model.selection("FACE", "Face_1_1"),
                model.selection("SHELL", "Shell_1_1"),

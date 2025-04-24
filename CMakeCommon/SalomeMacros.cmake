@@ -393,7 +393,7 @@ MACRO(SALOME_FIND_PACKAGE englobPkg stdPkg mode)
     # Call the CMake FIND_PACKAGE() command:
     STRING(TOLOWER ${stdPkg} _pkg_lc)
     IF(("${mode}" STREQUAL "NO_MODULE") OR ("${mode}" STREQUAL "CONFIG"))
-      # Hope to find direclty a CMake config file, indicating the SALOME CMake file
+      # Hope to find directly a CMake config file, indicating the SALOME CMake file
       # paths (the command already looks in places like "share/cmake", etc ... by default)
       # Note the options NO_CMAKE_BUILDS_PATH, NO_CMAKE_PACKAGE_REGISTRY to avoid (under Windows)
       # looking into a previous CMake build done via a GUI, or into the Win registry.
@@ -535,11 +535,11 @@ MACRO(SALOME_FIND_PACKAGE_AND_DETECT_CONFLICTS pkg referenceVariable upCount)
     SET(SALOME${pkg_UC}_FOUND FALSE)
     IF(NOT Salome${pkg}_FIND_QUIETLY)
       IF(Salome${pkg}_FIND_REQUIRED)
-         MESSAGE(FATAL_ERROR "Package ${pkg} couldn't be found - did you set the corresponing root dir correctly? "
+         MESSAGE(FATAL_ERROR "Package ${pkg} couldn't be found - did you set the corresponding root dir correctly? "
          "It currently contains ${_envvar}=${${_envvar}}  "
          "Append -DSALOME_CMAKE_DEBUG=ON on the command line if you want to see the original CMake error.")
       ELSE()
-         MESSAGE(WARNING "Package ${pkg} couldn't be found - did you set the corresponing root dir correctly? "
+         MESSAGE(WARNING "Package ${pkg} couldn't be found - did you set the corresponding root dir correctly? "
          "It currently contains ${_envvar}=${${_envvar}}  "
          "Append -DSALOME_CMAKE_DEBUG=ON on the command line if you want to see the original CMake error.")
       ENDIF()
@@ -710,7 +710,7 @@ ENDMACRO(SALOME_ACCUMULATE_HEADERS)
 # accumulate environment variables, to be used later to run some command
 # in proper environment.
 #
-# 1. Each envrironment variable is stored in specific CMake variable
+# 1. Each environment variable is stored in specific CMake variable
 #    _${PROJECT_NAME}_EXTRA_ENV_<var>, where <var> is name of variable.
 # 2. Full list of environment variable names is stored in CMake variable
 #    _${PROJECT_NAME}_EXTRA_ENV.
@@ -776,12 +776,12 @@ ENDMACRO(SALOME_ACCUMULATE_ENVIRONMENT)
 #
 # ARGUMENTS:
 #   output [out] output command, e.g. for creation of target.
-#   script [in]  output environement script name
+#   script [in]  output environment script name
 #   cmd    [in]  input command, e.g. sphinx or python command.
 #   opts   [in]  options for input command (cmd).
 #
 # This macro is called when it's necessary to use given environment to run some command.
-# Macro generates environement script using previously created variables
+# Macro generates environment script using previously created variables
 # _${PROJECT_NAME}_EXTRA_ENV_<var>, where <var> is name of variable and
 # _${PROJECT_NAME}_EXTRA_ENV (see marco SALOME_ACCUMULATE_ENVIRONMENT);
 # and puts generated command in proper environment into <output> argument.
@@ -838,10 +838,10 @@ ENDMACRO(SALOME_GENERATE_ENVIRONMENT_SCRIPT)
 # USAGE: SALOME_GENERATE_TESTS_ENVIRONMENT(output)
 #
 # ARGUMENTS:
-#   output [out] output environement variable.
+#   output [out] output environment variable.
 #
 # This macro generates <output> variable to use given environment to run some tests.
-# Macro generates environement variable using previously created variables
+# Macro generates environment variable using previously created variables
 # _${PROJECT_NAME}_EXTRA_ENV_<var>, where <var> is name of variable and
 # _${PROJECT_NAME}_EXTRA_ENV (see marco SALOME_ACCUMULATE_ENVIRONMENT);
 # and puts this variable into <output> argument.
@@ -894,7 +894,7 @@ MACRO(SALOME_GENERATE_TESTS_ENVIRONMENT output)
  ENDIF()
  SET(_env "${PRNAME}_ROOT_DIR=${CMAKE_INSTALL_PREFIX}${sep}${_env}")
 
- # Creating follow string for Windows environement:
+ # Creating follow string for Windows environment:
  # "VAR1_ENV=1\;2\;3\;...\;...\;...;VAR2_ENV=1\;2\;3\;...\;...\;...;VAR3_ENV=1\;2\;3\;...\;...\;...;..."
  IF(WIN32)
    STRING(REGEX REPLACE "\\\\*;" "\\\\;" _env "${_env}")
@@ -993,9 +993,9 @@ ENDMACRO(SALOME_EXTRACT_VERSION)
 # This macro checks that swig files were generated.
 # It is requared under Windows platform, because sometimes under Windows platform
 # the genetarion of the swig wrappings tooks long time. And seems swig opens
-# file at the begining of generation process and after that swig
+# file at the beginning of generation process and after that swig
 # begins the generation of the content. In its turn Microsoft Visual Studio
-# tryes to compile file immediately after creation and as a result compilation breaks.
+# tries to compile file immediately after creation and as a result compilation breaks.
 MACRO(SWIG_CHECK_GENERATION swig_module)
   IF(WIN32)
     SET(SCRIPT
@@ -1021,7 +1021,7 @@ MACRO(SWIG_CHECK_GENERATION swig_module)
                         COMMENT "Waiting for swig wrappings !!!")
       ADD_DEPENDENCIES(${SWIG_MODULE_${swig_module}_REAL_NAME} ${SWIG_MODULE_${swig_module}_REAL_NAME}_ready)
     ELSE()
-       MESSAGE(FATAL "swig sources for targer ${swig_module} are not found !!!")
+       MESSAGE(FATAL "swig sources for target ${swig_module} are not found !!!")
      ENDIF()
   ENDIF()
 ENDMACRO(SWIG_CHECK_GENERATION)
@@ -1032,7 +1032,7 @@ ENDMACRO(SWIG_CHECK_GENERATION)
 # USAGE: SALOME_SETUP_VERSION(version [DEVELOPMENT])
 #
 # ARGUMENTS:
-#   version   [in] Version decriptor (string).
+#   version   [in] Version descriptor (string).
 #
 # OPTIONS:
 #   DEVELOPMENT    Forces setting development flag.

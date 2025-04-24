@@ -166,7 +166,7 @@ signals:
   void onValuesChanged();
 
   /// Changes the modified flag of the operation if the current state of the widget is modified
-  /// \param thePreviousState the previous vlaue state of the widget
+  /// \param thePreviousState the previous value state of the widget
   void onValueStateChanged(int thePreviousState);
 
  protected:
@@ -192,7 +192,7 @@ signals:
   /// Virtual method called after operation resume (see resume() method for more description)
   virtual void resumeOperation() {}
 
-  /// Verifies whether this operator can be commited.
+  /// Verifies whether this operator can be committed.
   /// \return Returns TRUE if current operation can be committed, e.g. all parameters are filled
   virtual bool canBeCommitted() const;
 

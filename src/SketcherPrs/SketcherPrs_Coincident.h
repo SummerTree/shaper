@@ -44,7 +44,7 @@ public:
   Standard_EXPORT SketcherPrs_Coincident(ModelAPI_Feature* theConstraint,
     SketchPlugin_Sketch* theSketch);
 
-  /// Returns true if the constraint feature arguments are correcly filled to build AIS presentation
+  /// Returns true if the constraint feature arguments are correctly filled to build AIS presentation
   /// \param theConstraint a constraint feature
   /// \param thePlane a coordinate plane of current sketch
   /// \return boolean result value

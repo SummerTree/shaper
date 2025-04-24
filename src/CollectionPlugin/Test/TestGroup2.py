@@ -17,7 +17,7 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-# Test that splitted edges in the group are still correct edges in the group
+# Test that split edges in the group are still correct edges in the group
 # Based on the CEA report mail 04.12.2018, page 4
 
 from SketchAPI import *

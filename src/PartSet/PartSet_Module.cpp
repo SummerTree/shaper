@@ -314,7 +314,7 @@ void PartSet_Module::createFeatures()
 void PartSet_Module::storeSelection()
 {
   // cash is used only to restore selection, so it should be filled in storeSelection and
-  // after applying immediatelly cleared in restoreSelection
+  // after applying immediately cleared in restoreSelection
   myCurrentSelection.clear();
   sketchMgr()->storeSelection(PartSet_SketcherMgr::ST_SelectType, myCurrentSelection);
 }
@@ -323,7 +323,7 @@ void PartSet_Module::storeSelection()
 void PartSet_Module::restoreSelection()
 {
   // cash is used only to restore selection, so it should be filled in storeSelection and
-  // after applying immediatelly cleared in restoreSelection
+  // after applying immediately cleared in restoreSelection
   sketchMgr()->restoreSelection(myCurrentSelection);
   myCurrentSelection.clear();
 }
@@ -862,7 +862,7 @@ void PartSet_Module::onSelectionChanged()
     return;
 
   bool isSketcherOp = false;
-  // An edit operation is enable only if the current opeation is the sketch operation
+  // An edit operation is enabled only if the current operation is the sketch operation
   if (mySketchMgr->activeSketch()) {
     if (PartSet_Tools::sketchPlane(mySketchMgr->activeSketch()))
       isSketcherOp = PartSet_SketcherMgr::isSketchOperation(aOperation);
@@ -1278,7 +1278,7 @@ void PartSet_Module::deactivateCustomPrs(const ModuleBase_CustomizeFlag& theFlag
 //      aCustomized = thePrs->setColor(aColor[0], aColor[1], aColor[2]);
 //    }
 //  }
-//  // customize dimentional constrains
+//  // customize dimensional constrains
 //  sketchMgr()->customisePresentation(anObject);
 //
 //  return aCustomized;

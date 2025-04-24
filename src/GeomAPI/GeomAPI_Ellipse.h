@@ -41,7 +41,7 @@ class GeomAPI_Ellipse : public GeomAPI_Interface
 {
 public:
 
-  /// \brief Constructs an epty ellipse
+  /// \brief Constructs an empty ellipse
   GEOMAPI_EXPORT GeomAPI_Ellipse() : GeomAPI_Interface() {}
 
   /** \brief Constructs an ellipse with major and minor radiuses,

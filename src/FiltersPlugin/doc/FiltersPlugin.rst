@@ -33,10 +33,10 @@ In this panel:
   
 If filter is implemented as "Multiple", several instances of this filter may be added in one selection. Otherwise the added filter is removed from the "Add new filter..." list.
 
-Each filter item can be deleted with help of |delete.icon| button. A filter can be reverced with help of toggle button |plus.icon|/|minus.icon|. Also a filter could have input fields in case
+Each filter item can be deleted with help of |delete.icon| button. A filter can be reversed with help of toggle button |plus.icon|/|minus.icon|. Also a filter could have input fields in case
 if the filter has arguments.
 
-- **Select** button traverces all objects of a current document and selects entities acceptable by currently defined set of filters. All selected entities will be shown in viewer 3d with
+- **Select** button traverses all objects of a current document and selects entities acceptable by currently defined set of filters. All selected entities will be shown in viewer 3d with
   blue semi-transparent color. Any modification in filters clears current selection.
 
 - **Number of selected objects** shows number currently selected entities.

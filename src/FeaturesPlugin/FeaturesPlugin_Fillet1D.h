@@ -103,7 +103,7 @@ public:
 
 private:
   /// Get the list of wires and fillet vertices
-  /// \retun \c false if errors occured
+  /// \return \c false if errors occurred
   bool baseShapes(ListOfShape& theWires, MapShapeSubs& theWireVertices);
 
   /// Run fillet operation and store result.

@@ -144,12 +144,12 @@ Q_OBJECT
 
   //! Set position of color scale
   // \param theX is X position relative to current view width
-  // \param theY is Y position relative to current view heigth
+  // \param theY is Y position relative to current view height
   virtual void setColorScalePosition(double theX, double theY);
 
   //! Set size of color scale
   // \param theW is width relative to current view width
-  // \param theh is height relative to current view heigth
+  // \param theh is height relative to current view height
   virtual void setColorScaleSize(double theW, double theH);
 
   //! Set range of color scale
@@ -161,7 +161,7 @@ Q_OBJECT
   // \param theNb is number of intervals
   virtual void setColorScaleIntervals(int theNb);
 
-  //! Set text heigth of color scale
+  //! Set text height of color scale
   // \param theH is number of intervals
   virtual void setColorScaleTextHeigth(int theH);
 

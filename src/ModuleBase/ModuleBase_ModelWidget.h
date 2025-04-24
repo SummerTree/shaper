@@ -61,7 +61,7 @@ class MODULEBASE_EXPORT ModuleBase_ModelWidget : public QWidget
 Q_OBJECT
  public:
    /// State of the widget
-   enum ValueState { Stored, /// modification is finished and applyed to the model
+   enum ValueState { Stored, /// modification is finished and applied to the model
                      ModifiedInPP, /// modification has not been finished and set to the model yet
                      ModifiedInViewer, /// modification performed by viewer events
                      Reset }; /// the value is reset
@@ -118,7 +118,7 @@ Q_OBJECT
   /// \return the boolean result
   bool isObligatory() const { return myIsObligatory; }
 
-  /// Returns true, if the widget value is enabled and might be modified manualy.
+  /// Returns true, if the widget value is enabled and might be modified manually.
   /// It returns false if the application preferences allow having disabled value
   /// and the internal state tells to disable
   /// \return the boolean result
@@ -296,7 +296,7 @@ Q_OBJECT
   /// Translate passed string with widget context()
   virtual QString translate(const std::string& theStr) const;
 
-  /// Emit focus in widget to set this control as active in propety panel
+  /// Emit focus in widget to set this control as active in property panel
   void emitFocusInWidget() { emit focusInWidget(this); }
 
   /// Finds model widget parent of the given sub widget
@@ -418,7 +418,7 @@ protected:
   //// Returns true if the event is processed. The default implementation is empty, returns false.
   virtual bool processDelete();
 
-  /// Returns true if envent is processed. It applyes workshop selection for the widget attribute.
+  /// Returns true if envent is processed. It applies workshop selection for the widget attribute.
   virtual bool processSelection();
 
   protected slots:

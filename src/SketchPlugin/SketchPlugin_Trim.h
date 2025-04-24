@@ -128,7 +128,7 @@ private:
   void removeReferencesToAttribute(const AttributePtr& theAttribute,
                   std::map<AttributePtr, std::list<AttributePtr> >& theBaseRefAttributes);
 
-  /// Make the base object is splitted by the point attributes
+  /// Make the base object split by the point attributes
   /// \param theBaseRefAttributes container of references to the attributes of base feature
   /// \param thePoints a list of points where coincidences will be build
   /// \param theModifiedAttributes a container of attribute on base
@@ -140,7 +140,7 @@ private:
                 std::set<std::shared_ptr<GeomDataAPI_Point2D> >& thePoints,
                 std::set<std::pair<AttributePtr, AttributePtr>>& theModifiedAttributes);
 
-  /// Make the base object is splitted by the point attributes
+  /// Make the base object split by the point attributes
   /// \param thePoints a list of points where coincidences will be build
   /// \return new line if it was created
   FeaturePtr trimArc(const std::shared_ptr<GeomAPI_Pnt2d>& theStartShapePoint,
@@ -149,7 +149,7 @@ private:
                std::set<std::shared_ptr<GeomDataAPI_Point2D> >& thePoints,
                std::set<std::pair<AttributePtr, AttributePtr>>& theModifiedAttributes);
 
-  /// Make the base object is splitted by the point attributes
+  /// Make the base object split by the point attributes
   /// \param thePoints a list of points where coincidences will be build
   /// \return new elliptic arc if it was created
   FeaturePtr trimEllipticArc(const std::shared_ptr<GeomAPI_Pnt2d>& theStartShapePoint,
@@ -158,7 +158,7 @@ private:
                std::set<std::shared_ptr<GeomDataAPI_Point2D> >& thePoints,
                std::set<std::pair<AttributePtr, AttributePtr>>& theModifiedAttributes);
 
-  /// Make the base object is splitted by the point attributes
+  /// Make the base object split by the point attributes
   /// \param thePoints a list of points where coincidences will be build
   FeaturePtr trimClosed(const std::shared_ptr<GeomAPI_Pnt2d>& theStartShapePoint,
                         const std::shared_ptr<GeomAPI_Pnt2d>& theLastShapePoint,

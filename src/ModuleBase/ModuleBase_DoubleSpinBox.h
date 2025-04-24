@@ -78,7 +78,7 @@ Q_OBJECT
   QString removeTrailingZeroes(const QString&) const;
 
  private:
-  // boolen flag whether the key event is emitted. The default value is false
+  // boolean flag whether the key event is emitted. The default value is false
   bool myIsEmitKeyPressEvent;
 
    /// Is clear flag

@@ -111,7 +111,7 @@ protected:
   /// Restore value from attribute data to the widget's control
   virtual bool restoreValueCustom();
 
-  /// Retunrs a list of possible shape types
+  /// Returns a list of possible shape types
   /// \return a list of shapes
   virtual QIntList shapeTypes() const;
 
@@ -241,7 +241,7 @@ private:
   /// Index of header section under editing
   int myEditIndex;
 
-  /// Stae of a table editing
+  /// State of a table editing
   bool myIsTabEdit;
 
   bool myActivation;

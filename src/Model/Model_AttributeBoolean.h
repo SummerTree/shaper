@@ -42,7 +42,7 @@ class Model_AttributeBoolean : public ModelAPI_AttributeBoolean
   MODEL_EXPORT virtual bool value();
 
  protected:
-  /// Initializes attibutes
+  /// Initializes attributes
   Model_AttributeBoolean(TDF_Label& theLabel);
 
   /// Reinitializes the internal state of the attribute (may be needed on undo/redo, abort, etc)

@@ -32,7 +32,7 @@ public:
   /// Constructor
   /// \param theParent the parent object
   /// \param theWorkshop a current workshop
-  /// \param theData the widget configuation. The attribute of the model widget is obtained from
+  /// \param theData the widget configuration. The attribute of the model widget is obtained from
   ModuleBase_WidgetPointInput(QWidget* theParent, ModuleBase_IWorkshop* theWorkshop,
     const Config_WidgetAPI* theData);
 
@@ -64,7 +64,7 @@ public:
     const bool theToValidate);
 
 protected:
-  /// Retunrs a list of possible shape types
+  /// Returns a list of possible shape types
   /// \return a list of shapes
   virtual QIntList shapeTypes() const;
 

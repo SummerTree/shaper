@@ -51,7 +51,7 @@ public:
   /// Constructor
   /// \param theParent the parent object
   /// \param theWorkshop a current workshop
-  /// \param theData the widget configuation. The attribute of the model widget is obtained from
+  /// \param theData the widget configuration. The attribute of the model widget is obtained from
   PartSet_WidgetBSplinePoints(QWidget* theParent, ModuleBase_IWorkshop* theWorkshop,
                               const Config_WidgetAPI* theData);
   /// Destructor
@@ -128,7 +128,7 @@ protected:
   void storeCurentValue();
 
   /// Restore cashed value in the model attribute
-  /// \return boolean state if the restored feature shoud be hidden
+  /// \return boolean state if the restored feature should be hidden
   bool restoreCurentValue();
 
   /// Fills the widget with default values

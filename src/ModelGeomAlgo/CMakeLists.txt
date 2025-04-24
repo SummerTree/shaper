@@ -58,7 +58,7 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/src/Config
 
 
 SET_SOURCE_FILES_PROPERTIES(ModelGeomAlgo.i PROPERTIES CPLUSPLUS ON)
-# "-includeall" is not needed: it starts to follow the standard inludes (like "string") without success
+# "-includeall" is not needed: it starts to follow the standard includes (like "string") without success
 # SET_SOURCE_FILES_PROPERTIES(ModelGeomAlgo.i PROPERTIES SWIG_FLAGS)
 SET_SOURCE_FILES_PROPERTIES(ModelGeomAlgo.i PROPERTIES SWIG_DEFINITIONS "-shadow")
 #SET_SOURCE_FILES_PROPERTIES(ModelGeomAlgoPYTHON_wrap.cxx PROPERTIES COMPILE_FLAGS "-D_WIN32")

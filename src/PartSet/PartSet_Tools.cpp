@@ -428,7 +428,7 @@ std::pair<bool, Bnd_Box> PartSet_Tools::getBBoxAtCS(const GeomAPI_Shape& theShap
     } // If Face.
   } // If theShape is GeomAPI_Pln.
 
-  { // TODO Fill aligned (oriented) bounding box instead of tranforming unaligned one.
+  { // TODO Fill aligned (oriented) bounding box instead of transforming unaligned one.
     double Xmin, Ymin, Zmin, Xmax, Ymax, Zmax = 0;
     const bool success = theShape.computeSize(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
     if (!success)

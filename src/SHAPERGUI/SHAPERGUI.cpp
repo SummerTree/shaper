@@ -920,7 +920,7 @@ void SHAPERGUI::onBackupDone(QString aFolder, int aResult)
     if (isOk && !myLastBackupFolder.isEmpty())
     {
       // Delete the previous backup folder
-      // To avoid deleting accidently an incorrect folder, check for
+      // To avoid deleting accidentally an incorrect folder, check for
       // the correct content. A backup folder should have 3-5 files:
       //  * <FileName>.hdf       - the study itself
       //  * <FileName>.py        - the python dump
@@ -928,7 +928,7 @@ void SHAPERGUI::onBackupDone(QString aFolder, int aResult)
       //  * <FileName>_valid.log - the output of the "check_validity.py" script
       QDir dir(myLastBackupFolder);
       QStringList files = dir.entryList(QDir::Files|QDir::Dirs|QDir::NoDotAndDotDot);
-      // I am afraid of accidently removing an entire folder tree, therefore check
+      // I am afraid of accidentally removing an entire folder tree, therefore check
       // if "dir" contains really the latest backups and nothing more
       if (!files.isEmpty() && files.length() <= 4)
       {
@@ -1477,7 +1477,7 @@ void SHAPERGUI::preferencesChanged(const QString& theSection, const QString& the
   }
   else if (theSection == ModuleBase_Preferences::VIEWER_SECTION &&
            theParam.startsWith("group_names_"))
-  { // one of the group names parameter changed, so, update the groups names vizualization
+  { // one of the group names parameter changed, so, update the groups names visualization
     myWorkshop->updateGroupsText();
     myWorkshop->displayer()->updateViewer();
   }

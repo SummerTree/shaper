@@ -123,7 +123,7 @@ void begin()
       DocumentPtr aPartDoc = aPartRes->partDoc();
       if (aPartDoc.get() && aPartDoc->size(ModelAPI_Feature::group()) == 0) // no features in part
       {
-        // remove the automtically created part
+        // remove the automatically created part
         aSession->startOperation("Delete automatic part");
         FeaturePtr aPartFeature = std::dynamic_pointer_cast<ModelAPI_Feature>(
           aSession->moduleDocument()->object(ModelAPI_Feature::group(), 0));

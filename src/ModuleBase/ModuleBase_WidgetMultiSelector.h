@@ -177,7 +177,7 @@ protected:
   /// \param theDone a state whether the selection is set
   virtual void updateOnSelectionChanged(const bool theDone);
 
-  /// Retunrs a list of possible shape types
+  /// Returns a list of possible shape types
   /// \return a list of shapes
   virtual QIntList shapeTypes() const;
 
@@ -211,7 +211,7 @@ protected:
   void convertIndicesToViewerSelection(std::set<int> theAttributeIds,
                             QList<std::shared_ptr<ModuleBase_ViewerPrs>>& theValues) const;
 
-  /// Iterates throgh the model attribute list and remove elements which do not present in the list
+  /// Iterates through the model attribute list and remove elements which do not present in the list
   /// \param theValues the wrapped selection values
   /// \return true if at least one object is removed
   virtual bool removeUnusedAttributeObjects(

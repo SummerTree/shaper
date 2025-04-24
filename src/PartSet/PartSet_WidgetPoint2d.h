@@ -62,7 +62,7 @@ Q_OBJECT
   /// Constructor
   /// \param theParent the parent object
   /// \param theWorkshop a current workshop
-  /// \param theData the widget configuation. The attribute of the model widget is obtained from
+  /// \param theData the widget configuration. The attribute of the model widget is obtained from
   PartSet_WidgetPoint2D(QWidget* theParent, ModuleBase_IWorkshop* theWorkshop,
                         const Config_WidgetAPI* theData);
   /// Destructor
@@ -179,7 +179,7 @@ protected:
   void storeCurentValue();
 
   /// Restore cashed value in the model attribute
-  /// \return boolean state if the restored feature shoud be hidden
+  /// \return boolean state if the restored feature should be hidden
   bool restoreCurentValue();
 
   /// Fills the widget with default values
@@ -208,7 +208,7 @@ protected:
   /// or store the control value to the feature
   /// The widget is not initialize the attribute value in order to avoid the
   /// incorrect visualization in Sketch. E.g. by a line creation, the line should not
-  /// be visualized immediatelly when the end point widget is activated.
+  /// be visualized immediately when the end point widget is activated.
   virtual void initializeValueByActivate();
 
  private:

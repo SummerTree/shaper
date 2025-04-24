@@ -12,7 +12,7 @@ Revolution object
 .. autoclass:: model.features.revolution.Revolution
    :members:
 
-Create an Revolution Bolean
+Create a Revolution Boolean
 ---------------------------
 
 .. autofunction:: model.addRevolutionCut
@@ -24,7 +24,7 @@ Revolution Boolean object
 .. autoclass:: model.features.revolution_boolean.RevolutionBoolean
    :members:
    
-Create an Revolution Sketch
+Create a Revolution Sketch
 ---------------------------
 
 .. autofunction:: model.addRevolutionSketch

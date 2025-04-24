@@ -53,7 +53,7 @@ void PlaneGCSSolver_UpdateCoincidence::update(const FeaturePtr& theFeature)
       theFeature->getKind() == SketchPlugin_ConstraintMiddle::ID() ||
       theFeature->getKind() == SketchPlugin_ConstraintCollinear::ID()) {
     myCoincident.clear();
-    // notify listeners and stop procesing
+    // notify listeners and stop processing
     std::list<SketchSolver_Constraint*>::iterator anIt = myObservers.begin();
     for (; anIt != myObservers.end(); ++anIt)
       (*anIt)->notify(theFeature, this);

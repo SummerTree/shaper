@@ -2036,7 +2036,7 @@ bool XGUI_Workshop::prepareForDisplay(const std::set<ObjectPtr>& theObjects) con
   if (facesPanel()->isEmpty())
     return true;
 
-  // generate container of objects taking into account sub elments of compsolid
+  // generate container of objects taking into account sub elements of compsolid
   std::set<ObjectPtr> anAllProcessedObjects;
   for (std::set<ObjectPtr>::const_iterator anObjectsIt = theObjects.begin();
     anObjectsIt != theObjects.end(); anObjectsIt++) {

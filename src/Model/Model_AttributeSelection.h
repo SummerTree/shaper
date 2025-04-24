@@ -144,7 +144,7 @@ public:
   /// Makes the current local selection becomes all sub-shapes with same base geometry.
   MODEL_EXPORT virtual void combineGeometrical();
 
-  /// Resets attribute to deafult state
+  /// Resets attribute to default state
   MODEL_EXPORT virtual void reset();
 
 protected:

@@ -331,7 +331,7 @@ void XGUI_PropertyPanel::activateNextWidget(ModuleBase_ModelWidget* theWidget,
   }
   // set focus to Ok/Cancel button in Property panel if there are no more active widgets
   // it should be performed before activateWidget(NULL) because it emits some signals which
-  // can be processed by moudule for example as to activate another widget with setting focus
+  // can be processed by module for example as to activate another widget with setting focus
   QWidget* aNewFocusWidget = 0;
   QToolButton* anOkBtn = findButton(PROP_PANEL_OK);
   if (anOkBtn->isEnabled())

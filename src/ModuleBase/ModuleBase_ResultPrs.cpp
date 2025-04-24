@@ -106,7 +106,7 @@ ModuleBase_ResultPrs::ModuleBase_ResultPrs(ResultPtr theResult)
   }
   Set(aShape);
 
-  // VSV: bos22744: The AutoHilight mode is swithced off because it produces different
+  // VSV: bos22744: The AutoHilight mode is switched off because it produces different
   // behaviour of selection for simple shape and compound. For example when selection mode
   // is Vertex the shape is selected by vertex, but compound is selected by whole shape
   //ResultBodyPtr aResOwner = ModelAPI_Tools::bodyOwner(myResult);

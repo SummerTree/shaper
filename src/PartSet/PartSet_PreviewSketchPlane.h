@@ -86,21 +86,21 @@ public:
 
   /*! \brief Updates CS (coordinate system), dimensions and accessories' configuration.
   Updates visibility of accessories - visibility preferences are also retrieved from theSketch data.
-  If sketch data contains unitialized grid steps, the method assigns default ones.
+  If sketch data contains uninitialized grid steps, the method assigns default ones.
   For rectangular grid default step is a fraction of corresponding dimension.
   \returns true, on success (if theSketch is valid). */
   bool setAllUsingSketch(std::shared_ptr<ModelAPI_CompositeFeature> theSketch);
 
   /*! \brief Call it, after any preference of grid, except grid type, is changed using methods of this instance.
   Updates grid configuration. Does not affect visibility of grid.
-  \returns true, if grid is successfuly configured. */
+  \returns true, if grid is successfully configured. */
   bool reconfigureGrid();
 
   /*! \brief Call it, after any preference of grid is changed in theSketch data directly.
   Updates grid configuration. Updates grid visibility - preference is also retrieved from theSketch data.
-  If sketch data contains unitialized grid steps, the method assigns default ones.
+  If sketch data contains uninitialized grid steps, the method assigns default ones.
   For rectangular grid default step is a fraction of corresponding dimension.
-  \returns true, if grid is successfuly configured. */
+  \returns true, if grid is successfully configured. */
   bool reconfigureGridUsingSketch(std::shared_ptr<ModelAPI_CompositeFeature> theSketch);
 
   /*! \returns true on success. */

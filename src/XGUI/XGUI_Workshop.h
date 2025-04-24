@@ -312,7 +312,7 @@ Q_OBJECT
   /// Has to be called in order to display objects with visibility status = true
   void synchronizeViewer();
 
-  /// Has to be called in order to display objects from a specifed group
+  /// Has to be called in order to display objects from a specified group
   /// with visibility status = true
   /// \param theDoc the document for objects synchronisation
   /// \param theUpdateViewer update viewer flag
@@ -331,7 +331,7 @@ Q_OBJECT
   /// \param isToConnect a boolean value whether connect or disconnect
   void connectToPropertyPanel(const bool isToConnect);
 
-  /// Returns defailt selection mode in 3d viewer
+  /// Returns default selection mode in 3d viewer
   QIntList viewerSelectionModes() const { return myViewerSelMode; }
 
   /// Highlights result objects in Object Browser according to
@@ -612,7 +612,7 @@ private:
   XGUI_ActiveControlMgr* myActiveControlMgr; ///< manager to have none or one active control
   XGUI_MenuMgr* myMenuMgr; ///< manager to build menu/tool bar using order defined in XML
   XGUI_SalomeConnector* mySalomeConnector; ///< connector to SALOME module interface
-  XGUI_ErrorDialog* myErrorDlg; ///< dialog to show information of occured error events
+  XGUI_ErrorDialog* myErrorDlg; ///< dialog to show information of occurred error events
   XGUI_ViewerProxy* myViewerProxy; ///< connector to SALOME viewer interface
   XGUI_ContextMenuMgr* myContextMenuMgr; ///< manager of context menu build
   XGUI_ModuleConnector* myModuleConnector; ///< implementation of ModuleBase_IWorkshop
@@ -621,7 +621,7 @@ private:
   QIntList myViewerSelMode; ///< selection modes set in the viewer
   Config_DataModelReader* myDataModelXMLReader; ///< XML reader of data model
   XGUI_InspectionPanel* myInspectionPanel; ///< container of feature attributes widgets
-  QTemporaryDir myTmpDir; ///< a direcory for uncompressed files
+  QTemporaryDir myTmpDir; ///< a directory for uncompressed files
   bool myDoBackup; ///< whether the current save was initiated by automatic backup
   bool myWaitForBackup; ///< whether to do a backup after current operation finishes
 };

@@ -55,7 +55,7 @@ bool SketcherPrs_Transformation::IsReadyToDisplay(ModelAPI_Feature* theConstrain
     return aReadyToDisplay;
 
   std::shared_ptr<ModelAPI_Data> aData = theConstraint->data();
-  // Get transformated objects list
+  // Get transformed objects list
   std::shared_ptr<ModelAPI_AttributeRefList> anAttrB =
     aData->reflist(SketchPlugin_Constraint::ENTITY_B());
   if (anAttrB.get() == NULL)
@@ -92,7 +92,7 @@ bool SketcherPrs_Transformation::updateIfReadyToDisplay(double theStep, bool wit
     return false;
 
   std::shared_ptr<ModelAPI_Data> aData = myConstraint->data();
-  // Get transformated objects list
+  // Get transformed objects list
   std::shared_ptr<ModelAPI_AttributeRefList> anAttrB =
     aData->reflist(SketchPlugin_Constraint::ENTITY_B());
 

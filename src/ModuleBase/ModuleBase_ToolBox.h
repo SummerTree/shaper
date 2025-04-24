@@ -69,7 +69,7 @@ public:
   static bool isOffToolBoxParent(ModuleBase_ModelWidget* theWidget);
 
 signals:
-  /// A signal which is emited on current item changed
+  /// A signal which is emitted on current item changed
   void currentChanged(int);
 
 private slots:

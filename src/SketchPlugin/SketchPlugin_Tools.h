@@ -128,7 +128,7 @@ void createAuxiliaryAxisOfEllipse(const FeaturePtr& theEllipseFeature,
                                   const std::string& theEndAttr);
 
 /// Creates passing point or tangent curve basing on the given attributes are initialized.
-/// \param[in]  theRefAttr       prefered attribute to be converted
+/// \param[in]  theRefAttr       preferred attribute to be converted
 /// \param[in]  theDefaultAttr   default attribute if theRefAttr is not initialized
 /// \param[out] theTangentCurve  tangent curve if theRefAttr refers to an edge
 /// \param[out] thePassingPoint  passing point if theRefAttr does not refer to an edge
@@ -189,7 +189,7 @@ namespace SketchPlugin_SegmentationTools
   /// Fulfill an internal containers by shapes obtained from the parameter object
   /// Shapes are results of Split/Trim operation by points coincident to shape of the object
   /// \param theOpFeture an operation feature (Split/Trim)
-  /// \param theObject a source object (will be splitted)
+  /// \param theObject a source object (will be split)
   void fillObjectShapes(
       SketchPlugin_Feature* theOpFeature,
       const ObjectPtr& theObject,

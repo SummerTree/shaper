@@ -96,7 +96,7 @@ void GeomAlgoAPI_Tube::buildTube()
   anOuterWireBuilder.Build();
   TopoDS_Wire anOuterWire(anOuterWireBuilder.Wire());
 
-  // Construct the face withe the outer wire
+  // Construct the face with the outer wire
   BRepBuilderAPI_MakeFace aFaceBuilder(anOuterWire);
   aFaceBuilder.Build();
   TopoDS_Face aFace(aFaceBuilder.Face());

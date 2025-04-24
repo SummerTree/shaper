@@ -567,7 +567,7 @@ void ExchangePlugin_ImportFeature::importXAO(const std::string& theFileName,
       if (isZero)
         aRowsToRemove.insert(aRow - 1); // -1 to make prepared for remove from SelectionList
     }
-    if (!aRowsToRemove.empty()) { // move usefull rows on bottom to the up of the tables
+    if (!aRowsToRemove.empty()) { // move useful rows on bottom to the up of the tables
       // number of rows passed during going through: the current rows will
       // be moved up for this value
       int aRemovedPassed = 0;

@@ -97,7 +97,7 @@ private:
   /// \return boolean value
   bool isCheckBoxFilled() const;
 
-  /// Creates controls for the given type if it was not perfomed yet
+  /// Creates controls for the given type if it was not performed yet
   /// \param theType a type to create whether check box or group box controls
   void createControl(const OptionType& theType);
 

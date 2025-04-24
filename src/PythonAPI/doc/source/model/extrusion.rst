@@ -39,7 +39,7 @@ Extrusion object
 .. autoclass:: model.features.extrusion.Extrusion
    :members:
 
-Create an Extrusion Bolean
+Create an Extrusion Boolean
 --------------------------
 
 .. autofunction:: model.addExtrusionCut

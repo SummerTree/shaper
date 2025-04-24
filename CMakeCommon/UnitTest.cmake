@@ -34,7 +34,7 @@
 # Where "TestUndoRedo.py" and "TestResultBody.py" are names
 # of python test scripts in the "./Test" directory.
 # This macro will add "Subproject_" as prefix and
-# remove ".py" for the test name automaticaly.
+# remove ".py" for the test name automatically.
 #
 # Start building of the "RUN_TESTS" project in the Visual studio
 # or run "make test" on linux stations to start the testing procedure.

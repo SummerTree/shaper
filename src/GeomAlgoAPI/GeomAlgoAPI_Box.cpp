@@ -189,7 +189,7 @@ void GeomAlgoAPI_Box::buildWithPoints()
 //=================================================================================================
 void GeomAlgoAPI_Box::buildWithPointAndDims()
 {
-  // Construct points from cordinates and dimensions to use the method with two points
+  // Construct points from coordinates and dimensions to use the method with two points
   myFirstPoint =
     std::shared_ptr<GeomAPI_Pnt>(new GeomAPI_Pnt(myOx - myDx, myOy - myDy, myOz - myDz));
   mySecondPoint =

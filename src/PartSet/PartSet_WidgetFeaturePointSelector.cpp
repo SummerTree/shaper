@@ -134,7 +134,7 @@ void PartSet_WidgetFeaturePointSelector::mouseMoved(ModuleBase_IViewWindow* theW
 void PartSet_WidgetFeaturePointSelector::mouseReleased(ModuleBase_IViewWindow* theWindow,
                                                        QMouseEvent* theEvent)
 {
-  // the contex menu release by the right button should not be processed by this widget
+  // the context menu release by the right button should not be processed by this widget
   if (theEvent->button() != Qt::LeftButton)
     return;
 

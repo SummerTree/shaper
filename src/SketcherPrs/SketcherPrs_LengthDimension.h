@@ -53,7 +53,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(SketcherPrs_LengthDimension, PrsDim_LengthDimension)
 
-  /// Returns true if the constraint feature arguments are correcly filled
+  /// Returns true if the constraint feature arguments are correctly filled
   /// to build AIS presentation
   /// \param theConstraint a constraint feature
   /// \param thePlane a coordinate plane of current sketch

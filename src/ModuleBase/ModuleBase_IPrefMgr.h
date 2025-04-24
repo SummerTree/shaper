@@ -44,7 +44,7 @@ public:
   * \param theLbl - label of the item
   * \param pId - id of container item
   * \param theType - type of the item
-  * \param theSection - resouce section name
+  * \param theSection - resource section name
   * \param theName - name of the resource
   * Returns Id of the ctreated item
   */

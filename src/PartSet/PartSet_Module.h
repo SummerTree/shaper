@@ -164,7 +164,7 @@ public:
   /// \return the boolean result
   virtual bool canRedo() const;
 
-  /// Returnas true if the action can be applyed to the object
+  /// Returnas true if the action can be applied to the object
   /// \param theObject a checked object
   /// \param theActionId an identifier of action, to be found in the menu manager like "DELETE_CMD"
   /// \return the a booean result
@@ -302,11 +302,11 @@ public:
 
   /// Update the object presentable properties such as color, lines width and other
   /// If the object is result with the color attribute value set, it is used,
-  /// otherwise the customize is applyed to the object's feature if it is a custom prs
+  /// otherwise the customize is applied to the object's feature if it is a custom prs
   /// \param theObject an object instance
   /// \param theFlag a flag of level of customization, which means that only part of sub-elements
   /// should be updated(e.g. only highlighted elements)
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be updated immediately
   /// \returns true if the object is modified
   virtual bool customizeFeature(ObjectPtr theObject, const ModuleBase_CustomizeFlag& theFlag,
                                 const bool theUpdateViewer);
@@ -414,7 +414,7 @@ public slots:
   virtual void onBeforeObjectErase(ObjectPtr theObject, AISObjectPtr theAIS);
 
   /// Called on transformation in current viewer
-  /// \param theTrsfType type of tranformation
+  /// \param theTrsfType type of transformation
   virtual void onViewTransformed(int theTrsfType = 2);
 
   /// Called on remove conflicting constraints
@@ -457,7 +457,7 @@ protected:
   virtual void registerValidators();
 
   /// Connects or disconnects to the value changed signal of the property panel widgets
-  /// \param theWidget a property contol widget
+  /// \param theWidget a property control widget
   /// \param isToConnect a boolean value whether connect or disconnect
   virtual void connectToPropertyPanel(ModuleBase_ModelWidget* theWidget, const bool isToConnect);
 

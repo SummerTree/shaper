@@ -33,7 +33,7 @@ class GeomAlgoAPI_PaveFiller : public GeomAlgoAPI_MakeShape
 {
 public:
   /// \brief Constructor.
-  /// \param[in] theListOfShape list of shape which should be splitted.
+  /// \param[in] theListOfShape list of shape which should be split.
   /// \param[in] theIsMakeCompSolids if true gather shapes with shared faces to compsolids.
   /// \param[in] theFuzzy additional tolerance value.
   ///            If the fuzzy value is below the minimum tolerance value (1.e-7), the

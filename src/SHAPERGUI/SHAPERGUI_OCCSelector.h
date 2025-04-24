@@ -38,10 +38,10 @@ class SHAPERGUI_EXPORT SHAPERGUI_OCCSelector : public LightApp_OCCSelector
   virtual ~SHAPERGUI_OCCSelector();
 
  protected:
-   /// Redifinition of virtual function
+   /// Redefinition of virtual function
   virtual void getSelection(SUIT_DataOwnerPtrList& theList) const;
 
-   /// Redifinition of virtual function
+   /// Redefinition of virtual function
   virtual void setSelection(const SUIT_DataOwnerPtrList& theList);
 };
 

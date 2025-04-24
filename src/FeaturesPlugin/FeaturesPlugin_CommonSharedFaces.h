@@ -37,16 +37,16 @@ public:
   /// Performs the algorithm and stores results it in the data structure.
   FEATURESPLUGIN_EXPORT virtual void execute(){};
 
-  /// Return Attribut values of result.
+  /// Return Attribute values of result.
   virtual AttributePtr attributObject() = 0;
 
-  /// Return Attribut values of result.
+  /// Return Attribute values of result.
   virtual AttributePtr attributListFaces() = 0;
 
-  /// Return Attribut values of result.
+  /// Return Attribute values of result.
   virtual AttributePtr attributNumberFaces() = 0;
 
-  /// Return Attribut values of IsCompute.
+  /// Return Attribute values of IsCompute.
   virtual AttributePtr attributIsCompute() = 0;
 
   protected:

@@ -4,7 +4,7 @@
 Fibre neutre
 ============
 
-FIbre neutre est une macro fonction qui ne peut pas être éditée après usage.
+Fibre neutre est une macro fonction qui ne peut pas être éditée après usage.
 Elle permet de créer les surfaces médianes à des solides minces, encore appelées fibres neutres (mid surfaces en anglais).
 
 Pour créer les fibres neutres d'un objet :

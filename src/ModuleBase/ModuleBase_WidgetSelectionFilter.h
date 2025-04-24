@@ -80,7 +80,7 @@ private:
 class ModuleBase_WidgetSelectionFilter;
 /**
 * \ingroup GUI
-* A widget which reperesents a one filter item in filters list
+* A widget which represents a one filter item in filters list
 * Also it includes filter GUI if it exists
 */
 class ModuleBase_FilterItem : public QWidget
@@ -96,7 +96,7 @@ public:
   /// Returns filter Id
   std::string filter() const { return myFilterID; }
 
-  /// Returns list of widgets which reperesent the current filter GUI
+  /// Returns list of widgets which represent the current filter GUI
   QList<ModuleBase_ModelWidget*> widgets() const {
     return myWidgets;
   }
@@ -126,7 +126,7 @@ private:
   /// Filters feature
   FiltersFeaturePtr mySelection;
 
-  /// Reverce button
+  /// Reverse button
   QToolButton* myRevBtn;
 
   /// A list of sub-widgets

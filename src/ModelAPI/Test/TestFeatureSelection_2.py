@@ -17,8 +17,8 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-# The test for correct selection of a whole feautre as argument of other feature: select all extrusions
-# produced from the scetch, then change the number of sketch contours, so, anytway all extrusions must
+# The test for correct selection of a whole feature as argument of other feature: select all extrusions
+# produced from the sketch, then change the number of sketch contours, so, anyway all extrusions must
 # still be selected in the Cut Boolean oepration
 
 from SketchAPI import *

@@ -133,7 +133,7 @@ private:
     Values& operator<< (const char* theStr);
     /// Adds point coordinates
     void addPoint(const char* theTitle, const GeomPointPtr& thePoint);
-    /// Adds directon coordinates
+    /// Adds direction coordinates
     void addDirection(const char* theTitle, const GeomDirPtr& thePoint);
     /// Adds named value
     void addNamedValue(const char* theName, const double theValue);

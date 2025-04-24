@@ -28,7 +28,7 @@ class GeomAPI_Dir;
 
 /** \class FeaturesPlugin_MultiTranslation
  *  \ingroup Plugins
- *  \brief Feature for movement objects along one or two axes an arbitary number of times,
+ *  \brief Feature for movement objects along one or two axes an arbitrary number of times,
  *         making a copy every time.
  */
 class FeaturesPlugin_MultiTranslation : public ModelAPI_Feature

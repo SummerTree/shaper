@@ -103,7 +103,7 @@ aStamps.setSize(1) # one step
 aStamps.setValue(0, 10)
 aTables = aField.tables("values")
 aTables.setType(2) # double
-aTables.setSize(1 + 3, 2, 1) # default row + number of selected, number of compoents, number of steps (tables)
+aTables.setSize(1 + 3, 2, 1) # default row + number of selected, number of components, number of steps (tables)
 aTables.setValue(20, 0, 0, 0) # value, index of selection, index of component, index of step
 aTables.setValue(35, 1, 0, 0)
 aTables.setValue(27, 2, 0, 0)
@@ -130,7 +130,7 @@ aStamps.setValue(0, 1)
 aStamps.setValue(1, 3)
 aTables = aField.tables("values")
 aTables.setType(3) # string
-aTables.setSize(1 + 1, 1, 2) # default row + number of selected, number of compoents, number of steps (tables)
+aTables.setSize(1 + 1, 1, 2) # default row + number of selected, number of components, number of steps (tables)
 aTables.setValue("-default-", 0, 0, 0) # value, index of selection, index of component, index of step
 aTables.setValue("-default-", 0, 0, 1)
 aTables.setValue("Face one", 1, 0, 0)
@@ -155,7 +155,7 @@ aStamps.setSize(1) # one step
 aStamps.setValue(0, 0)
 aTables = aField.tables("values")
 aTables.setType(1) # integer
-aTables.setSize(1 + 1, 1, 1) # default row + number of selected, number of compoents, number of steps (tables)
+aTables.setSize(1 + 1, 1, 1) # default row + number of selected, number of components, number of steps (tables)
 aTables.setValue(0, 0, 0, 0) # value, index of selection, index of component, index of step
 aTables.setValue(2, 1, 0, 0)
 aSession.finishOperation()
@@ -179,7 +179,7 @@ aStamps.setSize(1) # one step
 aStamps.setValue(0, 0)
 aTables = aField.tables("values")
 aTables.setType(0) # boolean
-aTables.setSize(1 + 1, 1, 1) # default row + number of selected, number of compoents, number of steps (tables)
+aTables.setSize(1 + 1, 1, 1) # default row + number of selected, number of components, number of steps (tables)
 aTables.setValue(True, 0, 0, 0) # value, index of selection, index of component, index of step
 aTables.setValue(False, 1, 0, 0)
 aSession.finishOperation()

@@ -17,7 +17,7 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-# Test that box partitioned is splitted: group with edge becomes 2 edges group,
+# Test that box partitioned is split: group with edge becomes 2 edges group,
 # group with not-touched vertex keeps this vertex.
 
 from salome.shaper import model

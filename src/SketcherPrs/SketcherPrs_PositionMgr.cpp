@@ -50,7 +50,7 @@ static SketcherPrs_PositionMgr* MyPosMgr = NULL;
 
 #define PI 3.1415926535897932
 
-// The class is implemented as a singlton
+// The class is implemented as a singleton
 SketcherPrs_PositionMgr* SketcherPrs_PositionMgr::get()
 {
   if (MyPosMgr == NULL)

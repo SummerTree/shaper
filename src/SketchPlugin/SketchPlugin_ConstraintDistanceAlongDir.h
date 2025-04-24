@@ -74,11 +74,11 @@ public:
   /// \param theID identifier of changed attribute
   SKETCHPLUGIN_EXPORT virtual void attributeChanged(const std::string& theID);
 
-  /// Set numeric value to atribute DISTANCE_VALUE_ID()
+  /// Set numeric value to attribute DISTANCE_VALUE_ID()
   /// \param theValue new set value
   void setNumericValue(const double theValue) override;
 
-  /// Get numeric value of atribute DISTANCE_VALUE_ID()
+  /// Get numeric value of attribute DISTANCE_VALUE_ID()
   inline double getNumericValue() override
   {
     return real(DISTANCE_VALUE_ID())? real(DISTANCE_VALUE_ID())->value(): std::numeric_limits<double>::lowest();

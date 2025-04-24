@@ -110,7 +110,7 @@ signals:
   /// \param theWidget the activated widget
   //void widgetActivated(ModuleBase_ModelWidget* theWidget);
 
-  /// Emited when there is no next widget
+  /// Emitted when there is no next widget
   /// \param thePreviousAttributeID an attribute key of the previous active widget
   void noMoreWidgets(const std::string& thePreviousAttributeID);
 

@@ -32,7 +32,7 @@
  * \brief API for the attribute that contains image inside.
  * Represented as the following OCCT attributes:
  *   TDataStd_ByteArray for the pixmap texture data,
- *   TDataStd_IntArray(2) for image dimensions (widht and height),
+ *   TDataStd_IntArray(2) for image dimensions (width and height),
  *   TDataStd_String for image format.
  */
 
@@ -62,7 +62,7 @@ class Model_AttributeImage : public ModelAPI_AttributeImage
   virtual void copyTo(std::shared_ptr<ModelAPI_AttributeImage> theTarget) const;
 
  protected:
-  /// Initializes attibutes
+  /// Initializes attributes
   Model_AttributeImage(TDF_Label& theLabel);
   /// Reinitializes the internal state of the attribute (may be needed on undo/redo, abort, etc)
   virtual void reinit();

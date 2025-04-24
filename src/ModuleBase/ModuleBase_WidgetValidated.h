@@ -57,7 +57,7 @@ class MODULEBASE_EXPORT ModuleBase_WidgetValidated : public ModuleBase_ModelWidg
   /// Constructor
   /// \param theParent the parent object
   /// \param theWorkshop a reference to workshop
-  /// \param theData the widget configuation. The attribute of the model widget is obtained from
+  /// \param theData the widget configuration. The attribute of the model widget is obtained from
   ModuleBase_WidgetValidated(QWidget* theParent,
                              ModuleBase_IWorkshop* theWorkshop,
                              const Config_WidgetAPI* theData);
@@ -90,7 +90,7 @@ class MODULEBASE_EXPORT ModuleBase_WidgetValidated : public ModuleBase_ModelWidg
   virtual void selectionFilters(QIntList& theModuleSelectionFilters,
                                 SelectMgr_ListOfFilter& theSelectionFilters);
 
-  /// Block the model flush of update and intialization of attribute
+  /// Block the model flush of update and initialization of attribute
   /// \param theAttribute an attribute of blocking
   /// \param theFeature a feature
   /// \param theToBlock flag whether the model is blocked or unblocked
@@ -106,7 +106,7 @@ class MODULEBASE_EXPORT ModuleBase_WidgetValidated : public ModuleBase_ModelWidg
                                     bool& isAttributeSetInitializedBlocked,
                                     bool& isAttributeSendUpdatedBlocked);
 
-  /// Checks the current attibute in all attribute validators
+  /// Checks the current attribute in all attribute validators
   /// \param theAttribute an attribute to be validated
   /// \return true if all validators return that the attribute is valid
   static bool isValidAttribute(const AttributePtr& theAttribute);
@@ -126,7 +126,7 @@ protected:
   bool isValidSelectionForAttribute(const std::shared_ptr<ModuleBase_ViewerPrs>& theValue,
                                     const AttributePtr& theAttribute);
 
-  /// Retunrs attribute, which should be validated. In default implementation,
+  /// Returns attribute, which should be validated. In default implementation,
   /// this is an attribute of ID
   /// \return an attribute
   virtual AttributePtr attribute() const;
@@ -158,7 +158,7 @@ protected:
   /// \return a list of presentations
   QList<std::shared_ptr<ModuleBase_ViewerPrs>> getFilteredSelected();
 
-  /// Block the model flush of update and intialization of attribute
+  /// Block the model flush of update and initialization of attribute
   /// \param theAttribute an attribute of blocking
   /// \param theToBlock flag whether the model is blocked or unblocked
   /// \param isFlushesActived out value if model is blocked, in value if model is unblocked

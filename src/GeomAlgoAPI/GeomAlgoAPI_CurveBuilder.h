@@ -54,7 +54,7 @@ class GeomAlgoAPI_CurveBuilder
                                                      const bool thePeriodic,
                                                      const double thePrecision);
 
-   /// \brief Reoder the list of points to get a polyline of minimal length
+   /// \brief Reorder the list of points to get a polyline of minimal length
    GEOMALGOAPI_EXPORT static void reorderPoints(std::list<GeomPointPtr>& thePoints);
 };
 

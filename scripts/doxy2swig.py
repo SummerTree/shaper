@@ -37,7 +37,7 @@ output will be written (the file will be clobbered).
 #   - option to include function definition / signature renamed to -f
 #   - formatting:
 #     + included function signatures slightly reformatted
-#     + option (-t) to turn off/on type information for funciton signatures
+#     + option (-t) to turn off/on type information for function signatures
 #     + lists (incl. nested and ordered)
 #     + attempt to produce docstrings that render nicely as markdown
 #     + translate code, emphasis, bold, linebreak, hruler, blockquote,
@@ -690,7 +690,7 @@ class Doxy2SWIG:
             for n in nodes:
                 self.parse(n)
 
-        # now explicitely handle possibly overloaded member functions.
+        # now explicitly handle possibly overloaded member functions.
         if kind in ['class', 'struct','file', 'namespace']:
             md_nodes = self.get_memberdef_nodes_and_signatures(node, kind)
             for sig in md_nodes:

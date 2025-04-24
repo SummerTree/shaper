@@ -78,7 +78,7 @@ public:
   ~XGUI_FacesPanel() {}
 
   /// Clear content of list widget
-  /// \param isToFlushRedisplay flag if redisplay should be flushed immediatelly
+  /// \param isToFlushRedisplay flag if redisplay should be flushed immediately
   virtual void reset(const bool isToFlushRedisplay);
 
   /// Returns whether faces panel contains elements
@@ -170,7 +170,7 @@ protected slots:
   /// Deletes element in list of items
   void onDeleteItem();
 
-  /// Upates hidden faces to be hidden or transparent
+  /// Updates hidden faces to be hidden or transparent
   void onTransparencyChanged();
 
   /// Closes faces panel restore all hidden faces by calling reset()

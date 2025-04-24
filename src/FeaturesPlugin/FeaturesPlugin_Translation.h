@@ -146,7 +146,7 @@ private:
   /// Calculate the translation using three dimensions X, Y and Z
   std::shared_ptr<GeomAPI_Trsf> translationByDimensions();
 
-  /// Calculate the translation usind two points
+  /// Calculate the translation using two points
   std::shared_ptr<GeomAPI_Trsf> translationByTwoPoints();
 
   /// Perform the translation

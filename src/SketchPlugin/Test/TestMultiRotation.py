@@ -103,7 +103,7 @@ def checkRotation(theObjects, theNbObjects, theCenterX, theCenterY, theAngle):
             aLen2 = math.hypot(aDirX2, aDirY2)
             aLocCosA = (aDirX1 * aDirX2 + aDirY1 * aDirY2) / aLen1 / aLen2
             assert(math.fabs(aLocCosA - cosA) < 1.e-10)
-    # Check the number of copies is as planed
+    # Check the number of copies is as planned
     assert(anInd == theNbObjects-1)
 
 

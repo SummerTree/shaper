@@ -834,7 +834,7 @@ void SketchPlugin_SegmentationTools::fillObjectShapes(
     // coincidences to the feature
     ModelGeomAlgo_Point2D::getPointsOfReference(aFeature, SketchPlugin_ConstraintCoincidence::ID(),
                          aRefAttributes, SketchPlugin_Point::ID(), SketchPlugin_Point::COORD_ID());
-    // layed on feature coincidences to divide it on several shapes
+    // laid on feature coincidences to divide it on several shapes
     std::shared_ptr<ModelAPI_Data> aData = aSketch->data();
     std::shared_ptr<GeomDataAPI_Point> aC = std::dynamic_pointer_cast<GeomDataAPI_Point>(
         aData->attribute(SketchPlugin_Sketch::ORIGIN_ID()));
@@ -965,7 +965,7 @@ AISObjectPtr SketchPlugin_SegmentationTools::getAISObject(
     double aWidth = SketchPlugin_SketchEntity::SKETCH_LINE_WIDTH();
     int aLineStyle = SketchPlugin_SketchEntity::SKETCH_LINE_STYLE();
     anAIS->setColor(aColor[0], aColor[1], aColor[2]);
-    // width when there is not base object should be extened in several points
+    // width when there is not base object should be extended in several points
     // in order to see this preview over highlight
     anAIS->setWidth(aWidth+4);
     anAIS->setLineStyle(aLineStyle);
@@ -1064,7 +1064,7 @@ FeaturePtr SketchPlugin_SegmentationTools::createArcFeature(
   aFeature = aSketch->addFeature(aTargetAttrs.myKind);
   // update fillet arc: make the arc correct for sure, so, it is not needed to process
   // the "attribute updated"
-  // by arc; moreover, it may cause cyclicity in hte mechanism of updater
+  // by arc; moreover, it may cause cyclicity in the mechanism of updater
   bool aWasBlocked = aFeature->data()->blockSendAttributeUpdated(true);
 
   GEOM_DATA_POINT2D(aFeature, aTargetAttrs.myCenter)->setValue(

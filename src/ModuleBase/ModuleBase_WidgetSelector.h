@@ -47,7 +47,7 @@ Q_OBJECT
   /// Constructor
   /// \param theParent the parent object
   /// \param theWorkshop instance of workshop interface
-  /// \param theData the widget configuation. The attribute of the model widget is obtained from
+  /// \param theData the widget configuration. The attribute of the model widget is obtained from
   ModuleBase_WidgetSelector(QWidget* theParent, ModuleBase_IWorkshop* theWorkshop,
                             const Config_WidgetAPI* theData);
 
@@ -95,11 +95,11 @@ protected:
   // NDS: has body is temporary
    virtual void updateFocus() {};
 
-  /// Retunrs a list of possible shape types
+  /// Returns a list of possible shape types
   /// \return a list of shapes
   QIntList getShapeTypes() const;
 
-  /// Retunrs a list of possible shape types
+  /// Returns a list of possible shape types
   /// \return a list of shapes
   virtual QIntList shapeTypes() const = 0;
 

@@ -150,7 +150,7 @@ bool canRemoveOrRename(QWidget* theParent, const std::set<FeaturePtr>& theFeatur
     bool aFoundPartSetObject = ModuleBase_Tools::hasModuleDocumentFeature(theFeatures);
     if (aFoundPartSetObject) {
       const char* aKeyStr = "Selected objects can be used in Part documents which are not loaded: "
-                            "%1. Whould you like to continue?";
+                            "%1. Would you like to continue?";
       QMessageBox::StandardButton aRes = QMessageBox::warning(theParent, QObject::tr("Warning"),
                QObject::tr(aKeyStr).arg(QString::fromStdWString(aNotActivatedNames)),
                QMessageBox::No | QMessageBox::Yes, QMessageBox::No);

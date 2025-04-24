@@ -146,14 +146,14 @@ bool NExplodeTools::CompareShapes::operator() (const GeomShapePtr& lhs, const Ge
           if (value1 - value2 >= tol) {
             exchange = Standard_True;
           }
-          else { // compare adresses if shapes are geometrically equal
+          else { // compare addresses if shapes are geometrically equal
             exchange = lhs->impl<TopoDS_Shape>().TShape().get() >
                        rhs->impl<TopoDS_Shape>().TShape().get();
           }
         }
       }
     }
-    else { // compare adresses if shapes are geometrically equal
+    else { // compare addresses if shapes are geometrically equal
       exchange = lhs->impl<TopoDS_Shape>().TShape().get() >
                  rhs->impl<TopoDS_Shape>().TShape().get();
      }

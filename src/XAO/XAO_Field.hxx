@@ -162,7 +162,7 @@ namespace XAO
 
         /**
          * Adds a new step of the same type than the field.
-         * @param number the numer of the step.
+         * @param number the number of the step.
          * @return the new create step.
          */
         virtual Step* addNewStep(int number) = 0;

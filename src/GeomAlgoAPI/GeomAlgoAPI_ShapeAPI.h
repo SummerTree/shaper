@@ -60,7 +60,7 @@ public:
   /// \param theBasePoint The center of the lower base of the cylinder
   /// \param theEdge The axis of the cylinder
   /// \param theRadius The radius of the cylinder
-  /// \param theHeight The heigth of the cylinder
+  /// \param theHeight The height of the cylinder
   static std::shared_ptr<GeomAPI_Shape> makeCylinder(std::shared_ptr<GeomAPI_Pnt> theBasePoint,
                      std::shared_ptr<GeomAPI_Edge> theEdge, double theRadius, double theHeight);
 
@@ -68,7 +68,7 @@ public:
   /// \param theBasePoint The center of the lower base of the cylinder
   /// \param theEdge The axis of the cylinder
   /// \param theRadius The radius of the cylinder
-  /// \param theHeight The heigth of the cylinder
+  /// \param theHeight The height of the cylinder
   /// \param theAngle The angle defining the portion
   static std::shared_ptr<GeomAPI_Shape> makeCylinder(std::shared_ptr<GeomAPI_Pnt> theBasePoint,
                      std::shared_ptr<GeomAPI_Edge> theEdge, double theRadius, double theHeight,
@@ -76,12 +76,12 @@ public:
 
   /// Creates a cylinder using the origin, the OZ axis, a radius and a height.
   /// \param theRadius The radius of the cylinder
-  /// \param theHeight The heigth of the cylinder
+  /// \param theHeight The height of the cylinder
   static std::shared_ptr<GeomAPI_Shape> makeCylinder(double theRadius, double theHeight);
 
   /// Creates a portion of cylinder using the origin, the OZ axis, a radius, a height and an angle.
   /// \param theRadius The radius of the cylinder
-  /// \param theHeight The heigth of the cylinder
+  /// \param theHeight The height of the cylinder
   /// \param theAngle The angle defining the portion
   static std::shared_ptr<GeomAPI_Shape> makeCylinder(double theRadius, double theHeight,
                      double theAngle);

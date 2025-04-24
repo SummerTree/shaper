@@ -48,13 +48,13 @@ class ModelAPI_Object;
 class GeomAlgoAPI_ShapeTools
 {
 public:
-  /// \return the lenth of the edges of the current shape or 0.0 if it can be computed.
+  /// \return the length of the edges of the current shape or 0.0 if it cannot be computed.
   GEOMALGOAPI_EXPORT static double length(const std::shared_ptr<GeomAPI_Shape> theShape);
 
-  /// \return the total volume of the solids of the current shape or 0.0 if it can be computed.
+  /// \return the total volume of the solids of the current shape or 0.0 if it cannot be computed.
   GEOMALGOAPI_EXPORT static double volume(const std::shared_ptr<GeomAPI_Shape> theShape);
 
-  /// \return the total area of the faces of the current shape or 0.0 if it can be computed.
+  /// \return the total area of the faces of the current shape or 0.0 if it cannot be computed.
   GEOMALGOAPI_EXPORT static double area(const std::shared_ptr<GeomAPI_Shape> theShape);
 
   /// indicate if two faces are continuous
@@ -226,7 +226,7 @@ public:
   GEOMALGOAPI_EXPORT static ListOfShape getLowLevelSubShapes(const GeomShapePtr& theShape);
 
   /// \brief Calculate prism sizes to ensure that it passes through all objects
-  /// \param[in] theObjects objects to be joined/cutted by the prism
+  /// \param[in] theObjects objects to be joined/cut by the prism
   /// \param[in] theBaseShapes bases of the prism
   /// \param[in] theDir direction of the prism
   /// \param[out] theToSize upper offset of the prism

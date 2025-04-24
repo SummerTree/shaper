@@ -196,12 +196,12 @@ public:
   /// \return a boolean value
   static bool isExternalFeature(const FeaturePtr& theFeature);
 
-  /// Returns whether the current operation is a sketch distance - lenght, distance or radius
+  /// Returns whether the current operation is a sketch distance - length, distance or radius
   /// \param theOperation the operation
   /// \return a boolean value
   static bool isDistanceOperation(ModuleBase_Operation* theOperation);
 
-  /// Returns whether the feature kind is a sketch distance - lenght, distance or radius
+  /// Returns whether the feature kind is a sketch distance - length, distance or radius
   /// \param theKind the feature kind
   /// \return a boolean value
   static bool isDistanceKind(std::string& theKind);
@@ -222,11 +222,11 @@ public:
   /// Stops sketch operation
   void stopSketch(ModuleBase_Operation* );
 
-  /// Starts sketch operation, connects to the opeation property panel
+  /// Starts sketch operation, connects to the operation property panel
   /// \param theOperation a committed operation
   void startNestedSketch(ModuleBase_Operation* theOperation);
 
-  /// Stop sketch operation, disconnects from the opeation property panel
+  /// Stop sketch operation, disconnects from the operation property panel
   /// \param theOperation a stopped operation
   void stopNestedSketch(ModuleBase_Operation* theOperation);
 
@@ -245,8 +245,8 @@ public:
   void registerSelectionFilter(const ModuleBase_SelectionFilterType theFilterType,
                                const Handle(SelectMgr_Filter)& theFilter);
 
-  /// Commit the operation if it is possible. If the operation is dimention constraint,
-  /// it gives widget editor to input dimention value
+  /// Commit the operation if it is possible. If the operation is dimension constraint,
+  /// it gives widget editor to input dimension value
   /// \return true if the operation is stopped after activation
   bool operationActivatedByPreselection();
 
@@ -353,7 +353,7 @@ public:
   Handle(AIS_InteractiveObject) createPresentation(const ObjectPtr& theResult);
 
   /// Connects or disconnects to the value changed signal of the property panel widgets
-  /// \param theWidget a property contol widget
+  /// \param theWidget a property control widget
   /// \param isToConnect a boolean value whether connect or disconnect
   void connectToPropertyPanel(ModuleBase_ModelWidget* theWidget, const bool isToConnect);
 
@@ -361,7 +361,7 @@ public:
   /// \param thePreviousState the previous widget value state
   void widgetStateChanged(int thePreviousState);
 
-  /// If the current operation is a dimention one, the style of dimension visualization is send for
+  /// If the current operation is a dimension one, the style of dimension visualization is send for
   /// the current object
   /// \param theObject an object to be customized
   //void customisePresentation(const ObjectPtr& theObject);
@@ -445,10 +445,10 @@ private:
                                              ModuleBase_IWorkshop* theWorkshop,
                                              bool& theCanCommitOperation);
 
-  /// Applyes the current selection to the object in the workshop viewer
+  /// Applies the current selection to the object in the workshop viewer
   /// It includes the selection in all modes of activation, even local context - vertexes, edges
   /// It gets all results of the feature, find an AIS object in the viewer and takes all BRep
-  /// selection owners. If the owner is vertex, the corresponded attribute is seached in
+  /// selection owners. If the owner is vertex, the corresponded attribute is searched in
   /// the feature and if it is in the container of selected attributes, the owner is put in the
   /// out container. If the owner is edge and the current result is in the container of selected
   /// results, the owner is put in the out container.

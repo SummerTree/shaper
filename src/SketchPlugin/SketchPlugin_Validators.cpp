@@ -766,7 +766,7 @@ bool SketchPlugin_FilletVertexValidator::isValidVertex(const AttributePtr& theAt
   }
   aCoinsides = aNewSetOfCoincides;
 
-  // If we still have more than two coincides remove auxilary entities from set of coincides.
+  // If we still have more than two coincides remove auxiliary entities from set of coincides.
   if(aCoinsides.size() > 2) {
     aNewSetOfCoincides.clear();
     for(std::set<FeaturePtr>::iterator anIt = aCoinsides.begin();

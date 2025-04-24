@@ -1,20 +1,20 @@
 .. |group_substraction.icon|    image:: images/group_substraction.png
 
-Group Substraction
+Group Subtraction
 ==================
 
-Group substraction produces a group containing all elements of the main groups but not present in the tool groups.
-To create a Group Substraction in the active part:
+Group subtraction produces a group containing all elements of the main groups but not present in the tool groups.
+To create a Group Subtraction in the active part:
 
-#. select in the Main Menu *Features - > Group Substraction* item  or
-#. click |group_substraction.icon| **Group Substraction** button in the toolbar:
+#. select in the Main Menu *Features - > Group Subtraction* item  or
+#. click |group_substraction.icon| **Group Subtraction** button in the toolbar:
 
 The following property panel appears. 
 
 .. figure:: images/group_substraction_property_panel.png
   :align: center
 
-  Create a group substraction operation
+  Create a group subtraction operation
 
 Input fields:
 

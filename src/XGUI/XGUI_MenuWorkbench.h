@@ -36,7 +36,7 @@ class XGUI_MenuGroup;
 * \ingroup GUI
 * A class for management of menu actions (features). The actions should be arranged like they are
 * in XML file. It listens the read feature of XML and fills internal structure of menu workbenches
-* and groups of feature. After, it creates menues and tools in the module.
+* and groups of feature. After, it creates menus and tools in the module.
 */
 class XGUI_EXPORT XGUI_MenuWorkbench
 {

@@ -17,7 +17,7 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-"""This script inspects existing modules in SALOME and registrs them in
+"""This script inspects existing modules in SALOME and registers them in
 Module reader
 """
 

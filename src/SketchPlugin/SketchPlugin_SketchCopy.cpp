@@ -125,7 +125,7 @@ static void copyRefAttrList(AttributeRefAttrListPtr theOld,
                             AttributeRefAttrListPtr theNew,
                             MapEntities& theMapOldNew)
 {
-  // copy only if all referred objects/attribute are already transfered
+  // copy only if all referred objects/attribute are already transferred
   std::list<std::pair<ObjectPtr, AttributePtr> > aRefs = theOld->list();
   for (std::list<std::pair<ObjectPtr, AttributePtr> >::iterator anIt = aRefs.begin();
        anIt != aRefs.end(); ++anIt) {
@@ -167,7 +167,7 @@ static void copyRefList(AttributeRefListPtr theOld,
                         AttributeRefListPtr theNew,
                         MapEntities& theMapOldNew)
 {
-  // copy only if all referred objects are already transfered
+  // copy only if all referred objects are already transferred
   std::list<ObjectPtr> aRefs = theOld->list();
   for (std::list<ObjectPtr>::iterator anIt = aRefs.begin(); anIt != aRefs.end(); ++anIt) {
     ObjectPtr aNew = theMapOldNew.find(*anIt);

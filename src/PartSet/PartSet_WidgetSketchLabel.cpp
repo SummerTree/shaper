@@ -827,9 +827,9 @@ void PartSet_WidgetSketchLabel::reconfigureSketchViewWidgets()
     const int gridTypeIdx = myGridTypeComboBox->findData(gridType);
     myGridTypeComboBox->setCurrentIndex(gridTypeIdx != -1 ? gridTypeIdx : 0);
     myWidgetRectangularGrid->setVisible(gridType == PartSet_Tools::SketchPlaneGridType::Rectangular);
-    myWidgetRectangularGrid->recongifure();
+    myWidgetRectangularGrid->reconfigure();
     myWidgetCircularGrid->setVisible(gridType == PartSet_Tools::SketchPlaneGridType::Circular);
-    myWidgetCircularGrid->recongifure();
+    myWidgetCircularGrid->reconfigure();
 
     myGridSnappingModeComboBox->setEnabled(gridType != PartSet_Tools::SketchPlaneGridType::No);
     myGridSnappingModeComboBox->setCurrentIndex(int(previewPlane->getGridSnappingMode()));
@@ -844,9 +844,9 @@ void PartSet_WidgetSketchLabel::reconfigureSketchViewWidgets()
 
     myGridTypeComboBox->setCurrentIndex(0);
     myWidgetRectangularGrid->setVisible(false);
-    myWidgetRectangularGrid->recongifure();
+    myWidgetRectangularGrid->reconfigure();
     myWidgetCircularGrid->setVisible(false);
-    myWidgetCircularGrid->recongifure();
+    myWidgetCircularGrid->reconfigure();
 
     myGridSnappingModeComboBox->setEnabled(false);
   }
@@ -1280,7 +1280,7 @@ PartSet_WidgetSketchRectangularGrid::PartSet_WidgetSketchRectangularGrid(QWidget
   connect(myStepYSpinBox, SIGNAL(valueSet(double)), this, SLOT(onStepYSet(double)));
 }
 
-void PartSet_WidgetSketchRectangularGrid::recongifure()
+void PartSet_WidgetSketchRectangularGrid::reconfigure()
 {
   retrieveSketchAndPlane();
 
@@ -1347,7 +1347,7 @@ void PartSet_WidgetSketchRectangularGrid::onResetClicked()
     return;
 
   myPreviewPlane->resetRectangularGrid();
-  recongifure();
+  reconfigure();
 
   const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(mySketchLabel->feature());
   if (sketch) {
@@ -1434,7 +1434,7 @@ PartSet_WidgetSketchCircularGrid::PartSet_WidgetSketchCircularGrid(QWidget* theP
   connect(myNASSpinBox, SIGNAL(valueChanged(int)), this, SLOT(onNumOfAngularSegmentsChanged(int)));
 }
 
-void PartSet_WidgetSketchCircularGrid::recongifure()
+void PartSet_WidgetSketchCircularGrid::reconfigure()
 {
   retrieveSketchAndPlane();
 
@@ -1510,7 +1510,7 @@ void PartSet_WidgetSketchCircularGrid::onResetClicked()
     return;
 
   myPreviewPlane->resetCircularGrid();
-  recongifure();
+  reconfigure();
 
   const auto sketch = std::static_pointer_cast<ModelAPI_CompositeFeature>(mySketchLabel->feature());
   if (sketch) {

@@ -387,8 +387,8 @@ model.do()
 # Make offset for testing B-spline
 #=========================================================================
 
-# This B-spline still failes on larger values and even smaller in reversed mode.
-# But we still consider this as an impruvement because without approximation 
+# This B-spline still fails on larger values and even smaller in reversed mode.
+# But we still consider this as an improvement because without approximation 
 # we have only "Offset algorithm failed" with the same conditions.
 
 # Common offset params

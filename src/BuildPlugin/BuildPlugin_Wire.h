@@ -76,7 +76,7 @@ public:
 
   /// Performs some functionality by action id.
   /// \param[in] theAttributeId action key id.
-  /// \return false in case if action not perfomed.
+  /// \return false in case if action not performed.
   BUILDPLUGIN_EXPORT virtual bool customAction(const std::string& theActionId);
 
 private:

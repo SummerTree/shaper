@@ -42,11 +42,11 @@ class Model_AttributeDocRef : public ModelAPI_AttributeDocRef
   /// Returns document referenced from this attribute
   MODEL_EXPORT virtual std::shared_ptr<ModelAPI_Document> value();
 
-  /// Returns the persisten ID of the document
+  /// Returns the persistent ID of the document
   MODEL_EXPORT virtual int docId();
 
  protected:
-  /// Initializes attibutes
+  /// Initializes attributes
   Model_AttributeDocRef(TDF_Label& theLabel);
 
   /// Reinitializes the internal state of the attribute (may be needed on undo/redo, abort, etc)

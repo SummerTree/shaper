@@ -243,7 +243,7 @@ class SketchPlugin_Rectangle(model.Feature):
             if theID == self.CENTER_REF_ID():
                 # Init CENTER_ID from CENTER_REF_ID
                 # Otherwise, not all obligatory attributes are initialized when calling from script
-                # (from GUI they are syncronized automatically)
+                # (from GUI they are synchronized automatically)
                 aCenterSketchPointAttr = self.refattr(self.CENTER_REF_ID())
                 aCenterSketchPointCoordsAttr = self.__getPoint2DAttrOfSketchPoint(aCenterSketchPointAttr)
                 aCenterSketchPointCoords = GeomDataAPI.geomDataAPI_Point2D(aCenterSketchPointCoordsAttr)

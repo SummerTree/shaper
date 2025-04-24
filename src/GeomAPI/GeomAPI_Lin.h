@@ -34,7 +34,7 @@ class GeomAPI_Pnt;
 class GeomAPI_Lin : public GeomAPI_Interface
 {
  public:
-  /// Creation of line defined by cordinates of start and end points
+  /// Creation of line defined by coordinates of start and end points
   GEOMAPI_EXPORT
   GeomAPI_Lin(const double theStartX, const double theStartY, const double theStartZ,
               const double theEndX, const double theEndY, const double theEndZ);

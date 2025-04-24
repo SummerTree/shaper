@@ -83,7 +83,7 @@ Input fields:
 - **Distance** defines the offset value. Negative value meaning inner offset;
 - **Faces to offset** defines the faces of the base shape, which should be offset;
 
-*Note*: In Partial Offset mode gaps are allways filled by intersection.
+*Note*: In Partial Offset mode gaps are always filled by intersection.
 
 **TUI Command**:
 

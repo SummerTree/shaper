@@ -39,7 +39,7 @@ class Model_ResultConstruction : public ModelAPI_ResultConstruction
   std::shared_ptr<ModelAPI_Feature> myOwner;  ///< owner of this result
   std::shared_ptr<GeomAPI_Shape> myShape;  ///< shape of this result created "on the fly"
  public:
-  /// Retuns the parameters of color definition in the resources config manager
+  /// Returns the parameters of color definition in the resources config manager
   MODEL_EXPORT virtual void colorConfigInfo(std::string& theSection, std::string& theName,
                                             std::string& theDefault);
 

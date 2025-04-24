@@ -82,7 +82,7 @@ void FeaturesPlugin_VersionedChFi::execute()
     anEdges.insert(anEdges.end(), aSubs.begin(), aSubs.end());
   }
 
-  // Build results of the operaion.
+  // Build results of the operation.
   const std::string& aPrefix = modifiedShapePrefix();
   ListOfShape aTopLevel;
   anObjectHierarchy.topLevelObjects(aTopLevel);

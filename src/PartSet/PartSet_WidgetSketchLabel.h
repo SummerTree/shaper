@@ -72,7 +72,7 @@ public:
   /// Constructor
   /// \param theParent the parent object
   /// \param theWorkshop a reference to workshop
-  /// \param theData the widget configuation. The attribute of the model widget is obtained from
+  /// \param theData the widget configuration. The attribute of the model widget is obtained from
   /// \param toShowConstraints a current show constraints state
   PartSet_WidgetSketchLabel(QWidget* theParent, ModuleBase_IWorkshop* theWorkshop,
                       const Config_WidgetAPI* theData,
@@ -185,7 +185,7 @@ protected:
   /// The methiod called when widget is activated
   virtual void activateCustom();
 
-  /// Block the model flush of update and intialization of attribute
+  /// Block the model flush of update and initialization of attribute
   /// In additional to curstom realization it blocks initialization for all feature attributes
   /// as the current attribute is selection but its modification leads to other attributes change
   /// \param theAttribute an attribute
@@ -346,7 +346,7 @@ public:
   PartSet_WidgetSketchGrid(QWidget* theParent, PartSet_WidgetSketchLabel* theSketchLabel);
   virtual ~PartSet_WidgetSketchGrid() = default;
 
-  virtual void recongifure() = 0;
+  virtual void reconfigure() = 0;
 
 protected slots:
   virtual void onResetClicked() = 0;
@@ -400,7 +400,7 @@ public:
   virtual ~PartSet_WidgetSketchRectangularGrid() = default;
 
   /*! \brief Must be called after PartSet_PreviewSketchPlane is configured. */
-  virtual void recongifure();
+  virtual void reconfigure();
 
 private slots:
   void onStepXSet(double theStep);
@@ -427,7 +427,7 @@ public:
   virtual ~PartSet_WidgetSketchCircularGrid() = default;
 
   /*! \brief Must be called after PartSet_PreviewSketchPlane is configured. */
-  virtual void recongifure();
+  virtual void reconfigure();
 
 private slots:
   void onStepRChanged(double theStep);

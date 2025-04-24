@@ -615,7 +615,7 @@ bool SketchPlugin_Trim::moveTangency(const AttributePtr& theAttribute,
 
   // get shape of the feature of the attribute
   FeaturePtr anAttributeFeature = ModelAPI_Feature::feature(aRefAttr->object());
-  anAttributeFeature->execute(); // the modified value should be applyed to recompute shape
+  anAttributeFeature->execute(); // the modified value should be applied to recompute shape
   GeomAlgoAPI_ShapeTools::PointToRefsMap aPointToAttributeOrObject;
   std::list<FeaturePtr> aFeatures;
   aFeatures.push_back(anAttributeFeature);
@@ -753,7 +753,7 @@ FeaturePtr SketchPlugin_Trim::trimLine(const std::shared_ptr<GeomAPI_Pnt2d>& the
   std::cout << "1st point:   [" << aStartFeaturePoint->x() << ", " <<
                                    aStartFeaturePoint->y() << "]" << std::endl;
   if (aLastShapePoint.get())
-    std::cout << "2st point:   [" << aLastShapePoint->x() << ", " <<
+    std::cout << "2nd point:   [" << aLastShapePoint->x() << ", " <<
                                      aLastShapePoint->y() << "]" << std::endl;
   std::cout << "End point:   [" << aLastFeaturePoint->x() << ", " <<
                                    aLastFeaturePoint->y() << "]" << std::endl;

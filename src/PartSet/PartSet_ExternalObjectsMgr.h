@@ -90,7 +90,7 @@ class PARTSET_EXPORT PartSet_ExternalObjectsMgr
   /// \param theSketch a current sketch
   /// \param theFeature a current feature
   /// \param theWorkshop a current workshop
-  /// \param theTemporary if true, a temporary external object is removed overwise all ext objects
+  /// \param theTemporary if true, a temporary external object is removed, otherwise all ext objects
   void removeExternal(const CompositeFeaturePtr& theSketch,
                       const FeaturePtr& theFeature,
                       ModuleBase_IWorkshop* theWorkshop,

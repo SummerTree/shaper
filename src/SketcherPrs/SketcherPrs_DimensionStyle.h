@@ -49,7 +49,7 @@ public:
 
   public:
     double myDoubleValue; ///< the angle value to be shown as custom value of presentation
-    bool myHasParameters; ///< true if the atrribute value has used parameters
+    bool myHasParameters; ///< true if the attribute value has used parameters
     std::string myTextValue; ///< the angle value depending on angle type
   };
 

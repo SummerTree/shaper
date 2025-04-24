@@ -130,7 +130,7 @@ public:
   /// \param isCommitted boolean value if the operation was committed otherwise it was aborted
   bool canStartOperation(const QString& theId, bool& isCommitted);
 
-  /// If Apply is enabled and operation has modification, it is applyed, otherwise aborted
+  /// If Apply is enabled and operation has modification, it is applied, otherwise aborted
   /// \param theOperation the started operation
   /// \param isCommitted boolean value if the operation was committed otherwise it was aborted
   void stopOperation(ModuleBase_Operation* theOperation, bool& isCommitted);
@@ -215,15 +215,15 @@ protected: // TEMPORARY
   /// \param theEvent the mouse event
   bool onKeyPressed(QObject *theObject, QKeyEvent* theEvent);
 
-  /// The functionaly, that should be done by delete click
-  /// Fistly the active widget processes it, then workshop. If no one does not
+  /// The functionality that should be done by hitting delete
+  /// Firstly the active widget processes it, then workshop. If no one does not
   /// process it, do nothing
   /// \param theObject a sender of the event
   bool onProcessDelete(QObject* theObject);
 
   protected slots:
-  /// The functionaly, that should be done by enter click
-  /// Fistly the active widget processes it, then module. If no one does not
+  /// The functionality that should be done by hitting enter
+  /// Firstly the active widget processes it, then module. If no one does not
   /// process it, the current operation is committed
   /// \param theObject a sender of the event
   bool onProcessEnter(QObject *theObject);

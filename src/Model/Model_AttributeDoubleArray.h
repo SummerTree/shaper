@@ -49,7 +49,7 @@ public:
   MODEL_EXPORT virtual double value(const int theIndex);
 
 protected:
-  /// Initializes attibutes
+  /// Initializes attributes
   Model_AttributeDoubleArray(TDF_Label& theLabel);
   /// Reinitializes the internal state of the attribute (may be needed on undo/redo, abort, etc)
   virtual void reinit();

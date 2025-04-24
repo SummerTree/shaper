@@ -60,7 +60,7 @@ public:
   QIntList toolbarItems() const;
 
 protected:
-  /// An redifinition of a virtual function
+  /// An redefinition of a virtual function
   /// \param theObj an object
   /// \param theEvent an event
   virtual bool eventFilter(QObject* theObj, QEvent* theEvent);
@@ -106,7 +106,7 @@ public:
   /// Returns result of editing
   QMap<QString, QIntList> result() const { return myResult; }
 
-  /// Returns a flag of resetted toolbars structure
+  /// Returns a flag of reset toolbars structure
   bool isReset() const {
     return myIsReset;
   }

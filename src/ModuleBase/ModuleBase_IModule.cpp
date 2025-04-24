@@ -136,7 +136,7 @@ void ModuleBase_IModule::launchOperation(const QString& theCmdId,
       setReentrantPreSelection(aMessage);
     }
     else if (canUsePreselection(aCurOperationKind, theCmdId)) {
-      // restore of previous opeation is absent or new launched operation has the same kind
+      // restore of previous operation is absent or new launched operation has the same kind
       aFOperation->initSelection(aPreSelected);
     }
     workshop()->processLaunchOperation(aFOperation);

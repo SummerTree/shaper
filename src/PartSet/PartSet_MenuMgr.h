@@ -80,7 +80,7 @@ public slots:
 
 private slots:
 
-  /// A slot which is called on selection of menu item coresponding to line with coincedence
+  /// A slot which is called on selection of menu item corresponding to line with coincedence
   /// \param theAction an action of the selected item
   void onLineHighlighted(QAction* theAction);
 

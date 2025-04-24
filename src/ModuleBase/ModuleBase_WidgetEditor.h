@@ -40,7 +40,7 @@ Q_OBJECT
  public:
   /// Constructor
   /// \param theParent the parent object
-  /// \param theData the widget configuation. The attribute of the model widget is obtained from
+  /// \param theData the widget configuration. The attribute of the model widget is obtained from
   ModuleBase_WidgetEditor(QWidget* theParent, const Config_WidgetAPI* theData);
   /// Constructor
   /// \param theParent the parent object
@@ -58,7 +58,7 @@ Q_OBJECT
 
   /// Shous popup window under cursor for data editing
   /// \param theSendSignals a flag whether the signals should be sent or the value
-  /// is to be applyed directly
+  /// is to be applied directly
   /// \return true if the editor value is accepted
   bool showPopupEditor(const bool theSendSignals = true);
 

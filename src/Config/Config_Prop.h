@@ -138,7 +138,7 @@ class Config_Prop
   }
   /// Set default value of property
   CONFIG_EXPORT void setDefaultValue(const std::string& theValue);
-  /// Alows to compare Config_Prop with each other
+  /// Allows to compare Config_Prop with each other
   bool operator==(const Config_Prop* theProp) const
   {
     return (mySection == theProp->section()) && (myName == theProp->name());

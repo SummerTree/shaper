@@ -68,7 +68,7 @@ private:
   /// Stores initial values of accept/accept all tool/status tip to internal containers
   void storeInitialActionValues();
 
-  /// It disables the propety panel Accept action if the error message is not empty
+  /// It disables the property panel Accept action if the error message is not empty
   /// The message is set to the header tool tip.
   /// \param theAction an action to be changed
   /// \param theError an error state

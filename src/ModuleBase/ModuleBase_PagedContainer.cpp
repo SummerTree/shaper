@@ -154,7 +154,7 @@ void ModuleBase_PagedContainer::onPageChanged()
 {
   if (!storeValue())
     return;
-  // focus might be changed only if the value is correcly stored
+  // focus might be changed only if the value is correctly stored
   // if it is not stored, reentrant manager will handle by this widget
   // after it will restart operation, the widget might be removed
   if (myIsFocusOnCurrentPage)

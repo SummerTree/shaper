@@ -5,7 +5,7 @@
  *
  * \brief Structures for storage and management the application data.
  * 
- * Data structures are unified and splitted in universal <b>ModelAPI</b> package.
+ * Data structures are unified and split in universal <b>ModelAPI</b> package.
  * The OCCT specialized implementation of ModelAPI interfaces is located in the <b>Model</b>.
  * The geometrical primitives interfaces in <b>GeomAPI</b> package are supported by geometrical 
  * persistence elements in <b>GeomDatAPI</b> interface and has OCCT-specific implementation in GeomData package.
@@ -38,7 +38,7 @@
 /**
  * \defgroup CPPHighAPI C++ High API
  *
- * \brief C++ API for using fetures concentrated in plugins.
+ * \brief C++ API for using features concentrated in plugins.
  *
  * The API intendend to be wrapped by SWIG and used in Python.
  *

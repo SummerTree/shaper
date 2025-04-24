@@ -100,7 +100,7 @@ public:
                                             std::string& theName,
                                             std::string& theDefault);
 
-  /// Disables the result body: keeps the resulting shape as selection, but erases the underlaying
+  /// Disables the result body: keeps the resulting shape as selection, but erases the underlying
   /// naming data structure if theFlag if false. Or restores every  thing on theFlag is true.
   MODEL_EXPORT virtual bool setDisabled(std::shared_ptr<ModelAPI_Result> theThis,
     const bool theFlag);

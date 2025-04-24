@@ -116,7 +116,7 @@ private:
   void setStartAndEndPoints();
 
   /// Compute default B-spline parameters (degree, knots and multiplicities)
-  /// basing on hte given poles and weights
+  /// based on the given poles and weights
   void getDefaultParameters(const std::list<std::shared_ptr<GeomAPI_Pnt2d> >& thePoles,
                             const std::list<ModelHighAPI_Double>& theWeights,
                             ModelHighAPI_Integer& theDegree,

@@ -102,7 +102,7 @@ checkFeaturesQuantity(Sketch_1)
 checkEllipticArcs(Sketch_1)
 
 # try to split the boundary arc of ellipse,
-# it shoult fail, because there is no coincident points
+# it should fail, because there is no coincident points
 EllipticArc = SketchAPI_EllipticArc(model.lastSubFeature(Sketch_1, "SketchEllipticArc"))
 SketchSplit = Sketch_1.addSplit(EllipticArc, geom.Pnt2d(CENTER.x() - MAJOR_RADIUS, CENTER.y()))
 model.end()

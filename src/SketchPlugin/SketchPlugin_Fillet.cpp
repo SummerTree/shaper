@@ -292,7 +292,7 @@ bool SketchPlugin_Fillet::calculateFilletParameters()
   // and the end point - to FeatureB. But when the angle between TangentDirA and
   // TangentDirB greater 180 degree, the sequaence of features need to be reversed.
   double cosBA = aTangentDir[0]->cross(aTangentDir[1]); // cos(B-A),
-  // where A and B - angles between corresponding tanget direction and the X axis
+  // where A and B - angles between corresponding tangent direction and the X axis
   myIsReversed = cosBA > 0.0;
 
   if(myIsReversed) {

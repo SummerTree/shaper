@@ -68,7 +68,7 @@ def main(src_dir, build_dir):
             continue
         lib_dir = find_dir(src_path, config)
         if lib_dir:
-            ## Copy plugin's documenation folder to the build directory
+            ## Copy plugin's documentation folder to the build directory
             dist_dir = osp.join(build_dir, plugin_name)
             if osp.exists(dist_dir):
                 shutil.rmtree(dist_dir)

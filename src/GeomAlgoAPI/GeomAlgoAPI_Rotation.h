@@ -42,7 +42,7 @@ public:
                                           double                         theAngle);
 
   /// \brief Creates an object which is obtained from current object by rotating it around the axis
-  ///        withe angle using the center and two points.
+  ///        with angle using the center and two points.
   /// \param[in] theSourceShape  a shape to be rotated.
   /// \param[in] theCenterPoint  center point.
   /// \param[in] theStartPoint   start point.

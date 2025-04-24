@@ -24,7 +24,7 @@ include(${SWIG_USE_FILE})
 set(CMAKE_SWIG_FLAGS -threads -Wall)
 
 # Using doxy2swig:
-# Add to ModuleName.i before any %inlcude:
+# Add to ModuleName.i before any %include:
 #   %include "doxyhelp.i"
 # Add to CMakeLists.txt before SWIG_ADD_MODULE(...):
 #   SET(SWIG_MODULE_ModuleName_EXTRA_DEPS ${SWIG_MODULE_ModuleName_EXTRA_DEPS} doxyhelp.i)

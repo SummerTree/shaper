@@ -74,7 +74,7 @@ class MODULEBASE_EXPORT ModuleBase_OperationDescription
    /// the operation identifier
   QString myOperationId;
 
-  /// the short description of the opertaion
+  /// the short description of the operation
   QString myDescription;
 
   /// the xml definition

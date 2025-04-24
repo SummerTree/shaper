@@ -233,7 +233,7 @@ void PartSet_SketcherMgr::onEnterViewPort()
 {
   // 1. if the mouse over window, update the next flag. Do not perform update visibility of
   // created feature because it should be done in onMouseMove(). Some widgets watch
-  // the mouse move and use the cursor position to update own values. If the presentaion is
+  // the mouse move and use the cursor position to update own values. If the presentation is
   // redisplayed before this update, the feature presentation jumps from reset value to current.
   myIsMouseOverWindow = true;
 
@@ -334,7 +334,7 @@ void PartSet_SketcherMgr::onBeforeValuesChangedInPropertyPanel()
   if (!isNestedEditOperation(getCurrentOperation(), myModule->sketchMgr()->activeSketch()) ||
       myModule->sketchReentranceMgr()->isInternalEditActive())
     return;
-  // it is necessary to save current selection in order to restore it after the values are modifed
+  // it is necessary to save current selection in order to restore it after the values are modified
   storeSelection(ST_SelectAndHighlightType);
 
   ModuleBase_IWorkshop* aWorkshop = myModule->workshop();
@@ -1849,7 +1849,7 @@ bool PartSet_SketcherMgr::setDistanceValueByPreselection(ModuleBase_Operation* t
     // Find corresponded widget to activate value editing
     foreach (ModuleBase_ModelWidget* aWgt, aWidgets) {
       if (aWgt->attributeID() == "ConstraintValue") {
-        // the featue should be displayed in order to find the AIS text position,
+        // the feature should be displayed in order to find the AIS text position,
         // the place where the editor will be shown
         aFeature->setDisplayed(true);
         /// the execute is necessary to perform in the feature compute for flyout position

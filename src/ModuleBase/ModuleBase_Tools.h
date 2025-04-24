@@ -191,7 +191,7 @@ MODULEBASE_EXPORT void checkObjects(const QObjectPtrList& theObjects, bool& hasR
                            bool& hasFeature, bool& hasParameter, bool& hasCompositeOwner,
                            bool& hasResultInHistory, bool& hasFolder, bool &hasGroupsOnly);
 
-/// Sets the default coeffient into the driver calculated accordingly the shape type.
+/// Sets the default coefficient into the driver calculated accordingly the shape type.
 /// It provides 1.e-4 for results of construction type
 /// \param theResult a result object to define the deviation coefficient
 /// \param theDrawer a drawer
@@ -199,8 +199,8 @@ MODULEBASE_EXPORT void checkObjects(const QObjectPtrList& theObjects, bool& hasR
 //                           const std::shared_ptr<ModelAPI_Result>& theResult,
 //                           const Handle(Prs3d_Drawer)& theDrawer);
 
-/// Sets the default coeffient into the driver calculated accordingly the shape type.
-/// It provides 1.e-4 for a shape withe Edge shape type
+/// Sets the default coefficient into the driver calculated accordingly the shape type.
+/// It provides 1.e-4 for a shape with Edge shape type
 /// \param theShape a shape to define the deviation coefficient,
 /// \param theDrawer a drawer
 MODULEBASE_EXPORT void setDefaultDeviationCoefficient(const TopoDS_Shape& theShape,
@@ -378,12 +378,12 @@ QString MODULEBASE_EXPORT translate(const std::string& theContext, const std::st
 void MODULEBASE_EXPORT setPointBallHighlighting(AIS_InteractiveObject* theAIS);
 
 /// Creates a parameter from a given string
-/// \theText a text wit equation
+/// \theText a text with equation
 FeaturePtr MODULEBASE_EXPORT createParameter(const QString& theText);
 
 /// Edits parameter replacing its name and expression according to the given string
 /// \theParam a editing parameter
-/// \theText a text wit equation
+/// \theText a text with equation
 void MODULEBASE_EXPORT editParameter(FeaturePtr theParam, const QString& theText);
 
 /// Returns True if a parameter with the given name already exists

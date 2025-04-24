@@ -34,7 +34,7 @@
  * \class Config_Translator
  * \ingroup Config
  * \brief Class for messages translation on different languages. It can load TS
- * files wich contain translation string and provides translations of messages from source code
+ * files which contain translation string and provides translations of messages from source code
  */
 class Config_Translator
 {

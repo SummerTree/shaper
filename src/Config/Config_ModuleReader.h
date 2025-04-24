@@ -66,7 +66,7 @@ class Config_ModuleReader : public Config_XMLReader
   CONFIG_EXPORT static void loadLibrary(const std::string& theLibName);
   /// loads the python module with specified name
   /// \param theFileName name of the script
-  /// \param theSendErr send error message in case of faile
+  /// \param theSendErr send error message in case of failed
   CONFIG_EXPORT static void loadScript(const std::string& theFileName, bool theSendErr = true);
   /*!
    * Extends set of modules,  used for dependency checking (if there is no

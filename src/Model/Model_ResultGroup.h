@@ -34,7 +34,7 @@ class Model_ResultGroup : public ModelAPI_ResultGroup
   std::shared_ptr<ModelAPI_Data> myOwnerData;  ///< data of owner of this result
 public:
 
-  /// Retuns the parameters of color definition in the resources config manager
+  /// Returns the parameters of color definition in the resources config manager
   MODEL_EXPORT virtual void colorConfigInfo(std::string& theSection, std::string& theName,
                                             std::string& theDefault);
 

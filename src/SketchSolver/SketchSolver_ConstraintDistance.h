@@ -62,7 +62,7 @@ private:
 
 private:
   double myPrevValue; ///< previous value of distance (for correct calculation of a distance sign)
-  bool   myIsSigned;  ///< true if the sign of point-line distance should be kept everytime
+  bool   myIsSigned;  ///< true if the sign of point-line distance should be kept every time
   GCSPointPtr myOddPoint; ///< auxiliary point to keep sign of distance
   double mySignValue;
 };

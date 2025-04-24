@@ -115,7 +115,7 @@ void ModuleBase_WidgetValidator::storeValidState(const ModuleBase_ViewerPrsPtr& 
     if (!aValidPrs)
       myValidPrs.append(theValue);
     // the commented code will be useful when the valid state of the presentation
-    // will be changable between activate/deactivate. Currently it does not happen.
+    // will be changeable between activate/deactivate. Currently it does not happen.
     //if (anInvalidPrs)
     //  myInvalidPrs.removeOne(theValue);
   }

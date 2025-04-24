@@ -31,12 +31,12 @@ class PlaneGCSSolver_ScalarArrayWrapper : public PlaneGCSSolver_EntityWrapper
 public:
   PlaneGCSSolver_ScalarArrayWrapper(const GCS::VEC_pD& theParam);
 
-  /// \breif Size of array
+  /// \brief Size of array
   int size() const { return (int)myValue.size(); }
 
   /// \brief Return array of PlaneGCS parameters
   const GCS::VEC_pD& array() const { return myValue; }
-  /// \breif Set array of parameters
+  /// \brief Set array of parameters
   void setArray(const GCS::VEC_pD& theParams) { myValue = theParams; }
 
   /// \brief Return type of current entity

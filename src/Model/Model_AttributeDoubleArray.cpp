@@ -49,7 +49,7 @@ void Model_AttributeDoubleArray::setSize(const int theSize)
     }
   } else { // reset the old array
     if (theSize) {
-      if (theSize != myArray->Length()) { // old data is not keept, a new array is created
+      if (theSize != myArray->Length()) { // old data is not kept, a new array is created
         Handle(TColStd_HArray1OfReal) aNewArray = new TColStd_HArray1OfReal(0, theSize - 1);
         myArray->ChangeArray(aNewArray);
         owner()->data()->sendAttributeUpdated(this);

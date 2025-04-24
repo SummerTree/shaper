@@ -51,7 +51,7 @@ class GeomAlgoAPI_Box : public GeomAlgoAPI_MakeShape
   GEOMALGOAPI_EXPORT GeomAlgoAPI_Box(std::shared_ptr<GeomAPI_Pnt> theFirstPoint,
                                      std::shared_ptr<GeomAPI_Pnt> theSecondPoint);
 
-  /// Creates a box using coordinates of a point (the center of gravity) andthe dimensions.
+  /// Creates a box using coordinates of a point (the center of gravity) and the dimensions.
   /// \param theOx The X coordinate of the point
   /// \param theOy The Y coordinate of the point
   /// \param theOz The Z coordinate of the point

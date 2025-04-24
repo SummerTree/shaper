@@ -107,14 +107,14 @@ public:
 
   /// Activates the interactive object in the local context.
   /// \param theIO an interactive object
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be updated immediately
   /// \return a flag is object activated or not
   XGUI_EXPORT bool activate(const Handle(AIS_InteractiveObject)& theIO,
                             const bool theUpdateViewer) const;
 
   /// Deactivates the given object (not allow selection)
   /// \param theObject object to deactivate
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be updated immediately
   XGUI_EXPORT void deactivate(const std::shared_ptr<ModelAPI_Object>& theObject,
                               const bool theUpdateViewer);
 
@@ -125,7 +125,7 @@ public:
   XGUI_EXPORT void activateTrihedron(bool theIsActive);
 
   /// Find a trihedron in a list of displayed presentations and deactivate it.
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be updated immediately
   XGUI_EXPORT void deactivateTrihedron(const bool theUpdateViewer) const;
 
   /// Get selection modes of trihedron and deactivate it in it.

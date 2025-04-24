@@ -137,7 +137,7 @@ void ExchangePlugin_Dump::dump(const std::string& theFileName)
   // process selected types of the dump
   ModelHighAPI_Dumper* aDumper = ModelHighAPI_Dumper::getInstance();
   if (!aDumper)
-    setError("An error occured while dumping to " + theFileName);
+    setError("An error occurred while dumping to " + theFileName);
 
   static const int THE_TYPES_SIZE = 3;
   bool aTypes[THE_TYPES_SIZE] = {

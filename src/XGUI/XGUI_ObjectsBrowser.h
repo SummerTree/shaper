@@ -103,7 +103,7 @@ Q_OBJECT
   XGUI_DataModel* dataModel() const;
 
 signals:
-  //! Emited on context menu request
+  //! Emitted on context menu request
   void contextMenuRequested(QContextMenuEvent* theEvent);
 
 public slots:
@@ -233,13 +233,13 @@ public slots:
   void onEditItem();
 
 signals:
-  //! Emited when selection is changed
+  //! Emitted when selection is changed
   void selectionChanged();
 
-  //! Emited on context menu request
+  //! Emitted on context menu request
   void contextMenuRequested(QContextMenuEvent* theEvent);
 
-  //! Segnal is emitted when user cliks by mouse in header label of object browser
+  //! Signal is emitted when user clicks with mouse in header label of object browser
   void headerMouseDblClicked(const QModelIndex&);
 
   //! An signal emitted on resize of the Object Browser

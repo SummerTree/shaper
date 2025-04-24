@@ -108,7 +108,7 @@ def isSymetricXY(line):
 #=========================================================================
 def checkLinesSymetry(aSketchFeature):
 #=========================================================================
-# Checks the lines of rectangle are symetric around the origin
+# Checks the lines of rectangle are symmetric around the origin
 	aNbSubs = aSketchFeature.numberOfSubs()
 	aNbLines = 0
 	nbAux = 0
@@ -134,7 +134,7 @@ for feat in Part_doc.allFeatures():
 
 aSketchFeature = featureToCompositeFeature(sketch)
 #=========================================================================
-# Check the lines of rectangle are symetric around the origin
+# Check the lines of rectangle are symmetric around the origin
 #=========================================================================
 checkLinesSymetry(aSketchFeature)
 #=========================================================================
@@ -146,7 +146,7 @@ l.setValue(80.)
 h.setValue(55.)
 aSession.finishOperation()
 #=========================================================================
-# Check the lines of rectangle are symetric around the origin
+# Check the lines of rectangle are symmetric around the origin
 #=========================================================================
 checkLinesSymetry(aSketchFeature)
 

@@ -83,7 +83,7 @@ Q_OBJECT
   //! Enable or disable draw mode in the viewer
   virtual bool enableDrawMode(bool isEnabled) = 0;
 
-  //! Perfroms the fit all for the active view
+  //! Performs the fit all for the active view
   virtual void fitAll() = 0;
 
   //! Erases all presentations from the viewer
@@ -168,12 +168,12 @@ Q_OBJECT
 
   //! Set position of color scale
   // \param theX is X position relative to current view width
-  // \param theY is Y position relative to current view heigth
+  // \param theY is Y position relative to current view height
   virtual void setColorScalePosition(double theX, double theY) = 0;
 
   //! Set size of color scale
   // \param theW is width relative to current view width
-  // \param theh is height relative to current view heigth
+  // \param theh is height relative to current view height
   virtual void setColorScaleSize(double theW, double theH) = 0;
 
   //! Set range of color scale
@@ -185,7 +185,7 @@ Q_OBJECT
   // \param theNb is number of intervals
   virtual void setColorScaleIntervals(int theNb) = 0;
 
-  //! Set text heigth of color scale
+  //! Set text height of color scale
   // \param theH is number of intervals
   virtual void setColorScaleTextHeigth(int theH) = 0;
 
@@ -229,50 +229,50 @@ Q_OBJECT
 
 
 signals:
-  /// Signal emited when last view window is closed
+  /// Signal emitted when last view window is closed
   void lastViewClosed();
 
-  /// Signal emited before view window is closed
+  /// Signal emitted before view window is closed
   void tryCloseView(ModuleBase_IViewWindow* theWnd);
 
-  /// Signal emited on delete view window
+  /// Signal emitted on delete view window
   void deleteView(ModuleBase_IViewWindow* theWnd);
 
-  /// Signal emited on creation of view window
+  /// Signal emitted on creation of view window
   void viewCreated(ModuleBase_IViewWindow* theWnd);
 
-  /// Signal emited on key release
+  /// Signal emitted on key release
   void activated(ModuleBase_IViewWindow* theWnd);
 
-  /// Signal emited on mouse press
+  /// Signal emitted on mouse press
   void mousePress(ModuleBase_IViewWindow* theWnd, QMouseEvent* theEvent);
 
-  /// Signal emited on mouse release
+  /// Signal emitted on mouse release
   void mouseRelease(ModuleBase_IViewWindow* theWnd, QMouseEvent* theEvent);
 
-  /// Signal emited on mouse double click
+  /// Signal emitted on mouse double click
   void mouseDoubleClick(ModuleBase_IViewWindow* theWnd, QMouseEvent* theEvent);
 
-  /// Signal emited on mouse move
+  /// Signal emitted on mouse move
   void mouseMove(ModuleBase_IViewWindow* theWnd, QMouseEvent* theEvent);
 
-  /// Signal emited on key press
+  /// Signal emitted on key press
   void keyPress(ModuleBase_IViewWindow* theWnd, QKeyEvent* theEvent);
 
-  /// Signal emited on key release
+  /// Signal emitted on key release
   void keyRelease(ModuleBase_IViewWindow* theWnd, QKeyEvent* theEvent);
 
-  /// Signal emited on selection changed
+  /// Signal emitted on selection changed
   void selectionChanged();
 
-  /// Signal emited on selection changed
+  /// Signal emitted on selection changed
   void contextMenuRequested(QContextMenuEvent*);
 
   /// Signal emitted on transformation of view point in view window
   /// \param theTransformation type of transformation (see AppElements_ViewWindow::OperationType)
   void viewTransformed(int theTransformation);
 
-  /// Signal emited on selection changed
+  /// Signal emitted on selection changed
   void trihedronVisibilityChanged(bool theState);
 
   protected:

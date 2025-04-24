@@ -32,7 +32,7 @@
 class GeomAPI_ShapeIterator : public GeomAPI_Interface
 {
 public:
-  /// Default constructor. Creates an empty iterator, becomes usefull after Init.
+  /// Default constructor. Creates an empty iterator, becomes useful after Init.
   GEOMAPI_EXPORT GeomAPI_ShapeIterator();
 
   /// \brief Creates an iterator on theShape sub-shapes.

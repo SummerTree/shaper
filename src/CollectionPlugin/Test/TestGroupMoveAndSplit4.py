@@ -51,7 +51,7 @@ assert(Part_1_doc.size("Groups") == 5)
 for i in range(5):
   resShape = modelAPI_Result(Part_1_doc.object("Groups", i)).shape()
   assert(not resShape.isNull())
-  # the group result is a compund, check that this is a compound of two faces
+  # the group result is a compound, check that this is a compound of two faces
   aShapeExplorer = GeomAPI_ShapeExplorer(resShape, GeomAPI_Shape.FACE)
   assert(aShapeExplorer.more())
   assert(aShapeExplorer.current().isFace())

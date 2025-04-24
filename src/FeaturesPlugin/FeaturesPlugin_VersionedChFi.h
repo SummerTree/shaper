@@ -42,7 +42,7 @@ public:
 protected:
   FeaturesPlugin_VersionedChFi() {}
 
-  /// Intialize the version for the newly created feature.
+  /// Initialize the version for the newly created feature.
   void initVersion(const std::shared_ptr<ModelAPI_Attribute>& theObjectsAttr);
 
   /// Process SelectionList attribute and fill the objects hierarchy.

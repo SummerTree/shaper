@@ -89,7 +89,7 @@ kLineBEnd = (aLineBEndPoint.x(),   aLineBEndPoint.y())
 kLineCStart = (aLineCStartPoint.x(), aLineCStartPoint.y())
 kLineCEnd = (aLineCEndPoint.x(),   aLineCEndPoint.y())
 #=========================================================================
-# Link triange lines with concidence
+# Link triangle lines with concidence
 #=========================================================================
 concidenceLinks = list(zip([aLineBStartPoint, aLineCStartPoint, aLineAStartPoint],
                       [aLineAEndPoint, aLineBEndPoint, aLineCEndPoint]))

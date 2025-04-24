@@ -73,7 +73,7 @@ public:
   enum ConstraintVisibleState
   {
     Geometrical = 0, // all constrains excepting dimensional
-    Dimensional,     // lenght, distance, radius and angle constraints
+    Dimensional,     // length, distance, radius and angle constraints
     Expressions,     // parameter text should be shown in dimensional constraint
     Any              // both, geometrical and dimensional, types of constraints
   };
@@ -88,7 +88,7 @@ public:
   /// \param theView a 3D view
   static gp_Pnt convertClickToPoint(QPoint thePoint, Handle(V3d_View) theView);
 
-  /// \brief Converts the 3D point to the projected coodinates on the sketch plane.
+  /// \brief Converts the 3D point to the projected coordinates on the sketch plane.
   /// \param thePoint the 3D point in the viewer
   /// \param theSketch the sketch feature
   /// \param theView a view 3d object
@@ -98,14 +98,14 @@ public:
                           Handle(V3d_View) theView,
                           double& theX, double& theY);
 
-  /// \brief Converts the 3D point to the projected coodinates on the sketch plane.
+  /// \brief Converts the 3D point to the projected coordinates on the sketch plane.
   /// \param theSketch the sketch feature
   /// \param thePnt the 3D point in the viewer
   /// \returns the converted point object
   static std::shared_ptr<GeomAPI_Pnt2d> convertTo2D(FeaturePtr theSketch,
                                                     const std::shared_ptr<GeomAPI_Pnt>& thePnt);
 
-  /// \brief Converts the 2D projected coodinates on the sketch plane to the 3D point.
+  /// \brief Converts the 2D projected coordinates on the sketch plane to the 3D point.
   /// \param theX the X coordinate
   /// \param theY the Y coordinate
   /// \param theSketch the sketch feature
@@ -131,7 +131,7 @@ public:
   /// Find a feature in the attribute of the given feature. If the kind is not empty,
   /// the return feature should be this type. Otherwise it is null
   /// \param theFeature a source feature
-  /// \param theAttribute a name of the requried attribute attribute
+  /// \param theAttribute a name of the required attribute
   /// \param theKind an output feature kind
   /// \return the feature
   static FeaturePtr feature(FeaturePtr theFeature, const std::string& theAttribute,
@@ -340,7 +340,7 @@ public:
   /*
   * Finds and returns feature reerenced to the paramenter feature with the given name if found
   * \param theFeature a source feature where refsToMe is obtained
-  * \param theFeatureId an indentifier of the searched feature
+  * \param theFeatureId an identifier of the searched feature
   */
   static FeaturePtr findRefsToMeFeature(FeaturePtr theFeature, const std::string& theFeatureId)
   {

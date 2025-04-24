@@ -203,8 +203,8 @@ void PartSet_OverconstraintListener::processEvent(const std::shared_ptr<Events_M
     // sender is equal to feature name of the current operation. E.g. Horizontal create operation
     // is active. Sketch Line feature is changed, so execute is called, it will send message
     // This Line's message should not be processed, as the reentrant operation is not for Line
-    // It is not enoght of kind, the name should be used, e.g. restarted Lines on auxiliary
-    // cirlce sometimes causes previous line change, kind the same, but feature line is different
+    // It is not enough of kind, the name should be used, e.g. restarted Lines on auxiliary
+    // circle sometimes causes previous line change, kind the same, but feature line is different
     std::wstring aCurrentFeatureName;
     ModuleBase_Operation* anOperation =
                 XGUI_Tools::workshop(myWorkshop)->operationMgr()->currentOperation();
@@ -214,7 +214,7 @@ void PartSet_OverconstraintListener::processEvent(const std::shared_ptr<Events_M
       if (aFOperation) {
         FeaturePtr aFeature = aFOperation->feature();
         // data valid is necessary if the feature has been already deleted
-        // (e.g. Esc of Lenght if lenght value is modified)
+        // (e.g. Esc of Length if length value is modified)
         if (aFeature.get() && aFeature->data()->isValid())
           aCurrentFeatureName = aFeature->data()->name();
       }

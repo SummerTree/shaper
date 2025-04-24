@@ -34,7 +34,7 @@ ModuleBase_WidgetAction::ModuleBase_WidgetAction(QWidget* theParent,
 : ModuleBase_ModelWidget(theParent, theData),
   myActionID(attributeID())
 {
-  setAttributeID(""); // To prevent errors. Action not stored as attribtue in feature.
+  setAttributeID(""); // To prevent errors. Action not stored as attribute in feature.
   QHBoxLayout* aControlLay = new QHBoxLayout(this);
   ModuleBase_Tools::adjustMargins(aControlLay);
 

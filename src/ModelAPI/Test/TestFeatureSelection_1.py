@@ -17,7 +17,7 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-# The test for correct selection of a whole feautre as argument of other feature: box and construction
+# The test for correct selection of a whole feature as argument of other feature: box and construction
 # plane features as an argument of a Partition
 
 from salome.shaper import model

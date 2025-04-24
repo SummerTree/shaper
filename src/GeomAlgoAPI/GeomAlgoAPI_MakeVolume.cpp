@@ -56,7 +56,7 @@ void GeomAlgoAPI_MakeVolume::build(const ListOfShape& theFaces)
     return;
   }
 
-  // create make volume opration
+  // create make volume operation
   BOPAlgo_MakerVolume* aVolumeMaker = new BOPAlgo_MakerVolume;
   this->setImpl(aVolumeMaker);
   this->setBuilderType(OCCT_BOPAlgo_Builder);

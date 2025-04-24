@@ -192,7 +192,7 @@ class SketchPlugin_MacroEllipse: public SketchPlugin_SketchEntity,
   {return false;}
 
   /// Apply information of the message to current object. It fills reference object,
-  /// tangent type and tangent point refence in case of tangent arc
+  /// tangent type and tangent point reference in case of tangent arc
   virtual std::string processEvent(const std::shared_ptr<Events_Message>& theMessage);
 
   /// Use plugin manager for features creation

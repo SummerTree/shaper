@@ -129,7 +129,7 @@ public:
   /// \brief Request for initialization of data model of the feature: adding all attributes
   SKETCHPLUGIN_EXPORT virtual void initAttributes();
 
-  /// Retuns the parameters of color definition in the resources config manager
+  /// Returns the parameters of color definition in the resources config manager
   SKETCHPLUGIN_EXPORT virtual void colorConfigInfo(std::string& theSection, std::string& theName,
                                                    std::string& theDefault);
 
@@ -140,11 +140,11 @@ public:
   /// Returns the AIS preview
   SKETCHPLUGIN_EXPORT virtual AISObjectPtr getAISObject(AISObjectPtr thePrevious);
 
-  /// Set numeric value to atribute ANGLE_VALUE_ID()
+  /// Set numeric value to attribute ANGLE_VALUE_ID()
   /// \param theValue new set value
   void setNumericValue(const double theValue) override;
 
-  /// Get numeric value of atribute MY_ANGLE_VALUE_ID()
+  /// Get numeric value of attribute MY_ANGLE_VALUE_ID()
   inline double getNumericValue() override
   {
     return real(ANGLE_VALUE_ID())? real(ANGLE_VALUE_ID())->value() : std::numeric_limits<double>::lowest();

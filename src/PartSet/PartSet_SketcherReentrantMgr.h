@@ -182,7 +182,7 @@ private:
   /// in the viewer.
   void beforeStopInternalEdit();
 
-  /// Commits the current operation and launches a new with the commited operation feature index
+  /// Commits the current operation and launches a new with the committed operation feature index
   void restartOperation();
 
   /// Creates an internal feature and controls to process it
@@ -191,7 +191,7 @@ private:
   /// A pair method for an internal creation to remove it and clear all created controls
   void deleteInternalFeature();
 
-  /// Breaks sequense of automatically resterted operations
+  /// Breaks sequence of automatically restarted operations
   void resetFlags();
 
   /// Copy some feature specific attributes from the source to a new feature
@@ -206,7 +206,7 @@ private:
                                       const std::shared_ptr<ModelAPI_CompositeFeature>& theSketch,
                                       const bool isTemporary = false);
 
-  /// Checks whethe the feature of the given operation has kind an arc and the arc type is tangent
+  /// Checks whether the feature of the given operation has kind an arc and the arc type is tangent
   bool isTangentArc(ModuleBase_Operation* theOperation,
                     const std::shared_ptr<ModelAPI_CompositeFeature>& /*theSketch*/) const;
 
@@ -228,7 +228,7 @@ private:
   ModuleBase_IWorkshop* myWorkshop; /// the workshop
 
   RestartingMode myRestartingMode;  /// automatical restarting mode flag
-  bool myIsFlagsBlocked; /// true when reset of flags should not be perfromed
+  bool myIsFlagsBlocked; /// true when reset of flags should not be performed
   bool myIsInternalEditOperation; /// true when the 'internal' edit is started
 
   FeaturePtr myPreviousFeature; /// feature of the previous operation, which is restarted

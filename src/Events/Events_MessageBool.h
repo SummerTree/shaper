@@ -37,7 +37,7 @@ class Events_MessageBool: public Events_Message
 public:
 
   /// Constructor
-  /// \param theEventID an indentifier of the message
+  /// \param theEventID an identifier of the message
   /// \param theValue a Boolean value to send
   /// \param theSender a pointer on sender object
   Events_MessageBool(const Events_ID theEventID, const bool theValue, const void* theSender = 0):

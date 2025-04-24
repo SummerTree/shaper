@@ -192,7 +192,7 @@ public:
 
   /// Display the feature. Obtain the visualized object from the feature.
   /// \param theObject an object to display
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be updated immediately
   /// \return true if the object visibility state is changed
   bool display(ObjectPtr theObject, bool theUpdateViewer = true);
 
@@ -204,7 +204,7 @@ public:
   /// \param toActivateInSelectionModes boolean value whether the presentation should be
   /// activated in the current selection modes
   /// \param theDisplayMode mode how the presentation should be displayed
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be updated immediately
   /// \return true if the object visibility state is changed
   bool displayAIS(AISObjectPtr theAIS, const bool toActivateInSelectionModes,
     const Standard_Integer theDisplayMode = 0, bool theUpdateViewer = true);
@@ -217,14 +217,14 @@ public:
   /// \param toActivateInSelectionModes boolean value whether the presentation should be
   /// activated in the current selection modes
   /// \param theDisplayMode mode how the presentation should be displayed
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be updated immediately
   /// \return true if the object visibility state is changed
   bool displayAIS(Handle(AIS_InteractiveObject) theAISIO, const bool toActivateInSelectionModes,
     const Standard_Integer theDisplayMode = 0, bool theUpdateViewer = true);
 
   /// Redisplay the shape if it was displayed
   /// \param theObject an object instance
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be updated immediately
   /// \return true if the object visibility state is changed
   bool redisplay(ObjectPtr theObject, bool theUpdateViewer = true);
 
@@ -235,34 +235,34 @@ public:
   /// The shape and result components are processed in the values. If the presentation shape is not
   /// empty, select it, otherwise select the result.
   /// \param theValues a list of presentation to be selected
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be updated immediately
   void setSelected(const  QList<std::shared_ptr<ModuleBase_ViewerPrs>>& theValues,
     bool theUpdateViewer = true);
 
   /// Unselect all objects
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be updated immediately
   /// \param theUpdateViewer the parameter to update viewer
   void clearSelected(const bool theUpdateViewer = true);
 
   /// Erase the feature and a shape.
   /// \param theObject an object instance
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be updated immediately
   /// \return true if the object visibility state is changed
   bool erase(ObjectPtr theObject, const bool theUpdateViewer = true);
 
   /// Erase the given AIS object displayed by corresponded display method
   /// \param theAIS instance of AIS object
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be updated immediately
   /// \return true if the object visibility state is changed
   bool eraseAIS(AISObjectPtr theAIS, const bool theUpdateViewer = true);
 
   /// Erase the given AISIO displayed by corresponded display method
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be updated immediately
   /// \return true if the object visibility state is changed
   bool eraseAIS(Handle(AIS_InteractiveObject) theAISIO, const bool theUpdateViewer = true);
 
   /// Erase all presentations
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be updated immediately
   /// \return true if the object visibility state is changed
   bool eraseAll(const bool theUpdateViewer = true);
 
@@ -425,7 +425,7 @@ signals:
   /// \param theObject an object instance
   /// \param theAIS AIS presentation
   /// \param isShading flag to show in shading mode
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be updated immediately
   /// \return true if the object visibility state is changed
   bool display(ObjectPtr theObject, AISObjectPtr theAIS, bool isShading,
                bool theUpdateViewer = true);
@@ -433,7 +433,7 @@ signals:
 private:
   /// Update the object presentable properties such as color, lines width and other
   /// If the object is result with the color attribute value set, it is used,
-  /// otherwise the customize is applyed to the object's feature if it is a custom prs
+  /// otherwise the customize is applied to the object's feature if it is a custom prs
   /// \param theObject an object instance
   /// \return the true state if there is changes and the presentation is customized
   bool customizeObject(ObjectPtr theObject);
@@ -444,7 +444,7 @@ private:
   void appendResultObject(ObjectPtr theObject, AISObjectPtr theAIS);
 
 #ifdef _DEBUG
-  /// Returns an information about alredy displayed objects
+  /// Returns an information about already displayed objects
   /// \return a string representation
   std::string getResult2AISObjectMapInfo() const;
 #endif
@@ -477,7 +477,7 @@ private:
 #endif
   Handle(SelectMgr_AndFilter) myAndFilter; ///< A container for selection filters
 
-  /// Definition of a type of map which defines correspondance between objects and presentations
+  /// Definition of a type of map which defines correspondence between objects and presentations
 #ifdef OPTIMIZE_PRS
   XGUI_TwoSidePresentationMap myResult2AISObjectMap; ///< A map of displayed objects
 #else

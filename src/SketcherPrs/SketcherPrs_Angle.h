@@ -49,7 +49,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(SketcherPrs_Angle, PrsDim_AngleDimension)
 
-  /// Returns true if the constraint feature arguments are correcly filled
+  /// Returns true if the constraint feature arguments are correctly filled
   /// to build AIS presentation
   /// \param theConstraint a constraint feature
   /// \param thePlane a coordinate plane of current sketch
@@ -75,7 +75,7 @@ protected:
 
   /// Checks is the angle plane has inverted direction of normal to the plane of current sketcher
   /// Returns true if crossed product is negative.
-  /// \return bolean value
+  /// \return boolean value
   bool isAnglePlaneReversedToSketchPlane();
 
   /// Calculates a distance between center of the angle presentation and the value of flyout point

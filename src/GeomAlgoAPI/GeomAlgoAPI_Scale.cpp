@@ -90,7 +90,7 @@ void GeomAlgoAPI_Scale::buildByDimensions(std::shared_ptr<GeomAPI_Shape> theSour
                  0., theScaleFactorY, 0.,
                  0., 0., theScaleFactorZ);
 
-  // Perform the tranformation
+  // Perform the transformation
   gp_GTrsf aGTrsf;
   gp_GTrsf aGTrsfP0;
   gp_GTrsf aGTrsf0P;

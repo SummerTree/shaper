@@ -44,7 +44,7 @@ public:
 
 /**
 * \ingroup Modules
-* Implementation of a node for object repesentation
+* Implementation of a node for object representation
 */
 class PartSet_ObjectNode : public PartSet_TreeNode
 {

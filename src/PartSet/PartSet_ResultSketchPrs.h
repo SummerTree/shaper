@@ -54,7 +54,7 @@ protected:
     const Standard_Integer theMode) ;
 
 private:
-  /// Appens sensitive and owners for wires of the given shape into selection
+  /// Appends sensitive and owners for wires of the given shape into selection
   /// \param theSelection a current filled selection
   /// \param theShape a shape
   /// \param theTypeOfSelection type of selection: VERTEX, EDGE, WIRE

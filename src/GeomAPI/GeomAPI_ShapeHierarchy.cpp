@@ -177,7 +177,7 @@ void GeomAPI_ShapeHierarchy::topLevelObjects(ListOfShape& theDestination) const
       if (aFound != myModifiedObjects.end())
         aShape = aFound->second;
       else {
-        // compose a compund with the modified shapes
+        // compose a compound with the modified shapes
         aShape = collectSubs(aRoot, SetOfShape(), myModifiedObjects);
       }
     }

@@ -146,7 +146,7 @@ FeaturePtr InitializationPlugin_Plugin::createPlane(DocumentPtr theDoc, double t
     // don't show automatically created feature in the features history
   aPlane->setInHistory(aPlane, false);
 
-  // the plane should be executed in order to build the feature result immediatelly
+  // the plane should be executed in order to build the feature result immediately
   // the results are to be hidden in the plugin
   aPlane->execute();
   // this flag is needed here to avoid setting it inside of the next transaction
@@ -169,7 +169,7 @@ FeaturePtr InitializationPlugin_Plugin::createPoint(DocumentPtr theDoc, const st
   // don't show automatically created feature in the features history
   aPoint->setInHistory(aPoint, false);
 
-  // the point should be executed in order to build the feature result immediatelly
+  // the point should be executed in order to build the feature result immediately
   // the results are to be hidden in the plugin
   aPoint->execute();
   aPoint->data()->execState(ModelAPI_StateDone);

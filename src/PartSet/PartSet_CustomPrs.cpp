@@ -268,7 +268,7 @@ void PartSet_CustomPrs::clearErrorShape()
 void PartSet_CustomPrs::processEvent(const std::shared_ptr<Events_Message>& theMessage)
 {
   if (theMessage->eventID() == Events_Loop::eventByName(EVENT_EMPTY_OPERATION_PRESENTATION))
-    myPresentationIsEmpty = true; /// store state to analize it after display/erase is finished
+    myPresentationIsEmpty = true; /// store state to analyze it after display/erase is finished
   else if (theMessage->eventID() == Events_Loop::eventByName(EVENT_OPERATION_SHAPES_FAILED)) {
     std::shared_ptr<ModelAPI_ShapesFailedMessage> aErrMsg =
       std::dynamic_pointer_cast<ModelAPI_ShapesFailedMessage>(theMessage);

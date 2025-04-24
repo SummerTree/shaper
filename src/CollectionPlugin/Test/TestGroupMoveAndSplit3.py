@@ -17,7 +17,7 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-# Check the movement to the end and split: whole results, check names of splitted results and groups
+# Check the movement to the end and split: whole results, check names of split results and groups
 
 from salome.shaper import model
 

@@ -47,7 +47,7 @@ public:
   /// Constructor
   /// \param theParent the parent object
   /// \param theModule a reference to a module object
-  /// \param theData the widget configuation. The attribute of the model widget is obtained from
+  /// \param theData the widget configuration. The attribute of the model widget is obtained from
   PartSet_WidgetSketchCreator(QWidget* theParent, PartSet_Module* theModule,
                               const Config_WidgetAPI* theData);
 
@@ -103,7 +103,7 @@ protected:
 
   virtual bool restoreValueCustom();
 
-  /// Retunrs attribute, which should be validated. In default implementation,
+  /// Returns attribute, which should be validated. In default implementation,
   /// this is an attribute of ID
   /// \return an attribute
   virtual AttributePtr attribute() const;
@@ -116,7 +116,7 @@ protected:
   /// \param theSelectionControl state whether the control should be shown/hidden
   void setVisibleSelectionControl(const bool theSelectionControl);
 
-  /// Retunrs a list of possible shape types
+  /// Returns a list of possible shape types
   /// \return a list of shapes
   virtual QIntList shapeTypes() const;
 

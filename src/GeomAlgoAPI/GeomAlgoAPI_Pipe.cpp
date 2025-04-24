@@ -393,7 +393,7 @@ void GeomAlgoAPI_Pipe::generated(const GeomShapePtr theShape,
     GeomAlgoAPI_MakeShape::generated(theShape, theHistory);
 }
 
-// Auxilary functions:
+// Auxiliary functions:
 //==================================================================================================
 bool getBase(TopoDS_Shape& theBaseOut,
              TopAbs_ShapeEnum& theBaseTypeOut,

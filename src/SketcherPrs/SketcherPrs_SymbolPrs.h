@@ -63,7 +63,7 @@ public:
   Standard_EXPORT virtual void HilightSelected(const Handle(PrsMgr_PresentationManager3d)& thePM,
                                                const SelectMgr_SequenceOfOwner& theOwners);
 
-  //! Method which hilight an owner belonging to
+  //! Method which highlight an owner belonging to
   Standard_EXPORT virtual void HilightOwnerWithColor(
     const Handle(PrsMgr_PresentationManager3d)& thePM,
     const Handle(Prs3d_Drawer)& theStyle,
@@ -123,9 +123,9 @@ protected:
   /// \param theAttrName an attribute name which corresponds to referenced line
   void addLine(const Handle(Graphic3d_Group)& theGroup, std::string theAttrName) const;
 
-  /// Redefine this function in order to add additiona lines of constraint base
+  /// Redefine this function in order to add additional lines of constraint base
   /// \param thePrs a presentation
-  /// \param theColor a color of additiona lines
+  /// \param theColor a color of additional lines
   virtual void drawLines(const Handle(Prs3d_Presentation)& /*thePrs*/,
                          Quantity_Color /*theColor*/) const {}
 

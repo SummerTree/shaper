@@ -36,7 +36,7 @@
  * Type of values: Boolean, Integer, Double or String.
  * Number of steps: for each step (indexes are zero-based) the values below are multiplied.
  * Stamp: integer identifier per each step
- * Defaul values for each components
+ * Default values for each components
  * Values for each component and each selected sub-shape: all are of specific type.
  */
 class CollectionPlugin_Field : public ModelAPI_Feature
@@ -54,7 +54,7 @@ class CollectionPlugin_Field : public ModelAPI_Feature
     static const std::string MY_SELECTED_ID("selected");
     return MY_SELECTED_ID;
   }
-  /// attribute name of componenets titles array
+  /// attribute name of components titles array
   inline static const std::string& COMPONENTS_NAMES_ID()
   {
     static const std::string MY_COMPONENTS_NAMES_ID("components_names");
@@ -66,7 +66,7 @@ class CollectionPlugin_Field : public ModelAPI_Feature
     static const std::string MY_STAMPS_ID("stamps");
     return MY_STAMPS_ID;
   }
-  /// attribute name of list of tables that contain deafult values (row 0) and the custom values
+  /// attribute name of list of tables that contain default values (row 0) and the custom values
   inline static const std::string& VALUES_ID()
   {
     static const std::string MY_VALUES_ID("values");

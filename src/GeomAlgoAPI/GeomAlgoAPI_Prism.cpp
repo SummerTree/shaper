@@ -667,7 +667,7 @@ void GeomAlgoAPI_Prism::buildByFaces(const GeomShapePtr             theBaseShape
 }
 
 
-// Auxilary functions:
+// Auxiliary functions:
 //==================================================================================================
 GeomShapePtr buildPlanarFace(const GeomShapePtr& theOriginalShape,
                              const Bnd_Box& theBaseShapeBB)

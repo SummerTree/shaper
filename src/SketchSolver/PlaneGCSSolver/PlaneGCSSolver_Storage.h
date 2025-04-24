@@ -112,7 +112,7 @@ private:
   EntityWrapperPtr createAttribute(const AttributePtr&           theAttribute,
                                    PlaneGCSSolver_EntityBuilder* theBuilder);
 
-  /// \brief Create additional constaints:
+  /// \brief Create additional constraints:
   ///        * for arc to fix extra parameters;
   ///        * for ellipse to keep auxiliary points on their places
   void createAuxiliaryConstraints(const EntityWrapperPtr& theEntity);

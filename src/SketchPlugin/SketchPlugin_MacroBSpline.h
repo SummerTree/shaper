@@ -119,7 +119,7 @@ private:
   /// Create Point feature coincident with the B-spline pole
   static FeaturePtr createAuxiliaryPole(std::shared_ptr<GeomDataAPI_Point2DArray> theBSplinePoles,
                                         const int thePoleIndex);
-  /// Create segment between consequtive B-spline poles
+  /// Create segment between consecutive B-spline poles
   static void createAuxiliarySegment(std::shared_ptr<GeomDataAPI_Point2DArray> theBSplinePoles,
                                      const int thePoleIndex1,
                                      const int thePoleIndex2);

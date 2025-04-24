@@ -37,7 +37,7 @@ Q_OBJECT
  public:
   /// Constructor
   /// \param theParent the parent object
-  /// \param theData the widget configuation. The attribute of the model widget is obtained from
+  /// \param theData the widget configuration. The attribute of the model widget is obtained from
   ModuleBase_WidgetBoolValue(QWidget* theParent, const Config_WidgetAPI* theData);
 
   virtual ~ModuleBase_WidgetBoolValue();

@@ -20,7 +20,7 @@ The following property panel will be opened:
    **Partition operation**
 
 **Base Objects** contains a list of objects selected in the Object Browser or in the Viewer,
-which will be partitioned. Constuction planes are allowed too if at least one non-construction
+which will be partitioned. Construction planes are allowed too if at least one non-construction
 entity is selected.
 
 **Fuzzy Parameter** defines the additional tolerance value used to eliminate tiny results. 

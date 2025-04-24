@@ -5,10 +5,10 @@ Sketch Drawer
 =============
 
 Sketch Drawer featrure is a macro-feature, i.e. it is removed after its execution.
-It allows simplify creation of sketches basing on existing models without referencing to
+It allows simplify creation of sketches based on existing models without referencing to
 these models.
 
-For an example, to create a sketch on exising STEP file model planar face
+For example, to create a sketch on a planar face from an existing STEP file model
 and then remove the original model, to keep only the sketch with copy of contour. So, to be
 able to remove the initial model, there are no references created by this feature.
 

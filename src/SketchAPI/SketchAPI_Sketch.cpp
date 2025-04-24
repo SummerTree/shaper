@@ -1439,7 +1439,7 @@ std::shared_ptr<ModelHighAPI_Interface> SketchAPI_Sketch::setFillet(
   std::shared_ptr<ModelAPI_Feature> aFeature =
       compositeFeature()->addFeature(SketchPlugin_Fillet::ID());
   fillAttribute(thePoint, aFeature->data()->refattr(SketchPlugin_Fillet::FILLET_POINT_ID()));
-  apply(); // finish operation to remove Fillet feature correcly
+  apply(); // finish operation to remove Fillet feature correctly
   return InterfacePtr(new ModelHighAPI_Interface(aFeature));
 }
 
@@ -1780,7 +1780,7 @@ void SketchAPI_Sketch::dump(ModelHighAPI_Dumper& theDumper) const
         std::string aNormalName  = aSketchName + "_norm";
         std::string aDirXName    = aSketchName + "_dirx";
         // use "\n" instead of std::endl to avoid automatic dumping sketch here
-        // and then dumplicate dumping it in the next line
+        // and then duplicate dumping it in the next line
         theDumper << anOriginName << " = " << anOrigin << "\n"
                   << aNormalName  << " = " << aNormal  << "\n"
                   << aDirXName    << " = " << aDirX    << "\n";

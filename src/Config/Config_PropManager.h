@@ -45,7 +45,7 @@ class Config_PropManager
    * \param theDefValue - default and initial value of the property
    * \param theMin - minimal value
    * \param theMax - maximal value
-   * Returns True if the property succesfully registered
+   * Returns True if the property successfully registered
    */
   CONFIG_EXPORT static Config_Prop* registerProp(const std::string& theSection,
     const std::string& theName,
@@ -58,7 +58,7 @@ class Config_PropManager
   CONFIG_EXPORT static Config_Prop* findProp(
     const std::string& theSection, const std::string& theName);
 
-  //! Returns std::list of all existing properies
+  //! Returns std::list of all existing properties
   CONFIG_EXPORT static Config_Properties getProperties();
 
   //! Returns list of registered section names.
@@ -83,7 +83,7 @@ class Config_PropManager
   CONFIG_EXPORT static bool boolean(const std::string& theSection,
                                     const std::string& theName);
 
-  //! Returns convertion of the string to double value. Temporary changes locale to process
+  //! Returns conversion of the string to double value. Temporary changes locale to process
   //! values contained "," or "." separator.
   //! \param theDouble a value to be converted
   //! \return double result or zero

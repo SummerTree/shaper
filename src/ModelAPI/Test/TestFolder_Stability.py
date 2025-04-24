@@ -62,7 +62,7 @@ assert(aPartDoc.size("Features") == NB_FEATURES_FULL), "Wrong number of features
 
 #=========================================================================
 # Test 1. Check number of features out of folder
-#         and absense of the crash while getting size of incorrect group
+#         and absence of the crash while getting size of incorrect group
 #=========================================================================
 assert(aPartDoc.size("Features", True) == NB_FEATURES_OUT), "Wrong number of features: {}, expected: {}".format(aPartDoc.size("Features", True), NB_FEATURES_OUT)
 assert(aPartDoc.size("Construction", True) == 1), "Wrong size: {}".format(aPartDoc.size("Construction", True))

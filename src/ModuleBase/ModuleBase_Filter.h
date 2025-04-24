@@ -32,7 +32,7 @@
  * in the XML file to the specific attribute or to the whole feature.
  * If isOK method of the filter returns "false", it is signalized in user interface
  * that the processed entity should not be selected.
- * Filterss must be registered in the filters factory to be
+ * Filters must be registered in the filters factory to be
  * correctly identified by the XML string-ID.
  */
 class ModuleBase_Filter

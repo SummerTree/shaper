@@ -51,7 +51,7 @@ void GeomAlgoAPI_ThroughAll::removeEnds(std::shared_ptr<GeomAlgoAPI_Prism> thePr
   ListOfShape endShapes (fromShapes);
   endShapes.insert(endShapes.end(), toShapes.begin(), toShapes.end());
 
-  // Throw away end pieces of cutted tools (containing endShapes)
+  // Throw away end pieces of cut tools (containing endShapes)
   TopTools_ListOfShape listTools;
   for (ListOfShape::const_iterator
          anIt = aPieces.begin(); anIt != aPieces.end(); anIt++) {

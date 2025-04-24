@@ -70,7 +70,7 @@ public:
   }
 
 signals:
-  //! Emited on context menu request
+  //! Emitted on context menu request
   void contextMenuRequested(QContextMenuEvent* theEvent);
 
 protected slots:
@@ -152,10 +152,10 @@ private slots:
   void SelectStateChanged(bool theState);
 
 signals:
-  //! Emited when selection is changed
+  //! Emitted when selection is changed
   void selectionChanged();
 
-  //! Emited on context menu request
+  //! Emitted on context menu request
   void contextMenuRequested(QContextMenuEvent* theEvent);
 
   //! An signal emitted on resize of the Object Browser

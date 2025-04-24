@@ -237,7 +237,7 @@ void GeomAlgoAPI_Placement::build(const std::shared_ptr<GeomAPI_Shape>& theSourc
     aShape.reset(new GeomAPI_Shape());
     aShape->setImpl(new TopoDS_Shape(aResult));
     this->setShape(aShape);
-    this->setDone(true); // it is allways true for simple transformation generation
+    this->setDone(true); // it is always true for simple transformation generation
   } else { // internal rebuild of the shape
     // Transform the shape with copying it
     BRepBuilderAPI_Transform* aBuilder = new BRepBuilderAPI_Transform(aSourceShape, aTrsf, true);

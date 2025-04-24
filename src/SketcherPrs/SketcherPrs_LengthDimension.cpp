@@ -67,7 +67,7 @@ void updateArrows(Handle(Prs3d_DimensionAspect) theDimAspect,
 {
   if (theLocationType == SketcherPrs_Tools::LOCATION_AUTOMATIC) {
     double anArrowLength = theDimAspect->ArrowAspect()->Length();
-     // This is not realy correct way to get viewer scale.
+     // This is not really correct way to get viewer scale.
     double aViewerScale = (double) SketcherPrs_Tools::getConfigArrowSize() / anArrowLength;
 
     if(theTextSize > ((theDimValue - 3 * SketcherPrs_Tools::getArrowSize()) * aViewerScale)) {
@@ -87,7 +87,7 @@ void updateArrows(Handle(Prs3d_DimensionAspect) theDimAspect,
     theDimAspect->SetArrowOrientation(Prs3d_DAO_External);
 
     double anArrowLength = theDimAspect->ArrowAspect()->Length();
-    // This is not realy correct way to get viewer scale.
+    // This is not really correct way to get viewer scale.
     double aViewerScale = (double) SketcherPrs_Tools::getConfigArrowSize() / anArrowLength;
     theDimAspect->SetExtensionSize(
         (theTextSize / aViewerScale + SketcherPrs_Tools::getArrowSize()) / 2.0);
@@ -96,7 +96,7 @@ void updateArrows(Handle(Prs3d_DimensionAspect) theDimAspect,
                                       "dimension_font").c_str());
 
   theDimAspect->SetArrowTailSize(theDimAspect->ArrowAspect()->Length());
-  // The value of vertical aligment is sometimes changed
+  // The value of vertical alignment is sometimes changed
   theDimAspect->TextAspect()->SetVerticalJustification(Graphic3d_VTA_CENTER);
 }
 

@@ -38,7 +38,7 @@ enum BOPType {
   BOOL_CUT,      ///< Cut objects
   BOOL_FUSE,     ///< Fuse objects
   BOOL_COMMON,   ///< Take common part of objects
-  BOOL_PARTITION ///< Parition operation
+  BOOL_PARTITION ///< Partition operation
 };
 
 /** \class Localizer

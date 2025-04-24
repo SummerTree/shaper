@@ -17,7 +17,7 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-# Checks selection of the whole shape and move to the end of the simple copy wihtout the
+# Checks selection of the whole shape and move to the end of the simple copy without the
 # next modifications applied.
 
 from salome.shaper import model

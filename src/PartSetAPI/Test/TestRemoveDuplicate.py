@@ -18,7 +18,7 @@
 #
 
 # Created a Part Remove/Duplicate API functionality since from low level and python dump it is not
-# tested: feature history infor is not stored.
+# tested: feature history info is not stored.
 
 from salome.shaper import model
 

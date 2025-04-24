@@ -283,7 +283,7 @@ void SketchPlugin_Split::execute()
               << " [" << getFeatureInfo(aFeature, false) << "]" << std::endl;
   }
 
-  std::cout << "Modifed attributes (constraints to attributes are moved here):" << std::endl;
+  std::cout << "Modified attributes (constraints to attributes are moved here):" << std::endl;
   std::set<std::pair<AttributePtr, AttributePtr> >::const_iterator
     aPIt = aModifiedAttributes.begin(), aPLast = aModifiedAttributes.end();
   std::string aResInfo;

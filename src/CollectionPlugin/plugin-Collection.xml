@@ -41,7 +41,7 @@
       </feature>
 
       <feature id="GroupSubstraction"
-        title="Group Substraction"
+        title="Group Subtraction"
         tooltip="Exclude elements existing tool groups"
         icon="icons/Collection/group_substraction.png"
         helpfile="groupSubstractionFeature.html">

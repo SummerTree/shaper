@@ -415,7 +415,7 @@ bool ModuleBase_WidgetMultiSelector::setSelection(QList<ModuleBase_ViewerPrsPtr>
     isDone = false;
   }
   // updateObject - to update/redisplay feature
-  // it is commented in order to perfom it outside the method
+  // it is commented in order to perform it outside the method
   //if (isDone) {
     //updateObject(myFeature);
     // this emit is necessary to call store/restore method an restore type of selection

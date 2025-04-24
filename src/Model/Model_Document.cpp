@@ -102,7 +102,7 @@ static const int TAG_NODES_STATE = 4; ///< array, tag of the Object Browser node
 ///< naming structures constructions selected from other document
 static const int TAG_EXTERNAL_CONSTRUCTIONS = 5;
 
-/// reference to the shape in external document: sting list attribute identifier
+/// reference to the shape in external document: string list attribute identifier
 static const Standard_GUID kEXTERNAL_SHAPE_REF("9aa5dd14-6d34-4a8d-8786-05842fd7bbbd");
 
 Model_Document::Model_Document(const int theID, const std::string theKind)

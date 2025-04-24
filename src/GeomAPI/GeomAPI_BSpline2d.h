@@ -72,10 +72,10 @@ public:
                                       const double theTolerance,
                                       double& theParameter) const;
 
-  /// \brief Calculate point on B-spline curve accrding to the given parameter
+  /// \brief Calculate point on B-spline curve according to the given parameter
   GEOMAPI_EXPORT void D0(const double theU, std::shared_ptr<GeomAPI_Pnt2d>& thePoint);
 
-  /// \brief Calculate point and first derivative for B-spline curve accrding to the given parameter
+  /// \brief Calculate point and first derivative for B-spline curve according to the given parameter
   GEOMAPI_EXPORT void D1(const double theU, std::shared_ptr<GeomAPI_Pnt2d>& thePoint,
                                             std::shared_ptr<GeomAPI_XY>& theDerivative);
 };

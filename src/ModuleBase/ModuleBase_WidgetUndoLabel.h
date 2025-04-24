@@ -36,7 +36,7 @@ class MODULEBASE_EXPORT ModuleBase_WidgetUndoLabel : public ModuleBase_WidgetLab
 public:
   /// Constructor
   /// \param theParent the parent object
-  /// \param theData the widget configuation. The attribute of the model widget is obtained from
+  /// \param theData the widget configuration. The attribute of the model widget is obtained from
   ModuleBase_WidgetUndoLabel(QWidget* theParent, ModuleBase_IWorkshop* theWorkshop,
     const Config_WidgetAPI* theData);
 

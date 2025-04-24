@@ -30,7 +30,7 @@
 class GeomAPI_ShapeExplorer : public GeomAPI_Interface
 {
 public:
-  /// Default constructor. Creates an empty explorer, becomes usefull after Init.
+  /// Default constructor. Creates an empty explorer, becomes useful after Init.
   GEOMAPI_EXPORT
   GeomAPI_ShapeExplorer();
 

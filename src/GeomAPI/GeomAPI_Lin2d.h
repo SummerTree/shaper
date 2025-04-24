@@ -34,7 +34,7 @@ class GeomAPI_Pnt2d;
 class GeomAPI_Lin2d : public GeomAPI_Interface
 {
  public:
-  /// Creation of line defined by cordinates of start and end points
+  /// Creation of line defined by coordinates of start and end points
   GEOMAPI_EXPORT
   GeomAPI_Lin2d(const double theStartX, const double theStartY, const double theEndX,
                 const double theEndY);

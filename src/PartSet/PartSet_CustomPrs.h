@@ -70,14 +70,14 @@ public:
   /// Initializes the operation presentation by the parameter object and display the presentation
   /// \param theObject an operation feature source to fill the presentation
   /// \param theFlag an object AIS presentation type
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be update immediately
   /// \returns true if the presentation is displayed
   bool activate(const FeaturePtr& theObject,
                 const ModuleBase_IModule::ModuleBase_CustomizeFlag& theFlag,
                 const bool theUpdateViewer);
 
   /// Initializes the operation presentation by empty object and erase the presentation
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be update immediately
   /// \param theFlag an object AIS presentation type
   /// \returns true if the presentation has been displayed and now it is erased
   bool deactivate(const ModuleBase_IModule::ModuleBase_CustomizeFlag& theFlag,
@@ -87,7 +87,7 @@ public:
   /// and the presentation is redisplayed.
   /// \param theObject an object to redisplay
   /// \param theFlag an object AIS presentation type
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be update immediately
   /// \returns true if the presentation is redisplayed
   bool redisplay(const ObjectPtr& theObject,
                  const ModuleBase_IModule::ModuleBase_CustomizeFlag& theFlag,
@@ -95,7 +95,7 @@ public:
 
   /// Nullify all internal presentations. For example, it can be useful when the viewer/context
   /// is closed. If this is not performed and the presentation is assigned in another context,
-  /// it caused erroneus case because the presentation has linkage to the previous context.
+  /// it caused erroneous case because the presentation has linkage to the previous context.
   void clearPrs();
 
   /// Disable displaying of custom mode
@@ -128,21 +128,21 @@ private:
 
   /// Displays the internal presentation in the viewer of workshop
   /// \param theFlag an object AIS presentation type
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be update immediately
   /// \param returns whether the presentation is displayed/redisplayed
   bool displayPresentation(const ModuleBase_IModule::ModuleBase_CustomizeFlag& theFlag,
                            const bool theUpdateViewer);
 
   /// Erases the internal presentation from the viewer of workshop
   /// \param theFlag an object AIS presentation type
-  /// \param theUpdateViewer the parameter whether the viewer should be update immediatelly
+  /// \param theUpdateViewer the parameter whether the viewer should be update immediately
   /// \param returns whether the presentation is erased
   bool erasePresentation(const ModuleBase_IModule::ModuleBase_CustomizeFlag& theFlag,
                          const bool theUpdateViewer);
 
   /// Nullify the operation presentation. For example, it can be useful when the viewer/context
   /// is closed. If this is not performed and the presentation is assigned in another context,
-  /// it caused erroneus case because the presentation has linkage to the previous context.
+  /// it caused erroneous case because the presentation has linkage to the previous context.
   /// \param theFlag an object AIS presentation type
   void clearPresentation(const ModuleBase_IModule::ModuleBase_CustomizeFlag& theFlag);
 

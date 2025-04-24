@@ -431,7 +431,7 @@ private:
                           Events_InfoMessage& theError) const;
 
   //! returns true if the first two points have not been separated
-  //! by a feature referred by thrid point
+  //! by a feature referred by third point
   bool arePointsNotSeparated(const FeaturePtr& theMacroFeature,
                              const std::list<std::string>& theArguments,
                              Events_InfoMessage& theError) const;

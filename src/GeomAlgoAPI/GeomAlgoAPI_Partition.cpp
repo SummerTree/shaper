@@ -57,7 +57,7 @@ void getHistorySupportedType(const TopoDS_Shape& theShape, TopTools_ListOfShape&
 
 //=================================================================================================
 // Operation is used for production of ordered sorting: generated/modified from the first argument
-// must be located in hte result first, etc. THis is for the issue #2517
+// must be located in the result first, etc. This is for the issue #2517
 static void sortCompound(TopoDS_Shape& theCompound, GEOMAlgo_Splitter* theOperation)
 {
   TopoDS_Compound aResCompound;

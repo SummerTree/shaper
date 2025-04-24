@@ -438,8 +438,8 @@ bool PartSet_MenuMgr::canSetAuxiliary(bool& theValue) const
       anObjects.append(aFOperation->feature());
   }
   else {
-    /// The operation should not be aborted here, because the method does not changed
-    /// the auxilliary state, but checks the possibility to perform this
+    /// The operation should not be aborted here, because the method does not change
+    /// the auxiliary state, but checks the possibility to perform this
     ///if (myModule->sketchMgr()->isNestedSketchOperation(anOperation))
     ///  anOperation->abort();
     // 2. change auxiliary type of selected sketch entities

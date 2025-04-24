@@ -133,7 +133,7 @@ MODELAPI_EXPORT std::shared_ptr<ModelAPI_CompositeFeature> compositeOwner(
 
 /*!
  * Returns the result - parent of this result.
- * \param theSub the sub-element of composit result
+ * \param theSub the sub-element of composite result
  * \param theRoot if it is true, returns the root father
  * \returns null if it is not sub-element of composite
  */

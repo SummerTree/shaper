@@ -139,7 +139,7 @@ def testExportXAO(theFile, theEmptyFormat = False):
     aStamps.setValue(0, 10)
     aTables = aField.tables("values")
     aTables.setType(2) # double
-    aTables.setSize(1 + 2, 2, 1) # default row + number of selected, number of compoents, number of steps (tables)
+    aTables.setSize(1 + 2, 2, 1) # default row + number of selected, number of components, number of steps (tables)
     aTables.setValue(1., 0, 0, 0) # value, index of selection, index of component, index of step
     aTables.setValue(2., 1, 0, 0)
     aTables.setValue(3., 2, 0, 0)

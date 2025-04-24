@@ -76,7 +76,7 @@ class Model_AttributeDouble : public ModelAPI_AttributeDouble
   /// Reinitializes the internal state of the attribute (may be needed on undo/redo, abort, etc)
   virtual void reinit();
 
-  /// Resets attribute to deafult state.
+  /// Resets attribute to default state.
   virtual void reset();
 
   friend class Model_Data;

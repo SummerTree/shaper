@@ -205,7 +205,7 @@ void PartSet_PreviewSketchPlane::setCSAndSize(const gp_Ax3& theCS, double theSiz
 bool PartSet_PreviewSketchPlane::setAllUsingSketch(std::shared_ptr<ModelAPI_CompositeFeature> theSketch)
 {
   auto makeSketchFace = [&](const std::shared_ptr<GeomAPI_Shape> sketchShape) -> std::shared_ptr<GeomAPI_Face> {
-    // Chek if a user explicitely set the size of the view.
+    // Check if a user explicitly set the size of the view.
     if (isUseSizeOfView() && (mySketchDefaultSize > Precision::Confusion())) {
       const std::shared_ptr<GeomAPI_Face> aFace(new GeomAPI_Face(sketchShape));
       const std::shared_ptr<GeomAPI_Pln> aPlane = aFace->getPlane();

@@ -73,7 +73,7 @@ public:
 typedef std::shared_ptr<CollectionAPI_GroupSubstraction> GroupSubstractionPtr;
 
 /// \ingroup CPPHighAPI
-/// \brief Create Group Substraction feature.
+/// \brief Create Group Subtraction feature.
 COLLECTIONAPI_EXPORT
 GroupSubstractionPtr addGroupSubstraction(const std::shared_ptr<ModelAPI_Document>& thePart,
                                           const std::list<ModelHighAPI_Selection>& theObjectsList,

@@ -138,7 +138,7 @@ bool ModuleBase_WidgetEditor::showPopupEditor(const bool theSendSignals)
   // we need to emit the focus in event manually in order to save the widget as an active
   // in the property panel before the mouse leave event happens in the viewer. The module
   // ask an active widget and change the feature visualization if the widget is not the current
-  // one.  Also we need this widget as active to provide call of processEnter() applyed
+  // one.  Also we need this widget as active to provide call of processEnter() applied
   // by operation manager to the current widget. If not, the myEditorDialog will stay opened
   emitFocusInWidget();
 
@@ -155,7 +155,7 @@ bool ModuleBase_WidgetEditor::showPopupEditor(const bool theSendSignals)
     if (aText.isEmpty()) {
       if (mySpinBox->hasVariable()) {
         // variable text should be cleared before setting value as the value
-        // will not be set if there is a varable in control
+        // will not be set if there is a variable in control
         ModuleBase_Tools::setSpinText(mySpinBox, "");
       }
       ModuleBase_Tools::setSpinValue(mySpinBox, aValue);

@@ -40,7 +40,7 @@ public:
   /// Performs the algorithm and stores results it in the data structure.
   FEATURESPLUGIN_EXPORT virtual void execute(){};
 
-  /// Return Attribut values of result.
+  /// Return Attribute values of result.
   virtual AttributePtr attributResultValues() = 0;
 
 protected:

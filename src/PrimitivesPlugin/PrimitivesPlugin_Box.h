@@ -175,7 +175,7 @@ class PrimitivesPlugin_Box : public ModelAPI_Feature
   ///Perform the creation of the box using two points defining a diagonal
   void createBoxByTwoPoints();
 
-  ///Perform the creation of the box using three cordinates
+  ///Perform the creation of the box using three coordinates
   void createBoxByDimensions();
 
   ///Perform the creation of the box using a center and three half-lenths

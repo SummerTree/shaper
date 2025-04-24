@@ -58,7 +58,7 @@ public:
 
   /// Returns a container with the current color value.
   /// These are tree int values for RGB definition.
-  /// These value is depend on the random choice and eighter
+  /// These values depend on the random choice and either
   /// a next random color or a certain color.
   /// \return a vector of values
   std::vector<int> getColor() const;

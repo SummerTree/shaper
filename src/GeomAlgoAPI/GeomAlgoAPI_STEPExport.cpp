@@ -100,7 +100,7 @@ bool STEPExport(const std::string& theFileName,
       theError = "STEP Export failed";
   }
   catch (Standard_Failure&) {
-    theError = "Exception catched in STEPExport";
+    theError = "Exception caught in STEPExport";
   }
   return theError.empty();
 }

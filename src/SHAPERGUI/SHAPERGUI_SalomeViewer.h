@@ -121,7 +121,7 @@ Q_OBJECT
   //! For some signals it disconnects the window from usual signal and connect it to the module ones
   void reconnectActions(SUIT_ViewWindow* theWindow, const bool theUseSHAPERSlot);
 
-  //! Perfroms the fit all for the active view
+  //! Performs the fit all for the active view
   virtual void fitAll();
 
   //! Erases all presentations from the viewer
@@ -189,12 +189,12 @@ Q_OBJECT
 
   //! Set position of color scale
   // \param theX is X position relative to current view width
-  // \param theY is Y position relative to current view heigth
+  // \param theY is Y position relative to current view height
   virtual void setColorScalePosition(double theX, double theY);
 
   //! Set size of color scale
   // \param theW is width relative to current view width
-  // \param theh is height relative to current view heigth
+  // \param theh is height relative to current view height
   virtual void setColorScaleSize(double theW, double theH);
 
   //! Set range of color scale
@@ -206,7 +206,7 @@ Q_OBJECT
   // \param theNb is number of intervals
   virtual void setColorScaleIntervals(int theNb);
 
-  //! Set text heigth of color scale
+  //! Set text height of color scale
   // \param theH is number of intervals
   virtual void setColorScaleTextHeigth(int theH);
 
@@ -243,7 +243,7 @@ Q_OBJECT
   void onSelectionChanged();
   void onViewTransformed(OCCViewer_ViewWindow::OperationType);
 
-  /// Emit signal about trihedron visiblity change because SALOME sets
+  /// Emit signal about trihedron visibility change because SALOME sets
   /// the trihedron visible by this signal.
   /// It is necessary to activate the viewer trihedron in the current selection mode
   void onViewPortMapped();

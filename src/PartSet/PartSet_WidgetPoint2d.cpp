@@ -546,7 +546,7 @@ bool PartSet_WidgetPoint2D::setConstraintToObject(const ObjectPtr& theObject)
 
 void PartSet_WidgetPoint2D::mouseReleased(ModuleBase_IViewWindow* theWindow, QMouseEvent* theEvent)
 {
-  // the contex menu release by the right button should not be processed by this widget
+  // the context menu release by the right button should not be processed by this widget
   if (theEvent->button() != Qt::LeftButton)
     return;
 
@@ -653,7 +653,7 @@ void PartSet_WidgetPoint2D::processSelection(const ModuleBase_ViewerPrsPtr& theV
         bool anOrphanPoint = isOrphanPoint(aSelectedFeature, mySketch, aX, aY);
         // do not set a coincidence constraint in the attribute if the feature contains a point
         // with the same coordinates. It is important for line creation in order to do not set
-        // the same constraints for the same points, oterwise the result line has zero length.
+        // the same constraints for the same points, otherwise the result line has zero length.
         bool isAuxiliaryFeature = false;
         if (aShape.ShapeType() == TopAbs_VERTEX) {
           setConstraintToPoint(theX, theY, theValue);

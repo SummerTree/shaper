@@ -45,7 +45,7 @@ class SketchPlugin_Circle: public SketchPlugin_SketchEntity
     return ID;
   }
 
-  /// Is to create contruction point or not
+  /// Is to create construction point or not
   inline static const std::string& ADD_CONSTRUCTION_POINT_ID()
   {
     static const std::string ID("add_construction_point");

@@ -50,7 +50,7 @@ public:
     return MY_NUMBER_FACES_ID;
   }
 
-  /// Attribute name for z coodinate.
+  /// Attribute name for z coordinate.
   inline static const std::string& LIST_FACES_ID()
   {
     static const std::string MY_LIST_FACES_ID("group_list");
@@ -98,16 +98,16 @@ public:
   FeaturesPlugin_GroupSharedFaces();
 
 private:
-  /// Return Attribut values of object.
+  /// Return Attribute values of object.
   virtual AttributePtr attributObject();
 
-  /// Return Attribut values of list of faces.
+  /// Return Attribute values of list of faces.
   virtual AttributePtr attributListFaces();
 
-  /// Return Attribut values of number of faces.
+  /// Return Attribute values of number of faces.
   virtual AttributePtr attributNumberFaces();
 
-  /// Return Attribut values of IsCompute.
+  /// Return Attribute values of IsCompute.
   virtual AttributePtr attributIsCompute();
 };
 

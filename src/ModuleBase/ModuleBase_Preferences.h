@@ -167,7 +167,7 @@ protected slots:
   void onDefault();
 
  private:
-   /// Create editors for aplication properties
+   /// Create editors for application properties
    void createEditors();
 
    /// Create a viewer page in dialog box

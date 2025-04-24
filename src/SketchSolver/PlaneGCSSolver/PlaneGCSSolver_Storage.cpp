@@ -257,7 +257,7 @@ static void createArcConstraints(const EntityWrapperPtr& theArc,
   EdgeWrapperPtr anEdge = std::dynamic_pointer_cast<PlaneGCSSolver_EdgeWrapper>(theArc);
   std::shared_ptr<GCS::Arc> anArc = std::dynamic_pointer_cast<GCS::Arc>(anEdge->entity());
 
-  // Additional constaints to fix arc's extra DoF (if the arc is not external):
+  // Additional constraints to fix arc's extra DoF (if the arc is not external):
   std::list<GCSConstraintPtr> anArcConstraints;
   // 1. distances from center till start and end points are equal to radius
   anArcConstraints.push_back(GCSConstraintPtr(new GCS::ConstraintP2PDistance(
@@ -288,7 +288,7 @@ static void createEllipseConstraints(
   std::shared_ptr<GCS::Ellipse> anEllipse =
       std::dynamic_pointer_cast<GCS::Ellipse>(anEdge->entity());
 
-  // Additional constaints to fix ellipse's extra points
+  // Additional constraints to fix ellipse's extra points
   std::list<GCSConstraintPtr> anEllipseConstraints;
 
   const std::map<std::string, EntityWrapperPtr>& anAttributes = theEllipse->additionalAttributes();
@@ -480,7 +480,7 @@ void PlaneGCSSolver_Storage::adjustParametrizationOfArcs()
   std::map<ConstraintPtr, ConstraintWrapperPtr>::iterator aCIt = myConstraintMap.begin();
   // [bos#40730] Random crash when running script from terminal:
   // In this specific case, when iterating over all constraints and finding a MiddlePoint
-  // constraint, it gets notified, causing it to be removed and readded to the map.
+  // constraint, it gets notified, causing it to be removed and read to the map.
   // At that time, the iterator gets out-of-date and iterating further leads to invalid
   // pointers, causing the crash.
   std::map<ConstraintPtr, ConstraintWrapperPtr>::iterator aNextCIt = aCIt;
@@ -518,7 +518,7 @@ bool PlaneGCSSolver_Storage::removeConstraint(ConstraintPtr theConstraint)
     if (anID != CID_MOVEMENT)
       myNeedToResolve = true;
 
-    // notify subscibers
+    // notify subscribers
     notify(theConstraint);
   }
   return true;

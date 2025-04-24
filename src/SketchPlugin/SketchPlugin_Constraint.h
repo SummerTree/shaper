@@ -104,14 +104,14 @@ class SketchPlugin_Constraint : public SketchPlugin_Feature
     return true;
   }
 
-  /// Set numeric value to atribute VALUE()
+  /// Set numeric value to attribute VALUE()
   /// \param theValue new set value
   virtual inline void setNumericValue(const double theValue)
   {
     real(VALUE())->setValue(theValue);
   }
 
-  /// Get numeric value of atribute VALUE()
+  /// Get numeric value of attribute VALUE()
   virtual inline double getNumericValue()
   {
     return real(VALUE())? real(VALUE())->value(): std::numeric_limits<double>::lowest();
