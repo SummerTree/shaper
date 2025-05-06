@@ -36,6 +36,7 @@
 #include <XGUI_Workshop.h>
 
 #include <ModelAPI_ResultBody.h>
+#include <ModelAPI_ResultConstruction.h>
 #include <ModelAPI_Tools.h>
 #include <ModelAPI_AttributeDouble.h>
 #include <ModelAPI_AttributeInteger.h>
@@ -472,16 +473,76 @@ void PartSet_WidgetSketchLabel::updateByPlaneSelected(const ModuleBase_ViewerPrs
   myPartSetMessage->hide();
   mySizeMessage->hide();
 
-  // 1. hide main planes if they have been displayed and display sketch preview plane
+  // Set the type of selected object
+  enum SelType {
+    Invalid = 0, // should never happen
+    PreviewPlane = 1,
+    InvisibleConstructionPlane = 2,
+    VisibleConstructionPlane = 3,
+    PlanarFace = 4
+  };
+  SelType aSelType = SelType::Invalid;
+  Bnd_Box aBBox;
+  // Get the selected object
+  if (thePrs.get())
+  {
+    // A preview plane has no object attached
+    ObjectPtr aObject = thePrs->object();
+    if (!aObject.get())
+    {
+      aSelType = SelType::PreviewPlane;
+    }
+    else
+    {
+      // Distinguish between a construction plane and a planar face
+      if (aObject->groupName() == ModelAPI_ResultConstruction::group())
+      {
+        // Get the bounding box of the selected construction plane, if it is displayed
+        ResultConstructionPtr aResultConstruction =
+          std::dynamic_pointer_cast<ModelAPI_ResultConstruction>(aObject);
+        if (aResultConstruction.get() && aResultConstruction->isDisplayed())
+        {
+          aSelType = SelType::VisibleConstructionPlane;
+          GeomShapePtr aShape = aResultConstruction->shape();
+          Standard_Real aMinX,aMinY,aMinZ,aMaxX,aMaxY,aMaxZ;
+          if (aShape.get() && aShape->computeSize(aMinX,aMinY,aMinZ,aMaxX,aMaxY,aMaxZ))
+          {
+            aBBox.Update(aMinX,aMinY,aMinZ,aMaxX,aMaxY,aMaxZ);
+          }
+        }
+        else
+        {
+          aSelType = SelType::InvisibleConstructionPlane;
+        }
+      }
+      else if (aObject->groupName() == ModelAPI_ResultBody::group())
+      {
+        aSelType = SelType::PlanarFace;
+      }
+    }
+  }
+
+  // 1. Hide main planes if they have been displayed and display sketch preview plane
   myPreviewPlanes->erasePreviewPlanes(myWorkshop);
 
   bool isValidSizeInput = true;
   double aSizeOfView = mySizeOfView->text().toDouble(&isValidSizeInput);
-  if (aSizeOfView < Precision::Confusion() || !isValidSizeInput)
-    aSizeOfView = PartSet_PreviewSketchPlane::defaultSketchSize();
+  if (isValidSizeInput || aSelType == SelType::PreviewPlane || aSelType == SelType::InvisibleConstructionPlane)
+  {
+    // If the size of the view was given by the user or a preview plane was selected,
+    // compute the bounding box based on the default view size.
+    if (aSizeOfView < Precision::Confusion() || !isValidSizeInput)
+    {
+      aSizeOfView = PartSet_PreviewSketchPlane::defaultSketchSize();
+    }
+    double aHalfSize = aSizeOfView/2.0;
+    aBBox.SetVoid();
+    aBBox.Update(-aHalfSize, -aHalfSize, -aHalfSize, aHalfSize, aHalfSize, aHalfSize);
+  }
 
   PartSet_Module* aModule = dynamic_cast<PartSet_Module*>(myWorkshop->module());
-  if (aModule) {
+  if (aModule)
+  {
     CompositeFeaturePtr sketch = std::dynamic_pointer_cast<ModelAPI_CompositeFeature>(myFeature);
     PartSet_Tools::sketchPlaneDefaultSize(sketch)->setValue(aSizeOfView);
     aModule->sketchMgr()->previewSketchPlane()->setUseSizeOfView(isValidSizeInput);
@@ -489,36 +550,28 @@ void PartSet_WidgetSketchLabel::updateByPlaneSelected(const ModuleBase_ViewerPrs
   }
   reconfigureSketchViewWidgets();
 
-  // 2. if the planes were displayed, change the view projection
-
-  // Rotate view if the sketcher plane is selected only from preview planes
-  // Preview planes are created only if there is no any shape
+  // 2. If the "Rotate to plane when selected" preference is enabled, change the view projection
   bool aRotate = Config_PropManager::boolean(SKETCH_TAB_NAME, "rotate_to_plane");
-  if (aRotate) {
+  if (aRotate)
+  {
     bool aReversed = myViewInverted->isChecked();
     setViewProjection(myWorkshop, aPlane, aReversed);
   }
 
-  Handle(V3d_View) aView3d = myWorkshop->viewer()->activeView();
-  if (!aView3d.IsNull()) {
-    Bnd_Box aBndBox;
-    double aHalfSize = aSizeOfView/2.0;
-    aBndBox.Update(-aHalfSize, -aHalfSize, -aHalfSize, aHalfSize, aHalfSize, aHalfSize);
-    aView3d->FitAll(aBndBox, 0.01, false);
-  }
-
-  if (myOpenTransaction) {
+  if (myOpenTransaction)
+  {
     SessionPtr aMgr = ModelAPI_Session::get();
     aMgr->finishOperation();
     myOpenTransaction = false;
   }
+
   // 3. Clear text in the label
   myStackWidget->setCurrentIndex(1);
   //myLabel->setText("");
   //myLabel->setToolTip("");
   XGUI_Workshop* aWorkshop = XGUI_Tools::workshop(myWorkshop);
 
-  // 5. Clear selection mode and define sketching mode
+  // 4. Clear selection mode and define sketching mode
   emit planeSelected(plane());
   // after the plane is selected in the sketch, the sketch selection should be activated
   // it can not be performed in the sketch label widget because, we don't need to switch off
@@ -527,13 +580,31 @@ void PartSet_WidgetSketchLabel::updateByPlaneSelected(const ModuleBase_ViewerPrs
   myWorkshop->selectionActivate()->updateSelectionModes();
 
   if (aModule)
+  {
     aModule->onViewTransformed();
+  }
 
   myWorkshop->updateCommandStatus();
   aWorkshop->selector()->clearSelection();
   myWorkshop->viewer()->update();
 
   myRemoveExternal->setVisible(false);
+
+  // Fit the view
+  Handle(V3d_View) aView3d = myWorkshop->viewer()->activeView();
+  if (!aView3d.IsNull())
+  {
+    if (aBBox.IsVoid())
+    {
+      // If no bbox was computed, then fit the view to the entire scene.
+      aView3d->FitAll(0.01, false);
+    }
+    else
+    {
+      // Fit the computed bounding box from the construction plane
+      aView3d->FitAll(aBBox, 0.01, false);
+    }
+  }
 }
 
 std::shared_ptr<GeomAPI_Pln> PartSet_WidgetSketchLabel::plane() const
@@ -1258,9 +1329,6 @@ void PartSet_WidgetSketchGrid::retrieveSketchAndPlane()
 PartSet_WidgetSketchRectangularGrid::PartSet_WidgetSketchRectangularGrid(QWidget* theParent, PartSet_WidgetSketchLabel* theSketchLabel)
 : PartSet_WidgetSketchGrid(theParent, theSketchLabel)
 {
-  static const double MAX_DOUBLE = std::numeric_limits<double>::max();
-  static const double MIN_DOUBLE = std::numeric_limits<double>::min();
-
   const auto stepXLabel = new QLabel(this);
   stepXLabel->setText(tr("Pitch") + " X'");
 
@@ -1407,9 +1475,6 @@ void PartSet_WidgetSketchRectangularGrid::onOffsetYChanged(double theOffset)
 PartSet_WidgetSketchCircularGrid::PartSet_WidgetSketchCircularGrid(QWidget* theParent, PartSet_WidgetSketchLabel* theSketchLabel)
 : PartSet_WidgetSketchGrid(theParent, theSketchLabel)
 {
-  static const double MAX_DOUBLE = std::numeric_limits<double>::max();
-  static const double MIN_DOUBLE = std::numeric_limits<double>::min();
-
   const auto stepRLabel = new QLabel(this);
   stepRLabel->setText(tr("Pitch") + " R");
 
