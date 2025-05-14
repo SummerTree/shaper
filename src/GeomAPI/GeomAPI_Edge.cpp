@@ -120,9 +120,9 @@ bool GeomAPI_Edge::isLine() const
   Handle(Geom_Curve) aCurve = BRep_Tool::Curve((const TopoDS_Edge&)aShape, aFirst, aLast);
   if (aCurve.IsNull()) // degenerative edge
     return false;
-  if (aCurve->IsKind(STANDARD_TYPE(Geom_Line)))
-    return true;
-  return false;
+  while (aCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+    aCurve = Handle(Geom_TrimmedCurve)::DownCast(aCurve)->BasisCurve();
+  return aCurve->IsKind(STANDARD_TYPE(Geom_Line));
 }
 
 /// extracts a circle curve from the arbitrary curve, returns null is it is different type
@@ -252,7 +252,9 @@ std::shared_ptr<GeomAPI_Lin> GeomAPI_Edge::line() const
   const TopoDS_Shape& aShape = const_cast<GeomAPI_Edge*>(this)->impl<TopoDS_Shape>();
   double aFirst, aLast;
   Handle(Geom_Curve) aCurve = BRep_Tool::Curve((const TopoDS_Edge&)aShape, aFirst, aLast);
-  if (aCurve) {
+  if (!aCurve.IsNull()) {
+    while (aCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
+      aCurve = Handle(Geom_TrimmedCurve)::DownCast(aCurve)->BasisCurve();
     Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast(aCurve);
     if (aLine) {
       gp_Pnt aStartPnt = aLine->Value(aFirst);

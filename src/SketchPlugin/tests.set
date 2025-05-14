@@ -179,6 +179,7 @@ SET(TEST_NAMES_PARA
   TestProjectionEllipse.py
   TestProjectionEllipticArc.py
   TestProjectionIntoResult.py
+  TestProjectionTrimmedLine.py
   TestProjectionUpdate.py
   TestProjectionWithoutReference.py
   TestRectangle1.py
