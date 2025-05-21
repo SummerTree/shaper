@@ -48,6 +48,8 @@ SET(TEST_NAMES
                TestGroupMove24.py
                TestGroupMove25.py
                TestGroupMove26.py
+               TestGroupMove27.py
+               TestGroupMove28.py
                TestGroupShareTopology.py
                TestGroupAddition.py
                TestGroupAddition_Error.py
@@ -67,6 +69,7 @@ SET(TEST_NAMES
                TestGroupMoveAndSplit2.py
                TestGroupMoveAndSplit3.py
                TestGroupMoveAndSplit4.py
+               TestGroupMoveAndSplit5.py
                Test3114.py
                Test18739.py
                TestCreateShapesFromGroups.py

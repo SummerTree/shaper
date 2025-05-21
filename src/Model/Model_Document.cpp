@@ -1309,8 +1309,25 @@ void Model_Document::moveFeature(FeaturePtr theMoved, FeaturePtr theAfterThis, c
     if (aMovedList.get())
       aMovedList->setMakeCopy(true);
   }
-  myObjs->moveFeature(theMoved, anAfterThisSub);
 
+  // distinguish Part kind from other kind of Features
+  // to allow moving the Part upward in the history
+  if (theMoved->getKind() == "Part")  {
+    myObjs->moveFeature(theMoved, anAfterThisSub);
+  } else { // any other feature : check if the move is made downward in the history
+    if (!myObjs->isLater(theMoved, anAfterThisSub)) {
+      // move the feature downward incrementally in the history
+      int anIndex = kUNDEFINED_FEATURE_INDEX;
+      while ((!myObjs->isLater(theMoved, anAfterThisSub))) {
+        myObjs->moveFeature(theMoved, myObjs->nextFeature(theMoved, anIndex));
+      }
+    } else { // the feature is asked to move upward
+      std::string aMoveError("The moved feature can not be moved upward.");
+      Events_InfoMessage("Model_Document", aMoveError).send();
+      return;
+    }
+  }
+  
   if (theSplit) { // split the group into sub-features
     theMoved->customAction("split");
   }

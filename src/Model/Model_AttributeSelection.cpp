@@ -1454,13 +1454,13 @@ bool Model_AttributeSelection::searchNewContext(std::shared_ptr<Model_Document> 
         continue; // the current modifier is later than the found, so, useless
       Handle(TNaming_NamedShape) aNewNS;
       aModifIter.Label().FindAttribute(TNaming_NamedShape::GetID(), aNewNS);
-      if (aNewNS->Evolution() == TNaming_MODIFY || aNewNS->Evolution() == TNaming_GENERATED) {
+      if (aNewNS->Evolution() == TNaming_MODIFY ||
+          aNewNS->Evolution() == TNaming_GENERATED ||
+          aNewNS->Evolution() == TNaming_DELETE) { // Delete state may be induced by modifiers such as Fuse feature
         if (aResultsSet.find(aModifierObj) == aResultsSet.end()) {
           aResultsSet.insert(aModifierObj);
           aResults.push_back(aModifierObj);
         }
-      } else if (aNewNS->Evolution() == TNaming_DELETE) { // a shape was deleted => result is empty
-        aResults.push_back(ResultPtr());
       } else { // not-processed modification => don't support it
         continue;
       }
