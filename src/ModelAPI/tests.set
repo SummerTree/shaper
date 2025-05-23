@@ -125,4 +125,5 @@ SET(TEST_NAMES
                TestMovePart1.py
                TestMovePart2.py
                Test40642_SimpleAPI.py
+               Test41407.py
 )

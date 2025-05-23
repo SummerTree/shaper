@@ -2136,7 +2136,14 @@ ResultPtr Model_Objects::findByName(const std::wstring theName)
       if (aRes.get() && aRes->data() && aRes->data()->isValid() && !aRes->isDisabled() &&
           aRes->data()->name() == theName)
       {
-        if (!aResult.get() || isLater(aFeature, aResFeature)) { // select the latest
+        bool isCurGroup = std::dynamic_pointer_cast<ModelAPI_ResultGroup>(aRes).get() != nullptr;
+        bool isResGroup = std::dynamic_pointer_cast<ModelAPI_ResultGroup>(aResult).get() != nullptr;
+
+        if(aResult.get() && !isResGroup && isCurGroup)
+          continue; // skip group if there is alreay non group result
+
+        // select rather non-group result than group OR the latest
+        if (!aResult.get() || isLater(aFeature, aResFeature) || (isResGroup && !isCurGroup)) {
           aResult = aRes;
           aResFeature = aFeature;
         }
