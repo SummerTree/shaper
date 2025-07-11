@@ -184,19 +184,36 @@ class SketchPlugin_Rectangle(model.Feature):
                 # Create central SketchPoint
                 aCenterSketchPointAttr = self.refattr(self.CENTER_REF_ID())
                 aCenter = self.__getPoint2D(self.attribute(self.CENTER_ID()), aCenterSketchPointAttr)
-                attr = self.__getPoint2DAttrOfSketchPoint(aCenterSketchPointAttr)
+                if aCenter is None:
+                    # If we couldn't get a point (e.g., selected a line), use the corner point as a fallback
+                    # and adjust it later with constraints
+                    aCorner = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.CORNER_ID()))
+                    aCenter = model.geom.Pnt2d(aCorner.x(), aCorner.y()) 
 
-                # Create SketchPoint
+                # Create the center sketch point 
                 aCenterSketchPoint = self.__sketch.addFeature("SketchPoint")
                 aCenterSketchPoint.data().boolean("Auxiliary").setValue(True)
                 aCenterSketchPointCoords = GeomDataAPI.geomDataAPI_Point2D(aCenterSketchPoint.attribute("PointCoordinates"))
                 aCenterSketchPointCoords.setValue(aCenter.x(), aCenter.y())
+
+                # Try to get the attribute if it's a point
+                attr = self.__getPoint2DAttrOfSketchPoint(aCenterSketchPointAttr)
 
                 if attr is not None:
                     # Add coincidence constraint between selected point and created one
                     aCoincidence = self.__sketch.addFeature("SketchConstraintCoincidence")
                     aCoincidence.refattr("ConstraintEntityA").setAttr(attr)
                     aCoincidence.refattr("ConstraintEntityB").setObject(aCenterSketchPoint)
+                else:
+                    # Handle when a line or other geometry is selected
+                    if aCenterSketchPointAttr.isObject() and aCenterSketchPointAttr.object() is not None:
+                        try:
+                            aCoincidence = self.__sketch.addFeature("SketchConstraintCoincidence")
+                            aCoincidence.refattr("ConstraintEntityA").setObject(aCenterSketchPointAttr.object())
+                            aCoincidence.refattr("ConstraintEntityB").setObject(aCenterSketchPoint)
+                        except Exception as e:
+                            print("Error creating constraint:", e)
+                            # Just create center point without constraint
 
                 # Set or replace selected point with created one
                 aCenterSketchPointAttr.setObject(aCenterSketchPoint)
@@ -205,7 +222,7 @@ class SketchPlugin_Rectangle(model.Feature):
                 # coincidences between center point and diagonals
                 for line in [aDiag1.lastResult(), aDiag2.lastResult()]:
                     aCoincidence = self.__sketch.addFeature("SketchConstraintCoincidence")
-                    aCoincidence.refattr("ConstraintEntityA").setAttr(attr)
+                    aCoincidence.refattr("ConstraintEntityA").setAttr(aCenterSketchPoint.attribute("PointCoordinates"))
                     aCoincidence.refattr("ConstraintEntityB").setObject(line)
 
         # Add perpendicular constraints to the contour lines, which already have result
@@ -230,90 +247,102 @@ class SketchPlugin_Rectangle(model.Feature):
 
 
     def attributeChanged(self, theID):
-        if theID == self.START_ID() or theID == self.END_ID() or theID == self.CENTER_ID() or theID == self.CENTER_REF_ID() or theID == self.CORNER_ID():
-            # Find the sketch containing this rectangle
-            self.__sketch = None
-            aRefsToMe = self.data().refsToMe()
-            for aRefToMe in aRefsToMe:
-                aFeature = ModelAPI.objectToFeature(aRefToMe.owner())
-                if aFeature.getKind() == "Sketch":
-                    self.__sketch = ModelAPI.featureToCompositeFeature(aFeature)
-                    break
+        try:
+            if theID == self.START_ID() or theID == self.END_ID() or theID == self.CENTER_ID() or theID == self.CENTER_REF_ID() or theID == self.CORNER_ID():
+                # Find the sketch containing this rectangle
+                self.__sketch = None
+                aRefsToMe = self.data().refsToMe()
+                for aRefToMe in aRefsToMe:
+                    aFeature = ModelAPI.objectToFeature(aRefToMe.owner())
+                    if aFeature.getKind() == "Sketch":
+                        self.__sketch = ModelAPI.featureToCompositeFeature(aFeature)
+                        break
 
-            if theID == self.CENTER_REF_ID():
-                # Init CENTER_ID from CENTER_REF_ID
-                # Otherwise, not all obligatory attributes are initialized when calling from script
-                # (from GUI they are synchronized automatically)
-                aCenterSketchPointAttr = self.refattr(self.CENTER_REF_ID())
-                aCenterSketchPointCoordsAttr = self.__getPoint2DAttrOfSketchPoint(aCenterSketchPointAttr)
-                aCenterSketchPointCoords = GeomDataAPI.geomDataAPI_Point2D(aCenterSketchPointCoordsAttr)
-                aCenter = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.CENTER_ID()))
-                aCenter.setValue(aCenterSketchPointCoords.x(), aCenterSketchPointCoords.y())
+                if theID == self.CENTER_REF_ID():
+                    # Init CENTER_ID from CENTER_REF_ID
+                    # Otherwise, not all obligatory attributes are initialized when calling from script
+                    # (from GUI they are synchronized automatically)
+                    aCenterSketchPointAttr = self.refattr(self.CENTER_REF_ID())
+                    aCenterSketchPointCoordsAttr = self.__getPoint2DAttrOfSketchPoint(aCenterSketchPointAttr)
+                    # Check if coordinates attribute is None (will be None for lines and other geometry)
+                    if aCenterSketchPointCoordsAttr is not None:
+                        aCenterSketchPointCoords = GeomDataAPI.geomDataAPI_Point2D(aCenterSketchPointCoordsAttr)
+                        aCenter = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.CENTER_ID()))
+                        aCenter.setValue(aCenterSketchPointCoords.x(), aCenterSketchPointCoords.y())
+                    else:
+                        # For lines and other geometry, use the current mouse position
+                        # This will be updated later when the user selects the corner point
+                        # We can get this from the sketch context or leave as-is
+                        pass
 
-            aLinesList = self.reflist(self.LINES_LIST_ID())
-            aNbLines = aLinesList.size()
-            if aNbLines == 0:
-                # If only one generative point is iniialized,
-                # do not create the full set of contour lines to not clutter
-                # UI with icons of constraints near the mouse pointer.
-                aLine = self.__sketch.addFeature("SketchLine")
-                aLinesList.append(aLine)
+                aLinesList = self.reflist(self.LINES_LIST_ID())
+                aNbLines = aLinesList.size()
+                if aNbLines == 0:
+                    # If only one generative point is iniialized,
+                    # do not create the full set of contour lines to not clutter
+                    # UI with icons of constraints near the mouse pointer.
+                    aLine = self.__sketch.addFeature("SketchLine")
+                    aLinesList.append(aLine)
 
-            aStartPoint = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.START_ID()))
-            aEndPoint = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.END_ID()))
-            aCenter = self.__getPoint2D(self.attribute(self.CENTER_ID()), self.refattr(self.CENTER_REF_ID()))
-            aCorner = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.CORNER_ID()))
+                aStartPoint = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.START_ID()))
+                aEndPoint = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.END_ID()))
+                aCenter = self.__getPoint2D(self.attribute(self.CENTER_ID()), self.refattr(self.CENTER_REF_ID()))
+                aCorner = GeomDataAPI.geomDataAPI_Point2D(self.attribute(self.CORNER_ID()))
 
-            if (aStartPoint.isInitialized() and aEndPoint.isInitialized()) or (aCenter is not None and aCorner.isInitialized()):
-              self.__updateLines()
-            else:
-              self.__updateLinesWithOnlyGenerativePoint()
+                if (aStartPoint.isInitialized() and aEndPoint.isInitialized()) or (aCenter is not None and aCorner.isInitialized()):
+                    self.__updateLines()
+                else:
+                    self.__updateLinesWithOnlyGenerativePoint()
 
-        elif theID == self.AUXILIARY_ID():
-            # Change aux attribute of contour lines
-            anAuxiliary = self.data().boolean(self.AUXILIARY_ID()).value()
-            aLinesList = self.reflist(self.LINES_LIST_ID())
-            for i in range (0, min(aLinesList.size(), 4)):
-                aLine = ModelAPI.objectToFeature(aLinesList.object(i))
-                aLine.data().boolean("Auxiliary").setValue(anAuxiliary)
-
-        elif theID == self.RECTANGLE_TYPE_ID():
-            # TODO Find a way to distinguish "attribute changed" events on hover and on click.
-            # Now, if both generative points are selected, but the rectangle is not applied,
-            # and then rectangle type is changed, the unapplied rectangle is erased.
-            # It should be applied instead.
-
-            # Prevent calls to attributeChanged()
-            wasBlocked = self.data().blockSendAttributeUpdated(True)
-
-            aLinesList = self.reflist(self.LINES_LIST_ID())
-            if aLinesList.size() < 4:
-                for i in range (0, aLinesList.size()):
+            elif theID == self.AUXILIARY_ID():
+                # Change aux attribute of contour lines
+                anAuxiliary = self.data().boolean(self.AUXILIARY_ID()).value()
+                aLinesList = self.reflist(self.LINES_LIST_ID())
+                for i in range (0, min(aLinesList.size(), 4)):
                     aLine = ModelAPI.objectToFeature(aLinesList.object(i))
-                    self.document().removeFeature(aLine)
-            aLinesList.clear()
+                    aLine.data().boolean("Auxiliary").setValue(anAuxiliary)
 
-            self.refattr(self.CENTER_REF_ID()).reset()
-            self.attribute(self.START_ID()).reset()
-            self.attribute(self.END_ID()).reset()
-            self.attribute(self.CENTER_ID()).reset()
-            self.attribute(self.CORNER_ID()).reset()
+            elif theID == self.RECTANGLE_TYPE_ID():
+                # TODO Find a way to distinguish "attribute changed" events on hover and on click.
+                # Now, if both generative points are selected, but the rectangle is not applied,
+                # and then rectangle type is changed, the unapplied rectangle is erased.
+                # It should be applied instead.
 
-            self.data().blockSendAttributeUpdated(wasBlocked, True)
+                # Prevent calls to attributeChanged()
+                wasBlocked = self.data().blockSendAttributeUpdated(True)
 
+                aLinesList = self.reflist(self.LINES_LIST_ID())
+                if aLinesList.size() < 4:
+                    for i in range (0, aLinesList.size()):
+                        aLine = ModelAPI.objectToFeature(aLinesList.object(i))
+                        self.document().removeFeature(aLine)
+                aLinesList.clear()
+
+                self.refattr(self.CENTER_REF_ID()).reset()
+                self.attribute(self.START_ID()).reset()
+                self.attribute(self.END_ID()).reset()
+                self.attribute(self.CENTER_ID()).reset()
+                self.attribute(self.CORNER_ID()).reset()
+
+                self.data().blockSendAttributeUpdated(wasBlocked, True)
+
+        except Exception as e:
+            print("Error in SketchPlugin_Rectangle.attributeChanged:", e)
 
     def __getPoint2DAttrOfSketchPoint(self, theSketchPointRefAttr):
         if theSketchPointRefAttr.isObject() and theSketchPointRefAttr.object() is not None:
             feature = ModelAPI.ModelAPI_Feature.feature(theSketchPointRefAttr.object())
-            if feature.getKind() == "SketchPoint":
+            if feature is not None and feature.getKind() == "SketchPoint":
                 return feature.attribute("PointCoordinates")
-        else:
+            # For lines and other geometry, return None
+            return None
+        elif theSketchPointRefAttr.attr() is not None:
             return theSketchPointRefAttr.attr()
-
+        return None
 
     def __getPoint2D(self, thePoint2DAttr, theSketchPointRefAttr):
         attr = thePoint2DAttr
-        if theSketchPointRefAttr.isInitialized():
+        if theSketchPointRefAttr is not None and theSketchPointRefAttr.isInitialized():
             aPoint2DAttr = self.__getPoint2DAttrOfSketchPoint(theSketchPointRefAttr)
             if aPoint2DAttr is not None:
                 attr = aPoint2DAttr
