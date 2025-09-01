@@ -22,7 +22,7 @@ from salome.shaper import model
 
 from PyQt5.Qt import QApplication
 
-import salome
+from salome.kernel import salome
 salome.salome_init_without_session()
 salome.salome_init(embedded=True)
 if QApplication.instance() is None:
@@ -102,7 +102,7 @@ with TemporaryDirectory() as tmp_dir:
   assert(aSc.firstResult().hasTexture())
 
 # Close SALOME GUI
-import salome_utils
+from salome.kernel import salome_utils
 import subprocess
 import platform
 port = salome_utils.getPortNumber()

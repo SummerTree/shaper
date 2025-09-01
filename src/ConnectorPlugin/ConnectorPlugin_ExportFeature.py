@@ -24,7 +24,7 @@ import ModelAPI
 import ExchangeAPI
 import EventsAPI
 
-import salome
+from salome.kernel import salome
 from salome.geom import geomBuilder
 
 from salome.shaper import model

@@ -18,7 +18,7 @@
 #
 
 import sys
-import salome
+from salome.kernel import salome
 from ModelAPI import *
 
 def assertPoint(aPoint):

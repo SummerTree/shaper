@@ -12,7 +12,7 @@ __revision__ = "V02.01"
 theFile = "/home/D68518/pipeNetwork_ligne.txt"
 #=================================================================================
 
-import salome
+from salome.kernel import salome
 salome.standalone()
 salome.salome_init()
 

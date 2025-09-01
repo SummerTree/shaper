@@ -21,8 +21,8 @@
 Module reader
 """
 
-import salome
-import SALOME_ModuleCatalog
+from salome.kernel import salome
+from salome.kernel import SALOME_ModuleCatalog
 import ConfigAPI
 
 # needed on immediate start of SHAPER from SALOME: salome.naming_service is not initialized then

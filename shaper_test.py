@@ -23,7 +23,7 @@ import unittest
 class TestShaper(unittest.TestCase):
 
     def setUp(self):
-        import salome
+        from salome.kernel import salome
         salome.salome_init()
 
     def test_shaper(self):

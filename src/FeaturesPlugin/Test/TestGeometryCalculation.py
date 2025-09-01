@@ -24,7 +24,7 @@
 # Initialization of the test
 #=========================================================================
 
-import salome
+from salome.kernel import salome
 
 import os
 import math

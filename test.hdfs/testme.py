@@ -57,10 +57,10 @@ if __name__ == '__main__':
     proc.communicate(timeout = testTimeout)
   except subprocess.TimeoutExpired:
     isOk = False
-    import salome_utils
+    from salome.kernel import salome_utils
     port = salome_utils.getPortNumber()
-    import killSalomeWithPort
-    killSalomeWithPort.killMyPort(port)
+    from salome.kernel import killSalomeWithPort_impl
+    killSalomeWithPort_impl.killMyPort(port)
     error = "Killed by CPU limit."
 
   assert isOk, "Test failed. {}".format(error)

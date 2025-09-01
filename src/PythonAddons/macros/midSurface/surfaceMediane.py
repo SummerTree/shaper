@@ -43,11 +43,11 @@ __revision__ = "V11.27"
 import os
 import tempfile
 
-import salome
+from salome.kernel import salome
 
 salome.salome_init()
 
-import SALOMEDS
+from salome.kernel import SALOMEDS
 from SketchAPI import *
 from salome.shaper import model
 from salome.shaper import geom

@@ -18,7 +18,7 @@
 #
 
 import os
-import salome
+from salome.kernel import salome
 from salome.shaper import model
 
 salome.salome_init()

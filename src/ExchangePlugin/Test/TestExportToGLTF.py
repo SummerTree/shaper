@@ -26,7 +26,7 @@
 import os
 import json
 from tempfile import TemporaryDirectory
-import salome
+from salome.kernel import salome
 
 
 #=========================================================================

@@ -26,10 +26,10 @@ import EventsAPI
 from GeomAPI import *
 import GeomAlgoAPI
 
-import salome
+from salome.kernel import salome
 from salome.shaper import model
 
-import SHAPERSTUDY_ORB
+from salome.kernel import SHAPERSTUDY_ORB
 import SHAPERSTUDY_utils
 
 ## @ingroup Plugins

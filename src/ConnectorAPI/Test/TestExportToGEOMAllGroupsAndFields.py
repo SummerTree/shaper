@@ -21,7 +21,7 @@ import os
 import tempfile
 
 import sys
-import salome
+from salome.kernel import salome
 
 salome.standalone()
 salome.salome_init()

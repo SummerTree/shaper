@@ -17,11 +17,11 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 import sys
-import salome
+from salome.kernel import salome
 
 salome.standalone()
 salome.salome_init()
-import salome_notebook
+from salome.kernel import salome_notebook
 ###
 ### SHAPER component
 ###

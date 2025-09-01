@@ -8,7 +8,7 @@ __revision__ = "V02.01"
 nom_objet = "Observatoire"
 fichier = "midSurface_1.stp"
 
-import salome
+from salome.kernel import salome
 
 salome.salome_init()
 
