@@ -19,7 +19,7 @@
 
 """Test de la création de faces gauches"""
 
-import salome
+from salome.kernel import salome
 
 salome.salome_init()
 

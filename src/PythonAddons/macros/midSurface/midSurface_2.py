@@ -8,7 +8,7 @@ __revision__ = "V02.01"
 nom_objet = "meli-melo"
 fichier = "midSurface_2.stp"
 
-import salome
+from salome.kernel import salome
 
 salome.salome_init()
 

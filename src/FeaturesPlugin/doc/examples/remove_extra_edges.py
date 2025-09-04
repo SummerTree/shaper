@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import salome
+from salome.kernel import salome
 salome.salome_init()
 
 from salome.shaper import model

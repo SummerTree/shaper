@@ -26,7 +26,7 @@
 # Initialization of the test
 #=========================================================================
 
-import salome
+from salome.kernel import salome
 salome.standalone()
 salome.salome_init(embedded=True)
 
@@ -38,7 +38,7 @@ from ModelAPI import *
 from GeomAlgoAPI import *
 from salome.shaper import model
 
-import GEOM
+from salome.kernel import GEOM
 from salome.geom import geomBuilder
 geompy = geomBuilder.New()
 

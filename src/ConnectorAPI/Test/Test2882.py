@@ -21,7 +21,7 @@ from SketchAPI import *
 
 from salome.shaper import model
 
-import salome
+from salome.kernel import salome
 salome.standalone()
 salome.salome_init(embedded=True)
 
@@ -90,7 +90,7 @@ model.exportToGEOM(Part_1_doc)
 model.end()
 
 # check what is exported to GEOM
-import salome
+from salome.kernel import salome
 from salome.geom import geomBuilder
 
 import os

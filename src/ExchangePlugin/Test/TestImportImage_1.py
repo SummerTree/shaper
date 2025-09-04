@@ -22,7 +22,7 @@ from salome.shaper import model
 
 from PyQt5.Qt import QApplication
 
-import salome
+from salome.kernel import salome
 salome.salome_init_without_session()
 salome.salome_init(embedded=True)
 if QApplication.instance() is None:
@@ -105,9 +105,9 @@ assert(Scale_1.result().resultSubShapePair()[0].hasTexture())
 assert(model.checkPythonDump())
 
 # Close SALOME GUI
-import salome_utils
-import killSalomeWithPort
+from salome.kernel import salome_utils
+from salome.kernel import killSalomeWithPort_impl
 
 port = salome_utils.getPortNumber(False)
 if port:
-  killSalomeWithPort.killMyPort(port)
+  killSalomeWithPort_impl.killMyPort(port)

@@ -18,10 +18,10 @@
 #
 
 import sys
-import salome
+from salome.kernel import salome
 
 salome.salome_init()
-import salome_notebook
+from salome.kernel import salome_notebook
 notebook = salome_notebook.NoteBook()
 sys.path.insert(0, r'/home/eksu/S2')
 

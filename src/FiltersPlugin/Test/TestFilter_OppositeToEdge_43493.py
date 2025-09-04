@@ -18,7 +18,7 @@
 #
 
 import sys
-import salome
+from salome.kernel import salome
 
 salome.salome_init()
 

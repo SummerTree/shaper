@@ -61,9 +61,9 @@ class SalomeSession(object):
 
     def __del__(self):
         port = os.getenv('NSPORT')
-        import killSalomeWithPort
+        from salome.kernel import killSalomeWithPort_impl
         if port:
-             killSalomeWithPort.killMyPort(port)
+             killSalomeWithPort_impl.killMyPort(port)
         return
     pass
 

@@ -16,7 +16,7 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-import salome
+from salome.kernel import salome
 
 from SketchAPI import *
 from salome.shaper import model

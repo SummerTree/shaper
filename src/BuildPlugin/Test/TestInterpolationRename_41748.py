@@ -7,7 +7,7 @@
 # Test fix of bos #41748 [CEA] Issue in interpolation edition
 
 import sys
-import salome
+from salome.kernel import salome
 
 salome.salome_init()
 

@@ -25,14 +25,14 @@
 # Initialization of the test
 #=========================================================================
 
-import salome
+from salome.kernel import salome
 salome.standalone()
 
 import os
 import math
 from tempfile import TemporaryDirectory
 
-import GEOM
+from salome.kernel import GEOM
 
 from ModelAPI import *
 

@@ -17,7 +17,9 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-import salome, salome_utils, os, sys
+from salome.kernel import salome
+from salome.kernel import salome_utils
+import os, sys
 import SalomePyQt
 
 import unittest
