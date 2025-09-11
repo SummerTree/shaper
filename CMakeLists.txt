@@ -129,7 +129,7 @@ ENDIF()
 # It could be called only once
 FIND_PACKAGE(LibXml2 REQUIRED)
 
-SET(_pydir lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages/salome)
+SET(_pydir lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages)
 SET(SHAPER_INSTALL_PYTHON_API ${_pydir}/salome/shaper CACHE INTERNAL "" FORCE)
 SET(SHAPER_INSTALL_SWIG ${_pydir} CACHE INTERNAL "" FORCE)
 IF(${HAVE_SALOME})
